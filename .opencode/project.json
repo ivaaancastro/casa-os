@@ -1,0 +1,15 @@
+{
+  "name": "casa-os",
+  "description": "Sistema operativo para tu hogar — gestión de dispositivos, notas familiares y más",
+  "version": "0.1.0",
+  "stack": ["Next.js", "TypeScript", "Prisma", "SQLite", "NextAuth", "Tailwind CSS"],
+  "language": "es",
+  "type": "personal",
+  "deployment": "self-hosted",
+  "defaultBranch": "main",
+  "testCommand": "npm run test",
+  "lintCommand": "npm run lint",
+  "typecheckCommand": "npm run typecheck",
+  "mcpServers": ["context7", "filesystem"],
+  "skills": ["casa-dev", "casa-deploy", "casa-router"]
+}

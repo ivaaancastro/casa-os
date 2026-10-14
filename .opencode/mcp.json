@@ -1,0 +1,16 @@
+{
+  "servers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"],
+      "description": "Documentación actualizada de librerías y frameworks"
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/ivan/Documents/proyects/casa-os"],
+      "description": "Acceso al sistema de archivos del proyecto"
+    }
+  }
+}
