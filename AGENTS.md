@@ -166,11 +166,18 @@ Si surge ambigüedad, **preguntar antes de implementar**.
 1. Crear rama desde `main`: `git checkout -b feat/nombre-feature`
 2. Escribir test primero (TDD cuando sea posible)
 3. Implementar tareas en orden
-4. Typecheck + lint + tests deben pasar
+4. **Verificación doble check (OBLIGATORIA)**:
+   ```bash
+   npm run lint && npm run typecheck && npm run test && npm run build
+   ```
+   Si CUALQUIERA falla, corregir antes de continuar. NO reportar como
+   completado hasta que todo pase.
 5. Commits atómicos con conventional commits
 6. Push de la rama: `git push -u origin feat/nombre-feature`
 7. Crear PR con descripción que referencia el spec
-8. Tras merge, eliminar rama
+8. Verificar que el CI de GitHub pasa en el PR
+9. **Solo entonces** reportar como completado
+10. Tras merge, eliminar rama
 
 ## Seguridad
 
@@ -189,6 +196,12 @@ Si surge ambigüedad, **preguntar antes de implementar**.
 - No modificar el esquema de auth sin revisión previa
 - No hacer `git push --force` a `main`
 - No implementar features sin spec aprobado por el usuario
+- **No reportar como completado sin ejecutar TODAS las verificaciones**
+- **No pedir al usuario que compruebe algo que el agente no ha comprobado**
+- **No marcar una spec como aprobada si los tests no pasan**
+- **No reportar como completado sin ejecutar TODAS las verificaciones**
+- **No pedir al usuario que compruebe algo que el agente no ha comprobado**
+- **No marcar una spec como aprobada si los tests no pasan**
 
 ## Recursos útiles
 

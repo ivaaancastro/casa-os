@@ -124,6 +124,12 @@ Si durante el spec o las tareas surge ambigüedad, **preguntar antes de implemen
 6. **Mobile-first** en todos los diseños UI
 7. **Un feature = una rama** — nunca desarrollar en `main`
 8. **Spec antes de código** — nunca implementar sin spec aprobado
+9. **Tests para cada spec** — si los tests no pasan, NO se aprueba el spec
+10. **Doble check obligatorio** — el agente DEBE ejecutar y verificar TODAS las
+    verificaciones (lint, typecheck, test, build) ANTES de reportar como completado.
+    Nunca pedir al usuario que verifique algo que el agente no ha verificado.
+11. **CI debe pasar** — si el CI de GitHub falla, el agente debe corregirlo
+    antes de marcar la feature como lista
 
 ## Convenciones de nomenclatura
 
