@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 
 export const authOptions: NextAuthOptions = {
@@ -11,15 +12,23 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Contraseña', type: 'password' },
       },
       async authorize(credentials) {
-        // TODO: Implementar verificación de contraseña con bcrypt
-        // Por ahora, aceptamos cualquier email que exista en la BD
-        if (!credentials?.email) return null;
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
-        if (!user) return null;
+        if (!user || !user.password) {
+          return null;
+        }
+
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+
+        if (!isValid) {
+          return null;
+        }
 
         return {
           id: user.id,
@@ -36,12 +45,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role?: string }).role;
+        token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session?.user) {
+        session.user.id = token.id as string;
         session.user.role = token.role as string;
       }
       return session;
