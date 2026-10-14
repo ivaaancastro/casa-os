@@ -122,15 +122,55 @@ test(devices): añadir tests del escáner
 - Cobertura objetivo: lógica de negocio y utilidades, no UI
 - Mock de Prisma con `vitest-mock-extended`
 
-## Flujo de trabajo para features
+## Flujo de trabajo para features/fix
+
+> **REGLA ABSOLUTA: NUNCA se commitea ni se pushea directamente a `main`.**
+> Todo el trabajo se hace en ramas (`feat/*` o `fix/*`) con PR.
+
+### Paso 1 — Crear carpeta de spec
+
+Cada feature/fix tiene su carpeta en `specs/` con nombre kebab-case:
+
+```
+specs/
+└── <feature-name>/
+    ├── plan.md      # Análisis y enfoque técnico
+    ├── spec.md      # Especificación detallada (el usuario la aprueba)
+    └── tasks.md     # Tareas de implementación
+```
+
+### Paso 2 — Generar `plan.md`
+
+Contiene: contexto, enfoque técnico, dependencias, riesgos.
+
+### Paso 3 — Generar `spec.md`
+
+Contiene: requisitos funcionales/no funcionales, API, modelo de datos,
+UI/UX, criterios de aceptación.
+
+### Paso 4 — Aprobación del usuario
+
+**El usuario debe aprobar el `spec.md` antes de continuar.**
+
+### Paso 5 — Generar `tasks.md`
+
+Lista numerada de tareas concretas, ordenadas por dependencia, cada una
+pequeña (30 min - 2 horas) con archivos a crear/modificar.
+
+### Paso 6 — Preguntas al usuario
+
+Si surge ambigüedad, **preguntar antes de implementar**.
+
+### Paso 7 — Implementación
 
 1. Crear rama desde `main`: `git checkout -b feat/nombre-feature`
 2. Escribir test primero (TDD cuando sea posible)
-3. Implementar
+3. Implementar tareas en orden
 4. Typecheck + lint + tests deben pasar
-5. Commit con conventional commits
-6. Push y crear PR
-7. Tras merge, eliminar rama
+5. Commits atómicos con conventional commits
+6. Push de la rama: `git push -u origin feat/nombre-feature`
+7. Crear PR con descripción que referencia el spec
+8. Tras merge, eliminar rama
 
 ## Seguridad
 
@@ -142,11 +182,13 @@ test(devices): añadir tests del escáner
 
 ## Lo que NO debe hacer un agente
 
+- **NUNCA hacer commit o push a `main`** — todo en ramas con PR
 - No crear migraciones destructivas sin confirmación explícita
 - No exponer rutas de API sin autenticación
 - No añadir dependencias sin justificación y aprobación
 - No modificar el esquema de auth sin revisión previa
-- No hacer `git push -- force` a `main`
+- No hacer `git push --force` a `main`
+- No implementar features sin spec aprobado por el usuario
 
 ## Recursos útiles
 

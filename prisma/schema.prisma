@@ -13,7 +13,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  role          Role      @default(FAMILY)
+  role          String    @default("FAMILY")
   accounts      Account[]
   sessions      Session[]
   notes         Note[]
@@ -60,7 +60,7 @@ model Note {
   id        String   @id @default(cuid())
   title     String
   content   String
-  type      NoteType @default(SHOPPING)
+  type      String   @default("SHOPPING")
   completed Boolean  @default(false)
   authorId  String
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -73,7 +73,7 @@ model Device {
   name        String
   ip          String
   mac         String?
-  type        DeviceType   @default(OTHER)
+  type        String       @default("OTHER")
   online      Boolean      @default(false)
   lastSeen    DateTime?
   notes       String?
@@ -83,24 +83,4 @@ model Device {
   updatedAt   DateTime     @updatedAt
 }
 
-enum Role {
-  ADMIN
-  FAMILY
-}
 
-enum NoteType {
-  SHOPPING
-  GENERAL
-  TODO
-}
-
-enum DeviceType {
-  PHONE
-  LAPTOP
-  TABLET
-  TV
-  IOT
-  CONSOLE
-  ROUTER
-  OTHER
-}
