@@ -9,10 +9,12 @@ interface NoteItemProps {
 }
 
 function extractPreview(html: string): string {
-  if (typeof window === 'undefined') return '';
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  return tmp.textContent || '';
+  if (!html) return '';
+  // Server + client consistent text extraction (strip tags)
+  return html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function formatDate(dateStr: string): string {

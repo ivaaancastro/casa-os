@@ -18,24 +18,27 @@ async function main() {
     },
   });
 
-  // Notas de ejemplo
-  await prisma.note.create({
-    data: {
-      title: 'Lista de la compra',
-      content: 'Leche, pan, huevos, fruta',
-      type: 'SHOPPING',
-      authorId: admin.id,
-    },
-  });
+  // Notas de ejemplo (solo si no existen)
+  const existingNotes = await prisma.note.count();
+  if (existingNotes === 0) {
+    await prisma.note.create({
+      data: {
+        title: 'Lista de la compra',
+        content: '<p>Leche, pan, huevos, fruta</p>',
+        type: 'SHOPPING',
+        authorId: admin.id,
+      },
+    });
 
-  await prisma.note.create({
-    data: {
-      title: 'Bienvenido a casa-os',
-      content: 'Edita esta nota o bórrala. ¡Tu hogar digital comienza aquí!',
-      type: 'GENERAL',
-      authorId: admin.id,
-    },
-  });
+    await prisma.note.create({
+      data: {
+        title: 'Bienvenido a casa-os',
+        content: '<p>Edita esta nota o bórrala. ¡Tu hogar digital comienza aquí!</p>',
+        type: 'GENERAL',
+        authorId: admin.id,
+      },
+    });
+  }
 
   // Dispositivos de ejemplo
   await prisma.device.create({
