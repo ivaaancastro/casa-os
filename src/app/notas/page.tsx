@@ -1,14 +1,34 @@
-export default function NotasPage() {
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">🛒 Notas</h1>
-      <p className="text-gray-600 mb-6">Notas compartidas para toda la familia.</p>
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
+import { authOptions } from '@/lib/auth';
+import { NotesLayout } from '@/components/notes/NotesLayout';
 
-      <div className="card">
-        <p className="text-gray-500 text-center py-8">
-          🚧 Sección en desarrollo — próximamente podrás crear y compartir notas con tu familia.
-        </p>
-      </div>
+export const dynamic = 'force-dynamic';
+
+export default async function NotasPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect('/auth/login');
+  }
+
+  const notes = await prisma.note.findMany({
+    include: {
+      author: {
+        select: { id: true, name: true },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div className="h-full">
+      <NotesLayout
+        notes={notes}
+        currentUserId={session.user.id}
+        currentUserRole={session.user.role}
+      />
     </div>
   );
 }
