@@ -62,8 +62,8 @@ export function Toolbar({ editor }: ToolbarProps) {
       className={`
         p-1.5 rounded transition-colors min-w-[28px] h-[28px] flex items-center justify-center
         ${active
-          ? 'bg-brand-50 text-brand-700'
-          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+          ? 'bg-ink text-canvas text-canvas'
+          : 'text-ash hover:bg-pearl hover:text-gray-700'
         }
         disabled:opacity-40 disabled:cursor-not-allowed
       `}
@@ -75,7 +75,7 @@ export function Toolbar({ editor }: ToolbarProps) {
   const Divider = () => <div className="w-px h-5 bg-gray-200 mx-1" />;
 
   return (
-    <div className="flex items-center flex-wrap gap-0.5 p-1.5 bg-gray-50 border-b border-gray-200 rounded-t-lg">
+    <div className="flex items-center flex-wrap gap-0.5 p-1.5 bg-pearl border-b border-mist rounded-t-lg">
       {/* Headings */}
       <Button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -193,7 +193,7 @@ export function Toolbar({ editor }: ToolbarProps) {
             setShowHighlightPicker(false);
           }}
           title="Color de texto"
-          className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors min-w-[28px] h-[28px] flex items-center justify-center"
+          className="p-1.5 rounded hover:bg-pearl text-ash hover:text-gray-700 transition-colors min-w-[28px] h-[28px] flex items-center justify-center"
         >
           <div className="flex flex-col items-center">
             <span className="text-xs font-bold">A</span>
@@ -201,7 +201,7 @@ export function Toolbar({ editor }: ToolbarProps) {
           </div>
         </button>
         {showColorPicker && (
-          <div className="absolute top-full left-0 mt-1 p-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 grid grid-cols-6 gap-1">
+          <div className="absolute top-full left-0 mt-1 p-2 bg-white rounded-none shadow-lg border border-mist z-50 grid grid-cols-6 gap-1">
             {COLORS.map((color) => (
               <button
                 key={color}
@@ -210,7 +210,7 @@ export function Toolbar({ editor }: ToolbarProps) {
                   editor.chain().focus().setColor(color).run();
                   setShowColorPicker(false);
                 }}
-                className="w-5 h-5 rounded border border-gray-200 hover:scale-110 transition-transform"
+                className="w-5 h-5 rounded border border-mist hover:scale-110 transition-transform"
                 style={{ backgroundColor: color }}
                 title={color}
               />
@@ -232,7 +232,7 @@ export function Toolbar({ editor }: ToolbarProps) {
             p-1.5 rounded transition-colors min-w-[28px] h-[28px] flex items-center justify-center
             ${editor.isActive('highlight')
               ? 'bg-yellow-50 text-yellow-700'
-              : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+              : 'text-ash hover:bg-pearl hover:text-gray-700'
             }
           `}
         >
@@ -241,7 +241,7 @@ export function Toolbar({ editor }: ToolbarProps) {
           </svg>
         </button>
         {showHighlightPicker && (
-          <div className="absolute top-full left-0 mt-1 p-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 flex gap-1">
+          <div className="absolute top-full left-0 mt-1 p-2 bg-white rounded-none shadow-lg border border-mist z-50 flex gap-1">
             {HIGHLIGHT_COLORS.map((color) => (
               <button
                 key={color}
@@ -250,7 +250,7 @@ export function Toolbar({ editor }: ToolbarProps) {
                   editor.chain().focus().toggleHighlight({ color }).run();
                   setShowHighlightPicker(false);
                 }}
-                className="w-6 h-6 rounded border border-gray-200 hover:scale-110 transition-transform"
+                className="w-6 h-6 rounded border border-mist hover:scale-110 transition-transform"
                 style={{ backgroundColor: color }}
                 title={color}
               />
@@ -261,7 +261,7 @@ export function Toolbar({ editor }: ToolbarProps) {
                 editor.chain().focus().unsetHighlight().run();
                 setShowHighlightPicker(false);
               }}
-              className="w-6 h-6 rounded border border-gray-200 hover:bg-gray-100 flex items-center justify-center text-xs text-gray-400"
+              className="w-6 h-6 rounded border border-mist hover:bg-pearl flex items-center justify-center text-xs text-ash"
               title="Quitar resaltado"
             >
               X

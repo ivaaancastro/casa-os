@@ -99,9 +99,9 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
   }
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] -m-4 lg:-m-8">
+    <div className="flex h-[calc(100vh-9.5rem)] -m-4 lg:-m-8 border-t border-mist">
       {/* Columna 1: Carpetas */}
-      <div className="hidden lg:block w-60 border-r border-gray-200 bg-gray-50/50 overflow-y-auto">
+      <div className="hidden lg:block w-60 border-r border-mist bg-pearl overflow-y-auto">
         <NotesSidebar
           activeFolder={activeFolder}
           onFolderChange={handleFolderChange}
@@ -111,7 +111,7 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
 
       {/* Columna 2: Lista de notas */}
       <div className={`
-        w-full lg:w-80 border-r border-gray-200 flex flex-col
+        w-full lg:w-80 border-r border-mist flex flex-col
         ${mobileView === 'editor' ? 'hidden lg:flex' : 'flex'}
       `}>
         <NotesList

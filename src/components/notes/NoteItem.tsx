@@ -39,17 +39,17 @@ export function NoteItem({ note, isSelected, onSelect }: NoteItemProps) {
     <button
       onClick={onSelect}
       className={`
-        w-full text-left p-3 border-b border-gray-100 transition-colors
-        ${isSelected ? 'bg-brand-50' : 'hover:bg-gray-50'}
+        w-full text-left p-3 border-b border-mist transition-colors
+        ${isSelected ? 'bg-ink text-canvas' : 'hover:bg-pearl'}
       `}
     >
-      <div className="font-medium text-sm text-gray-900 truncate">
+      <div className="font-medium text-sm text-ink truncate">
         {note.title || 'Sin titulo'}
       </div>
-      <div className="text-xs text-gray-500 truncate mt-0.5">
+      <div className="text-xs text-ash truncate mt-0.5">
         {preview || 'Sin contenido'}
       </div>
-      <div className="text-xs text-gray-400 mt-1">
+      <div className="text-xs text-ash mt-1">
         {dateLabel}
       </div>
     </button>
