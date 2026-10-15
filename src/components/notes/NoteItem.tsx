@@ -8,20 +8,30 @@ interface NoteItemProps {
   onSelect: () => void;
 }
 
-export function NoteItem({ note, isSelected, onSelect }: NoteItemProps) {
-  const preview = note.content.split('\n').slice(0, 2).join(' ').slice(0, 80);
-  const date = new Date(note.createdAt);
+function extractPreview(html: string): string {
+  if (typeof window === 'undefined') return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || '';
+}
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  let dateLabel: string;
-  if (diffHours < 1) dateLabel = 'Ahora';
-  else if (diffHours < 24) dateLabel = `Hace ${diffHours}h`;
-  else if (diffDays === 1) dateLabel = 'Ayer';
-  else if (diffDays < 7) dateLabel = `Hace ${diffDays} dias`;
-  else dateLabel = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  if (diffHours < 1) return 'Ahora';
+  if (diffHours < 24) return `Hace ${diffHours}h`;
+  if (diffDays === 1) return 'Ayer';
+  if (diffDays < 7) return `Hace ${diffDays} dias`;
+  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+}
+
+export function NoteItem({ note, isSelected, onSelect }: NoteItemProps) {
+  const preview = extractPreview(note.content).slice(0, 80);
+  const dateLabel = formatDate(note.createdAt.toISOString());
 
   return (
     <button
