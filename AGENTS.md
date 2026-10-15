@@ -122,7 +122,14 @@ test(devices): añadir tests del escáner
 - Cobertura objetivo: lógica de negocio y utilidades, no UI
 - Mock de Prisma con `vitest-mock-extended`
 
-## Flujo de trabajo para features/fix
+## Spec-Driven Development (SDD) — flujo de trabajo para features/fix
+
+> **Resumen SDD operativo:**
+> 1. Crear rama `feat/<nombre>` o `fix/<nombre>` (desde `main`).
+> 2. Crear carpeta `specs/<nombre>/` con `plan.md`, `spec.md`.
+> 3. El usuario aprueba el `spec.md`.
+> 4. Tras aprobación, crear `tasks.md` y solo entonces implementar.
+> 5. Ejecutar `lint && typecheck && test && build` antes de reportar.
 
 > **REGLA ABSOLUTA: NUNCA se commitea ni se pushea directamente a `main`.**
 > Todo el trabajo se hace en ramas (`feat/*` o `fix/*`) con PR.
