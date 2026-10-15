@@ -19,8 +19,10 @@ const ALLOWED_ATTR = [
 const ALLOWED_STYLES = [
   'color',
   'background-color',
+  'font-family',
   'font-size',
   'font-weight',
+  'line-height',
   'font-style',
   'text-decoration',
   'text-align',

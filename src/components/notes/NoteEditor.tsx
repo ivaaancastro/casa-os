@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
-import { TextStyle } from '@tiptap/extension-text-style';
+import { TextStyle, FontFamily, FontSize, LineHeight } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import TextAlign from '@tiptap/extension-text-align';
 import Highlight from '@tiptap/extension-highlight';
@@ -57,6 +57,9 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
       StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
       Underline,
       TextStyle,
+      FontFamily.configure({ types: ['textStyle'] }),
+      FontSize.configure({ types: ['textStyle'] }),
+      LineHeight.configure({ types: ['textStyle', 'paragraph', 'heading'] }),
       Color,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Highlight.configure({ multicolor: true }),
@@ -255,7 +258,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto py-4 px-4 lg:px-6">
+        <div className="max-w-3xl mx-auto px-6 py-10 lg:px-10">
           <input
             ref={titleRef}
             type="text"
@@ -270,17 +273,16 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
               }, 500);
             }}
             placeholder="Titulo"
-            className="w-full text-2xl font-bold text-ink placeholder-gray-300 border-none outline-none bg-transparent mb-4"
+            className="mb-10 w-full border-none bg-transparent font-display text-5xl tracking-editorial text-ink placeholder-mist outline-none"
           />
 
-          <div className="border border-mist rounded-none overflow-hidden">
-            <Toolbar editor={editor} />
-            <div className="p-3">
-              <EditorContent
-                editor={editor}
-                className="prose prose-sm max-w-none focus:outline-none min-h-[300px] text-gray-700 leading-relaxed"
-              />
-            </div>
+          <Toolbar editor={editor} />
+
+          <div className="pb-20 pt-4">
+            <EditorContent
+              editor={editor}
+              className="min-h-[50vh] text-[18px] leading-[1.7] text-ink outline-none"
+            />
           </div>
         </div>
       </div>
