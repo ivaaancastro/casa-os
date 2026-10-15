@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { NotesSidebar } from './NotesSidebar';
 import { NotesList } from './NotesList';
 import { NoteEditor } from './NoteEditor';
@@ -24,11 +25,21 @@ interface NotesLayoutProps {
 
 type FolderFilter = 'ALL' | 'SHOPPING' | 'GENERAL' | 'TODO';
 
+function isDraftId(id: string): boolean {
+  return id.startsWith('draft-') || id.startsWith('temp-');
+}
+
 export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayoutProps) {
+  const router = useRouter();
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [activeFolder, setActiveFolder] = useState<FolderFilter>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileView, setMobileView] = useState<'list' | 'editor'>('list');
+  const [draftNote, setDraftNote] = useState<Note | null>(null);
+
+  // Determine the note currently shown in the editor.
+  const selectedRealNote = selectedNoteId ? notes.find((n) => n.id === selectedNoteId) ?? null : null;
+  const editorNote = selectedRealNote ?? (draftNote && selectedNoteId === draftNote.id ? draftNote : null);
 
   const filteredNotes = notes
     .filter((note) => {
@@ -44,17 +55,23 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
     })
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const selectedNote = notes.find((n) => n.id === selectedNoteId) ?? null;
-
   function handleSelectNote(id: string) {
+    setDraftNote(null);
     setSelectedNoteId(id);
     setMobileView('editor');
   }
 
+  function handleFolderChange(folder: FolderFilter) {
+    setActiveFolder(folder);
+    setDraftNote(null);
+    setSelectedNoteId(null);
+    setMobileView('list');
+  }
+
   function handleCreateNote() {
     const now = new Date();
-    const newNote: Note = {
-      id: `temp-${Date.now()}`,
+    const draft: Note = {
+      id: `draft-${Date.now()}`,
       title: '',
       content: '',
       type: activeFolder === 'ALL' ? 'GENERAL' : activeFolder,
@@ -63,14 +80,22 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
       updatedAt: now,
       author: { id: currentUserId, name: null },
     };
-    setSelectedNoteId(newNote.id);
+    setDraftNote(draft);
+    setSelectedNoteId(draft.id);
     setMobileView('editor');
-    return newNote;
   }
 
-  function handleDeleteNote() {
+  const handleCreated = useCallback((realId: string) => {
+    setDraftNote(null);
+    setSelectedNoteId(realId);
+    router.refresh();
+  }, [router]);
+
+  function handleDeleted() {
+    setDraftNote(null);
     setSelectedNoteId(null);
     setMobileView('list');
+    router.refresh();
   }
 
   return (
@@ -79,7 +104,7 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
       <div className="hidden lg:block w-60 border-r border-gray-200 bg-gray-50/50 overflow-y-auto">
         <NotesSidebar
           activeFolder={activeFolder}
-          onFolderChange={setActiveFolder}
+          onFolderChange={handleFolderChange}
           notes={notes}
         />
       </div>
@@ -96,7 +121,7 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
           onSearchChange={setSearchQuery}
           onSelectNote={handleSelectNote}
           onCreateNote={handleCreateNote}
-          onFolderChange={setActiveFolder}
+          onFolderChange={handleFolderChange}
           isMobile={mobileView === 'list'}
         />
       </div>
@@ -107,11 +132,12 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
         ${mobileView === 'list' ? 'hidden lg:flex' : 'flex'}
       `}>
         <NoteEditor
-          note={selectedNote}
+          note={editorNote}
           currentUserId={currentUserId}
           currentUserRole={currentUserRole}
-          onDeleted={handleDeleteNote}
+          onDeleted={handleDeleted}
           onBack={() => setMobileView('list')}
+          onCreated={handleCreated}
         />
       </div>
     </div>

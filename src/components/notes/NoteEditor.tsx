@@ -19,11 +19,16 @@ interface NoteEditorProps {
   currentUserRole: string;
   onDeleted: () => void;
   onBack: () => void;
+  onCreated?: (id: string) => void;
 }
 
 type SaveState = 'saved' | 'saving' | 'idle';
 
-export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, onBack }: NoteEditorProps) {
+function isDraft(note: Note | null): boolean {
+  return !!note && (note.id.startsWith('draft-') || note.id.startsWith('temp-'));
+}
+
+export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, onBack, onCreated }: NoteEditorProps) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [completed, setCompleted] = useState(false);
@@ -32,54 +37,50 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isNewNote = note?.id.startsWith('temp-') ?? false;
+  const createdRef = useRef(false);
+  const latestTitleRef = useRef(title);
+  const previousNoteIdRef = useRef<string | null>(null);
 
+  useEffect(() => {
+    latestTitleRef.current = title;
+  }, [title]);
+
+  // Reset created flag when switching notes
+  useEffect(() => {
+    if (note?.id !== previousNoteIdRef.current) {
+      createdRef.current = false;
+      previousNoteIdRef.current = note?.id ?? null;
+    }
+  }, [note?.id]);
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
-      }),
+      StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
       Underline,
       TextStyle,
       Color,
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Highlight.configure({
-        multicolor: true,
-      }),
-      Placeholder.configure({
-        placeholder: 'Escribe aqui...',
-      }),
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Highlight.configure({ multicolor: true }),
+      Placeholder.configure({ placeholder: 'Escribe aqui...' }),
     ],
     content: note?.content ?? '',
     onUpdate: ({ editor }) => {
-      if (!note || isNewNote) return;
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      setSaveState('saving');
-      debounceRef.current = setTimeout(() => {
-        saveNote(editor.getHTML());
-      }, 500);
+      if (!note || isDraft(note) && !createdRef.current) return;
+      scheduleSave(editor.getHTML());
     },
   });
 
-  useEffect(() => {
-    if (note) {
-      setTitle(note.title);
-      setCompleted(note.completed);
-      setSaveState('idle');
-      setError('');
-      if (editor && note.content) {
-        editor.commands.setContent(note.content);
-      }
-    }
-  }, [note, editor]);
+  function scheduleSave(content: string) {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setSaveState('saving');
+    debounceRef.current = setTimeout(() => {
+      saveNote(content);
+    }, 500);
+  }
 
   const saveNote = useCallback(async (content: string) => {
-    if (!note || isNewNote) return;
-
+    if (!note || isDraft(note) && !createdRef.current) return;
+    const realId = createdRef.current ? (note as { realId?: string }).realId ?? note.id : note.id;
+    if (isDraft(note)) return; // guard
     setSaveState('saving');
     try {
       const res = await fetch(`/api/notes/${note.id}`, {
@@ -87,51 +88,76 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content, completed }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         setError(data.error || 'Error al guardar');
         setSaveState('idle');
         return;
       }
-
       setSaveState('saved');
       router.refresh();
     } catch {
       setError('Error de conexion');
       setSaveState('idle');
     }
-  }, [note, title, completed, isNewNote, router]);
+  }, [note, title, completed, router]);
 
+  // Load note data into editor
   useEffect(() => {
-    if (isNewNote && note) {
-      const noteType = note.type;
-      async function createNote() {
-        try {
-          const res = await fetch('/api/notes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: '', content: '', type: noteType }),
-          });
-
-          if (res.ok) {
-            const newNote = await res.json();
-            router.refresh();
-            window.history.replaceState(null, '', `/notas?id=${newNote.id}`);
-          }
-        } catch {
-          setError('Error al crear nota');
+    if (note) {
+      setTitle(note.title);
+      setCompleted(note.completed);
+      setSaveState('idle');
+      setError('');
+      if (editor && note.content) {
+        const current = editor.getHTML();
+        if (current !== note.content) {
+          editor.commands.setContent(note.content);
         }
+      } else if (editor && !note.content) {
+        editor.commands.clearContent();
       }
-      createNote();
     }
-  }, [isNewNote, note, router]);
+  }, [note, editor]);
+
+  // Create real note on server when drafting, then switch to real id
+  useEffect(() => {
+    if (!note || !isDraft(note) || createdRef.current) return;
+    const noteType = note.type;
+    (async () => {
+      try {
+        const res = await fetch('/api/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: '', content: '', type: noteType }),
+        });
+        if (res.ok) {
+          const newNote = await res.json();
+          createdRef.current = true;
+          (note as { realId?: string }).realId = newNote.id;
+          // flush any typed content/title by saving now
+          const html = editor?.getHTML() ?? '';
+          await fetch(`/api/notes/${newNote.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: latestTitleRef.current, content: html, completed }),
+          });
+          onCreated?.(newNote.id);
+        } else {
+          setError('Error al crear la nota');
+        }
+      } catch {
+        setError('Error de conexion');
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [note, note?.id, editor]);
 
   useEffect(() => {
-    if (isNewNote && titleRef.current) {
+    if (isDraft(note) && titleRef.current) {
       titleRef.current.focus();
     }
-  }, [isNewNote]);
+  }, [note]);
 
   useEffect(() => {
     return () => {
@@ -140,15 +166,15 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
   }, []);
 
   async function handleDelete() {
-    if (!note) return;
+    if (!note || isDraft(note)) return;
     if (!showConfirmDelete) {
       setShowConfirmDelete(true);
       return;
     }
-
     try {
       const res = await fetch(`/api/notes/${note.id}`, { method: 'DELETE' });
       if (res.ok) {
+        createdRef.current = false;
         onDeleted();
         router.refresh();
       }
@@ -158,17 +184,16 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
   }
 
   async function toggleCompleted() {
-    if (!note || isNewNote) return;
+    if (!note || isDraft(note)) return;
     const newCompleted = !completed;
     setCompleted(newCompleted);
     try {
-      const content = editor?.getHTML() ?? '';
-      const res = await fetch(`/api/notes/${note.id}`, {
+      await fetch(`/api/notes/${note.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed: newCompleted }),
       });
-      if (res.ok) router.refresh();
+      router.refresh();
     } catch {
       setError('Error al actualizar');
     }
@@ -186,13 +211,8 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-gray-200">
-        <button
-          onClick={onBack}
-          className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
-          aria-label="Volver a la lista"
-        >
+        <button onClick={onBack} className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-500" aria-label="Volver a la lista">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -203,30 +223,23 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
           {saveState === 'saved' && <span className="text-xs text-gray-400">Guardado</span>}
 
           {(note.type === 'SHOPPING' || note.type === 'TODO') && (
-            <button
-              onClick={toggleCompleted}
-              className={`p-1.5 rounded-lg transition-colors ${completed ? 'bg-brand-50 text-brand-600' : 'hover:bg-gray-100 text-gray-400'}`}
-              aria-label={completed ? 'Marcar como pendiente' : 'Marcar como completada'}
-            >
+            <button onClick={toggleCompleted} className={`p-1.5 rounded-lg transition-colors ${completed ? 'bg-brand-50 text-brand-600' : 'hover:bg-gray-100 text-gray-400'}`} aria-label={completed ? 'Marcar como pendiente' : 'Marcar como completada'}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
           )}
 
-          <button
-            onClick={handleDelete}
-            className={`p-1.5 rounded-lg transition-colors ${showConfirmDelete ? 'bg-red-50 text-red-600' : 'hover:bg-gray-100 text-gray-400 hover:text-red-600'}`}
-            aria-label="Eliminar nota"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
+          {!isDraft(note) && (
+            <button onClick={handleDelete} className={`p-1.5 rounded-lg transition-colors ${showConfirmDelete ? 'bg-red-50 text-red-600' : 'hover:bg-gray-100 text-gray-400 hover:text-red-600'}`} aria-label="Eliminar nota">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Confirmacion eliminar */}
       {showConfirmDelete && (
         <div className="p-2 bg-red-50 border-b border-red-100 flex items-center justify-between">
           <span className="text-xs text-red-700">Eliminar esta nota?</span>
@@ -241,7 +254,6 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
         <div className="p-2 bg-red-50 border-b border-red-100 text-xs text-red-700">{error}</div>
       )}
 
-      {/* Editor */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto py-4 px-4 lg:px-6">
           <input
@@ -253,7 +265,8 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
               if (debounceRef.current) clearTimeout(debounceRef.current);
               setSaveState('saving');
               debounceRef.current = setTimeout(() => {
-                saveNote(editor?.getHTML() ?? '');
+                const html = editor?.getHTML() ?? '';
+                saveNote(html);
               }, 500);
             }}
             placeholder="Titulo"
@@ -272,24 +285,16 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="p-3 border-t border-gray-200 text-xs text-gray-400 flex items-center justify-between">
-        <span>Creada por {note.author.name || 'Desconocido'}</span>
-        <span>{new Date(note.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-      </div>
+      {!isDraft(note) && (
+        <div className="p-3 border-t border-gray-200 text-xs text-gray-400 flex items-center justify-between">
+          <span>Creada por {note.author.name || 'Desconocido'}</span>
+          <span>{new Date(note.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+        </div>
+      )}
 
       <style jsx>{`
-        .ProseMirror {
-          outline: none;
-          min-height: 300px;
-        }
-        .ProseMirror p.is-editor-empty:first-child::before {
-          content: attr(data-placeholder);
-          float: left;
-          color: #9ca3af;
-          pointer-events: none;
-          height: 0;
-        }
+        .ProseMirror { outline: none; min-height: 300px; }
+        .ProseMirror p.is-editor-empty:first-child::before { content: attr(data-placeholder); float: left; color: #9ca3af; pointer-events: none; height: 0; }
         .ProseMirror h1 { font-size: 1.875rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; line-height: 1.2; }
         .ProseMirror h2 { font-size: 1.5rem; font-weight: 600; margin-top: 0.875rem; margin-bottom: 0.375rem; line-height: 1.3; }
         .ProseMirror h3 { font-size: 1.25rem; font-weight: 600; margin-top: 0.75rem; margin-bottom: 0.25rem; line-height: 1.4; }
