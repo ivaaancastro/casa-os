@@ -201,7 +201,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
 
   if (!note) {
     return (
-      <div className="flex-1 flex items-center justify-center text-gray-400">
+      <div className="flex-1 flex items-center justify-center text-ash">
         <div className="text-center">
           <p className="text-sm">Selecciona una nota o crea una nueva</p>
         </div>
@@ -211,19 +211,19 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-3 border-b border-gray-200">
-        <button onClick={onBack} className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-500" aria-label="Volver a la lista">
+      <div className="flex items-center justify-between p-3 border-b border-mist">
+        <button onClick={onBack} className="lg:hidden p-1.5 rounded-none hover:bg-pearl text-ash" aria-label="Volver a la lista">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
         <div className="flex items-center gap-2 ml-auto">
-          {saveState === 'saving' && <span className="text-xs text-gray-400">Guardando...</span>}
-          {saveState === 'saved' && <span className="text-xs text-gray-400">Guardado</span>}
+          {saveState === 'saving' && <span className="text-xs text-ash">Guardando...</span>}
+          {saveState === 'saved' && <span className="text-xs text-ash">Guardado</span>}
 
           {(note.type === 'SHOPPING' || note.type === 'TODO') && (
-            <button onClick={toggleCompleted} className={`p-1.5 rounded-lg transition-colors ${completed ? 'bg-brand-50 text-brand-600' : 'hover:bg-gray-100 text-gray-400'}`} aria-label={completed ? 'Marcar como pendiente' : 'Marcar como completada'}>
+            <button onClick={toggleCompleted} className={`p-1.5 rounded-none transition-colors ${completed ? 'bg-ink text-canvas text-ink' : 'hover:bg-pearl text-ash'}`} aria-label={completed ? 'Marcar como pendiente' : 'Marcar como completada'}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -231,7 +231,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
           )}
 
           {!isDraft(note) && (
-            <button onClick={handleDelete} className={`p-1.5 rounded-lg transition-colors ${showConfirmDelete ? 'bg-red-50 text-red-600' : 'hover:bg-gray-100 text-gray-400 hover:text-red-600'}`} aria-label="Eliminar nota">
+            <button onClick={handleDelete} className={`p-1.5 rounded-none transition-colors ${showConfirmDelete ? 'bg-red-50 text-red-600' : 'hover:bg-pearl text-ash hover:text-red-600'}`} aria-label="Eliminar nota">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
@@ -244,7 +244,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
         <div className="p-2 bg-red-50 border-b border-red-100 flex items-center justify-between">
           <span className="text-xs text-red-700">Eliminar esta nota?</span>
           <div className="flex gap-2">
-            <button onClick={() => setShowConfirmDelete(false)} className="text-xs text-gray-600 hover:text-gray-800">Cancelar</button>
+            <button onClick={() => setShowConfirmDelete(false)} className="text-xs text-ash hover:text-gray-800">Cancelar</button>
             <button onClick={handleDelete} className="text-xs text-red-600 font-medium hover:text-red-800">Eliminar</button>
           </div>
         </div>
@@ -270,10 +270,10 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
               }, 500);
             }}
             placeholder="Titulo"
-            className="w-full text-2xl font-bold text-gray-900 placeholder-gray-300 border-none outline-none bg-transparent mb-4"
+            className="w-full text-2xl font-bold text-ink placeholder-gray-300 border-none outline-none bg-transparent mb-4"
           />
 
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="border border-mist rounded-none overflow-hidden">
             <Toolbar editor={editor} />
             <div className="p-3">
               <EditorContent
@@ -286,7 +286,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
       </div>
 
       {!isDraft(note) && (
-        <div className="p-3 border-t border-gray-200 text-xs text-gray-400 flex items-center justify-between">
+        <div className="p-3 border-t border-mist text-xs text-ash flex items-center justify-between">
           <span>Creada por {note.author.name || 'Desconocido'}</span>
           <span>{new Date(note.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
         </div>

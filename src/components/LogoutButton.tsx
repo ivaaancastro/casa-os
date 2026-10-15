@@ -6,9 +6,8 @@ export function LogoutButton() {
   return (
     <button
       onClick={() => signOut({ callbackUrl: '/auth/login' })}
-      className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+      className="w-full text-left text-xs text-ash transition-colors hover:text-alarm"
     >
-      <span>🚪</span>
       Cerrar sesión
     </button>
   );

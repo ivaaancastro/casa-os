@@ -1,101 +1,59 @@
 export default function Home() {
+  const modules = [
+    { title: 'Dashboard', status: 'En desarrollo' },
+    { title: 'Dispositivos', status: 'En desarrollo' },
+    { title: 'Notas', status: 'Disponible' },
+    { title: 'Calendario', status: 'Planificado' },
+    { title: 'Inventario', status: 'Planificado' },
+    { title: 'Gastos', status: 'Idea' },
+  ];
+
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Hero */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          🏠 casa-os
+    <div className="grid grid-cols-12 gap-y-12">
+      <header className="col-span-12 border-t border-mist pt-8">
+        <p className="text-xs text-ash tracking-wider2 mb-6">casa-os — hogar digital</p>
+        <h1 className="font-display text-5xl md:text-7xl tracking-editorial leading-[0.9]">
+          Tu hogar,<br /> en orden.
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Tu hogar digital. Gestiona dispositivos, notas familiares y más,
-          todo en un solo lugar.
+        <p className="mt-6 max-w-xl text-base text-ash">
+          Gestiona dispositivos, notas familiares y más desde un solo lugar.
         </p>
-      </div>
+      </header>
 
-      {/* Estado del proyecto */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        <StatusCard
-          emoji="📊"
-          title="Dashboard"
-          status="En desarrollo"
-          statusColor="text-yellow-600 bg-yellow-50"
-        />
-        <StatusCard
-          emoji="🖥️"
-          title="Dispositivos"
-          status="En desarrollo"
-          statusColor="text-yellow-600 bg-yellow-50"
-        />
-        <StatusCard
-          emoji="🛒"
-          title="Notas / Compra"
-          status="En desarrollo"
-          statusColor="text-yellow-600 bg-yellow-50"
-        />
-        <StatusCard
-          emoji="📅"
-          title="Calendario"
-          status="Planificado"
-          statusColor="text-blue-600 bg-blue-50"
-        />
-        <StatusCard
-          emoji="📦"
-          title="Inventario"
-          status="Planificado"
-          statusColor="text-blue-600 bg-blue-50"
-        />
-        <StatusCard
-          emoji="💰"
-          title="Gastos"
-          status="Idea"
-          statusColor="text-gray-500 bg-gray-100"
-        />
-      </div>
+      <section className="col-span-12 mt-6">
+        <div className="grid grid-cols-12 border-t border-mist">
+          {modules.map((m, i) => (
+            <a
+              key={m.title}
+              href={m.title === 'Dashboard' ? '/' : m.title === 'Dispositivos' ? '/devices' : m.title === 'Notas' ? '/notas' : '#'}
+              className="group col-span-12 md:col-span-4 border-b border-r-0 md:border-r border-mist p-6 transition-colors hover:bg-ink hover:text-canvas"
+            >
+              <div className="flex items-baseline justify-between">
+                <span className="text-[10px] text-ash group-hover:text-canvas/60">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="text-[10px] text-ash group-hover:text-canvas/60">{m.status}</span>
+              </div>
+              <h3 className="mt-8 font-display text-2xl tracking-editorial">{m.title}</h3>
+            </a>
+          ))}
+        </div>
+      </section>
 
-      {/* Info */}
-      <div className="card">
-        <h2 className="text-lg font-semibold mb-2">🚀 Primeros pasos</h2>
-        <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600">
-          <li>
-            Configura las variables de entorno:{' '}
-            <code className="bg-gray-100 px-1 rounded">cp .env.example .env</code>
+      <section className="col-span-12 mt-4 border-t border-mist pt-8">
+        <h2 className="font-display text-2xl tracking-editorial mb-4">Primeros pasos</h2>
+        <ol className="grid gap-2 text-sm text-ash max-w-xl">
+          <li className="flex gap-4 border-b border-mist pb-2">
+            <span className="text-ink">1</span> Configura `.env` con `cp .env.example .env`.
           </li>
-          <li>
-            Inicializa la base de datos:{' '}
-            <code className="bg-gray-100 px-1 rounded">npm run db:push && npm run db:seed</code>
+          <li className="flex gap-4 border-b border-mist pb-2">
+            <span className="text-ink">2</span> Inicializa la base de datos con `npm run db:push && npm run db:seed`.
           </li>
-          <li>
-            Instala dependencias:{' '}
-            <code className="bg-gray-100 px-1 rounded">npm install</code>
-          </li>
-          <li>
-            Arranca el servidor:{' '}
-            <code className="bg-gray-100 px-1 rounded">npm run dev</code>
+          <li className="flex gap-4 border-b border-mist pb-2">
+            <span className="text-ink">3</span> Instala dependencias y arranca con `npm run dev`.
           </li>
         </ol>
-      </div>
-    </div>
-  );
-}
-
-function StatusCard({
-  emoji,
-  title,
-  status,
-  statusColor,
-}: {
-  emoji: string;
-  title: string;
-  status: string;
-  statusColor: string;
-}) {
-  return (
-    <div className="card hover:shadow-md transition-shadow">
-      <div className="text-2xl mb-2">{emoji}</div>
-      <h3 className="font-medium text-gray-900">{title}</h3>
-      <span className={`inline-block mt-2 text-xs px-2 py-1 rounded-full font-medium ${statusColor}`}>
-        {status}
-      </span>
+      </section>
     </div>
   );
 }

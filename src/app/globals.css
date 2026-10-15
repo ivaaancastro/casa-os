@@ -3,37 +3,74 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-canvas: #FFFFFF;
+    --color-ink: #0A0A0A;
+    --color-ash: #6B6B6B;
+    --color-mist: #E4E4E4;
+    --color-pearl: #F5F5F5;
+    --color-alarm: #8E2222;
+  }
+
+  * {
+    border-color: var(--color-mist);
+  }
+
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-canvas text-ink antialiased font-ui;
+    background: var(--color-canvas);
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-editorial;
+  }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer components {
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-4;
+    @apply bg-canvas border border-mist px-6 py-6;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium border border-transparent transition-colors duration-200 ease-edit disabled:opacity-40 disabled:cursor-not-allowed rounded-none;
   }
 
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500;
+    @apply btn bg-ink text-canvas hover:bg-black;
   }
 
   .btn-secondary {
-    @apply btn bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500;
+    @apply btn bg-canvas text-ink border-ink hover:bg-ink hover:text-canvas;
   }
 
   .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+    @apply btn bg-canvas text-alarm border-alarm hover:bg-alarm hover:text-canvas;
   }
 
   .input {
-    @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+    @apply w-full px-3 py-2.5 text-sm text-ink bg-canvas border border-mist placeholder-ash focus:border-ink focus:outline-none rounded-none;
   }
 
   .label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+    @apply block text-xs text-ash mb-1 tracking-wide;
   }
 }
+
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-rise { animation: fade-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }

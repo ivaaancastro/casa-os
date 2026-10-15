@@ -47,3 +47,7 @@ yarn-error.log*
 # Misc
 .turbo/
 .vercel
+
+# agent skill installs (local only)
+.agents/
+skills-lock.json

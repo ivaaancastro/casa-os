@@ -27,10 +27,10 @@ export function NotesList({
   return (
     <>
       {/* Header con busqueda y crear */}
-      <div className="p-3 border-b border-gray-200 space-y-2">
+      <div className="p-3 border-b border-mist space-y-2">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
-            <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-ash absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -38,12 +38,12 @@ export function NotesList({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Buscar"
-              className="w-full pl-9 pr-3 py-1.5 text-sm rounded-lg border border-gray-200 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="w-full pl-9 pr-3 py-1.5 text-sm rounded-none border border-mist focus:border-ink focus:outline-none focus:ring-1 focus:ring-brand-500"
             />
           </div>
           <button
             onClick={onCreateNote}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-1.5 rounded-none hover:bg-pearl text-ash hover:text-gray-700 transition-colors"
             aria-label="Nueva nota"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@ export function NotesList({
                 onClick={() => onFolderChange(f)}
                 className={`
                   px-2 py-1 rounded text-xs font-medium whitespace-nowrap transition-colors
-                  ${notes.length > 0 ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-400'}
+                  ${notes.length > 0 ? 'text-ash hover:bg-pearl' : 'text-ash'}
                 `}
               >
                 {f === 'ALL' ? 'Todas' : f === 'SHOPPING' ? 'Compra' : f === 'GENERAL' ? 'General' : 'Pendientes'}
@@ -74,7 +74,7 @@ export function NotesList({
       {/* Lista de notas */}
       <div className="flex-1 overflow-y-auto">
         {notes.length === 0 ? (
-          <div className="p-8 text-center text-gray-400 text-sm">
+          <div className="p-8 text-center text-ash text-sm">
             {searchQuery ? 'Sin resultados' : 'No hay notas'}
           </div>
         ) : (
