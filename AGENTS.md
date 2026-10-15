@@ -127,6 +127,10 @@ test(devices): añadir tests del escáner
 > **REGLA ABSOLUTA: NUNCA se commitea ni se pushea directamente a `main`.**
 > Todo el trabajo se hace en ramas (`feat/*` o `fix/*`) con PR.
 
+> **REGLA ABSOLUTA: Solo UNA rama de feature activa a la vez.**
+> Antes de crear una nueva rama, verificar que no haya PRs abiertos.
+> Si hay un PR abierto, mergearlo o cerrarlo primero.
+
 ### Paso 1 — Crear carpeta de spec
 
 Cada feature/fix tiene su carpeta en `specs/` con nombre kebab-case:

@@ -2,7 +2,16 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import { TextStyle } from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
+import TextAlign from '@tiptap/extension-text-align';
+import Highlight from '@tiptap/extension-highlight';
+import Placeholder from '@tiptap/extension-placeholder';
 import type { Note } from './NotesLayout';
+import { Toolbar } from './Toolbar';
 
 interface NoteEditorProps {
   note: Note | null;
@@ -17,7 +26,6 @@ type SaveState = 'saved' | 'saving' | 'idle';
 export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, onBack }: NoteEditorProps) {
   const router = useRouter();
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
   const [completed, setCompleted] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [error, setError] = useState('');
@@ -26,19 +34,50 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isNewNote = note?.id.startsWith('temp-') ?? false;
 
-  // Cargar nota seleccionada
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
+      Underline,
+      TextStyle,
+      Color,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Highlight.configure({
+        multicolor: true,
+      }),
+      Placeholder.configure({
+        placeholder: 'Escribe aqui...',
+      }),
+    ],
+    content: note?.content ?? '',
+    onUpdate: ({ editor }) => {
+      if (!note || isNewNote) return;
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      setSaveState('saving');
+      debounceRef.current = setTimeout(() => {
+        saveNote(editor.getHTML());
+      }, 500);
+    },
+  });
+
   useEffect(() => {
     if (note) {
       setTitle(note.title);
-      setContent(note.content);
       setCompleted(note.completed);
       setSaveState('idle');
       setError('');
+      if (editor && note.content) {
+        editor.commands.setContent(note.content);
+      }
     }
-  }, [note]);
+  }, [note, editor]);
 
-  // Auto-guardado con debounce
-  const saveNote = useCallback(async () => {
+  const saveNote = useCallback(async (content: string) => {
     if (!note || isNewNote) return;
 
     setSaveState('saving');
@@ -62,17 +101,8 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
       setError('Error de conexion');
       setSaveState('idle');
     }
-  }, [note, title, content, completed, isNewNote, router]);
+  }, [note, title, completed, isNewNote, router]);
 
-  const handleChange = useCallback(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    setSaveState('saving');
-    debounceRef.current = setTimeout(() => {
-      saveNote();
-    }, 500);
-  }, [saveNote]);
-
-  // Crear nota nueva
   useEffect(() => {
     if (isNewNote && note) {
       const noteType = note.type;
@@ -97,14 +127,12 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
     }
   }, [isNewNote, note, router]);
 
-  // Enfocar titulo en nota nueva
   useEffect(() => {
     if (isNewNote && titleRef.current) {
       titleRef.current.focus();
     }
   }, [isNewNote]);
 
-  // Limpiar debounce al desmontar
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -113,7 +141,6 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
 
   async function handleDelete() {
     if (!note) return;
-
     if (!showConfirmDelete) {
       setShowConfirmDelete(true);
       return;
@@ -135,6 +162,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
     const newCompleted = !completed;
     setCompleted(newCompleted);
     try {
+      const content = editor?.getHTML() ?? '';
       const res = await fetch(`/api/notes/${note.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -150,9 +178,6 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
     return (
       <div className="flex-1 flex items-center justify-center text-gray-400">
         <div className="text-center">
-          <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
           <p className="text-sm">Selecciona una nota o crea una nueva</p>
         </div>
       </div>
@@ -161,7 +186,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header del editor */}
+      {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-gray-200">
         <button
           onClick={onBack}
@@ -174,20 +199,13 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
         </button>
 
         <div className="flex items-center gap-2 ml-auto">
-          {saveState === 'saving' && (
-            <span className="text-xs text-gray-400">Guardando...</span>
-          )}
-          {saveState === 'saved' && (
-            <span className="text-xs text-gray-400">Guardado</span>
-          )}
+          {saveState === 'saving' && <span className="text-xs text-gray-400">Guardando...</span>}
+          {saveState === 'saved' && <span className="text-xs text-gray-400">Guardado</span>}
 
           {(note.type === 'SHOPPING' || note.type === 'TODO') && (
             <button
               onClick={toggleCompleted}
-              className={`
-                p-1.5 rounded-lg transition-colors
-                ${completed ? 'bg-brand-50 text-brand-600' : 'hover:bg-gray-100 text-gray-400'}
-              `}
+              className={`p-1.5 rounded-lg transition-colors ${completed ? 'bg-brand-50 text-brand-600' : 'hover:bg-gray-100 text-gray-400'}`}
               aria-label={completed ? 'Marcar como pendiente' : 'Marcar como completada'}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -198,10 +216,7 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
 
           <button
             onClick={handleDelete}
-            className={`
-              p-1.5 rounded-lg transition-colors
-              ${showConfirmDelete ? 'bg-red-50 text-red-600' : 'hover:bg-gray-100 text-gray-400 hover:text-red-600'}
-            `}
+            className={`p-1.5 rounded-lg transition-colors ${showConfirmDelete ? 'bg-red-50 text-red-600' : 'hover:bg-gray-100 text-gray-400 hover:text-red-600'}`}
             aria-label="Eliminar nota"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,65 +226,83 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
         </div>
       </div>
 
-      {/* Confirmacion de eliminar */}
+      {/* Confirmacion eliminar */}
       {showConfirmDelete && (
         <div className="p-2 bg-red-50 border-b border-red-100 flex items-center justify-between">
           <span className="text-xs text-red-700">Eliminar esta nota?</span>
           <div className="flex gap-2">
-            <button
-              onClick={() => setShowConfirmDelete(false)}
-              className="text-xs text-gray-600 hover:text-gray-800"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleDelete}
-              className="text-xs text-red-600 font-medium hover:text-red-800"
-            >
-              Eliminar
-            </button>
+            <button onClick={() => setShowConfirmDelete(false)} className="text-xs text-gray-600 hover:text-gray-800">Cancelar</button>
+            <button onClick={handleDelete} className="text-xs text-red-600 font-medium hover:text-red-800">Eliminar</button>
           </div>
         </div>
       )}
 
-      {/* Error */}
       {error && (
-        <div className="p-2 bg-red-50 border-b border-red-100 text-xs text-red-700">
-          {error}
-        </div>
+        <div className="p-2 bg-red-50 border-b border-red-100 text-xs text-red-700">{error}</div>
       )}
 
       {/* Editor */}
-      <div className="flex-1 overflow-y-auto p-4 lg:p-6">
-        <input
-          ref={titleRef}
-          type="text"
-          value={title}
-          onChange={(e) => { setTitle(e.target.value); handleChange(); }}
-          placeholder="Titulo"
-          className="w-full text-2xl font-bold text-gray-900 placeholder-gray-300 border-none outline-none bg-transparent mb-2"
-        />
-        <textarea
-          value={content}
-          onChange={(e) => { setContent(e.target.value); handleChange(); }}
-          placeholder="Escribe aqui..."
-          className="w-full min-h-[300px] text-sm text-gray-700 placeholder-gray-300 border-none outline-none bg-transparent resize-none leading-relaxed"
-        />
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto py-4 px-4 lg:px-6">
+          <input
+            ref={titleRef}
+            type="text"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (debounceRef.current) clearTimeout(debounceRef.current);
+              setSaveState('saving');
+              debounceRef.current = setTimeout(() => {
+                saveNote(editor?.getHTML() ?? '');
+              }, 500);
+            }}
+            placeholder="Titulo"
+            className="w-full text-2xl font-bold text-gray-900 placeholder-gray-300 border-none outline-none bg-transparent mb-4"
+          />
+
+          <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <Toolbar editor={editor} />
+            <div className="p-3">
+              <EditorContent
+                editor={editor}
+                className="prose prose-sm max-w-none focus:outline-none min-h-[300px] text-gray-700 leading-relaxed"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Footer con info */}
+      {/* Footer */}
       <div className="p-3 border-t border-gray-200 text-xs text-gray-400 flex items-center justify-between">
-        <span>
-          Creada por {note.author.name || 'Desconocido'}
-        </span>
-        <span>
-          {new Date(note.createdAt).toLocaleDateString('es-ES', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          })}
-        </span>
+        <span>Creada por {note.author.name || 'Desconocido'}</span>
+        <span>{new Date(note.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
       </div>
+
+      <style jsx>{`
+        .ProseMirror {
+          outline: none;
+          min-height: 300px;
+        }
+        .ProseMirror p.is-editor-empty:first-child::before {
+          content: attr(data-placeholder);
+          float: left;
+          color: #9ca3af;
+          pointer-events: none;
+          height: 0;
+        }
+        .ProseMirror h1 { font-size: 1.875rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; line-height: 1.2; }
+        .ProseMirror h2 { font-size: 1.5rem; font-weight: 600; margin-top: 0.875rem; margin-bottom: 0.375rem; line-height: 1.3; }
+        .ProseMirror h3 { font-size: 1.25rem; font-weight: 600; margin-top: 0.75rem; margin-bottom: 0.25rem; line-height: 1.4; }
+        .ProseMirror ul { list-style: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
+        .ProseMirror ol { list-style: decimal; padding-left: 1.5rem; margin: 0.5rem 0; }
+        .ProseMirror li { margin: 0.25rem 0; }
+        .ProseMirror blockquote { border-left: 3px solid #d1d5db; padding-left: 1rem; margin: 0.75rem 0; color: #6b7280; font-style: italic; }
+        .ProseMirror code { background-color: #f3f4f6; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.875em; font-family: monospace; }
+        .ProseMirror pre { background-color: #1f2937; color: #f9fafb; padding: 0.75rem 1rem; border-radius: 0.5rem; overflow-x: auto; margin: 0.75rem 0; }
+        .ProseMirror pre code { background-color: transparent; padding: 0; color: inherit; font-size: 0.875rem; }
+        .ProseMirror hr { border: none; border-top: 1px solid #e5e7eb; margin: 1rem 0; }
+        .ProseMirror mark { border-radius: 0.125rem; padding: 0 0.125rem; }
+      `}</style>
     </div>
   );
 }
