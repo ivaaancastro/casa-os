@@ -31,6 +31,10 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 | 2026-10-14 | Autoalojado en casa | Privacidad, cero coste, control total |
 | 2026-10-14 | Cloudflare Tunnel para acceso externo | Sin abrir puertos, HTTPS gratis |
 | 2026-10-14 | TypeScript strict | Evitar bugs, mejor DX |
+| 2026-10-14 | Enums como strings | SQLite no soporta enums en Prisma |
+| 2026-10-15 | CI obligatorio en main | Protección de rama: quality, test, build deben pasar |
+| 2026-10-15 | Tests por spec | Si tests no pasan, no se aprueba el spec |
+| 2026-10-15 | Doble check | Agente verifica todo antes de reportar completado |
 
 ## Preferencias del usuario
 
@@ -46,11 +50,12 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 - [x] Estructura base del repositorio
 - [x] Configuración de herramientas (ESLint, TypeScript, Tailwind)
 - [x] Esquema inicial de base de datos
+- [x] Autenticación con NextAuth + bcrypt
+- [x] Layout principal con sidebar responsive
+- [x] CI con protección de rama (quality, test, build)
+- [x] Sistema de specs + doble check
 
 ### 🚧 En desarrollo
-- [ ] Autenticación con NextAuth
-- [ ] Layout principal con sidebar
-- [ ] Dashboard
 - [ ] CRUD de notas (lista de la compra)
 
 ### 📋 Próximos hitos
