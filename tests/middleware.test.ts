@@ -2,43 +2,51 @@ import { describe, it, expect } from 'vitest';
 
 /**
  * Tests del middleware de NextAuth.
- * 
- * Nota: El middleware real usa next-auth/middleware que requiere
- * un entorno de Next.js completo. Estos tests validan la lógica
- * de protección de rutas de forma aislada.
+ *
+ * Valida que todas las rutas esten protegidas excepto /auth/login.
  */
 
+const PUBLIC_PATTERNS = [
+  '/auth/login',
+  '/api/auth/callback/credentials',
+  '/api/auth/session',
+  '/api/auth/csrf',
+  '/_next/static/chunk.js',
+  '/favicon.ico',
+];
+
 const PROTECTED_PATTERNS = [
+  '/',
   '/devices',
   '/devices/',
   '/devices/123',
   '/notas',
   '/notas/',
-  '/api/devices',
+  '/notas/456',
   '/api/notes',
-];
-
-const PUBLIC_PATTERNS = [
-  '/auth/login',
-  '/',
-  '/_next/static/chunk.js',
+  '/api/notes/123',
+  '/api/devices',
 ];
 
 function isProtectedPath(pathname: string): boolean {
-  // Ignorar archivos estáticos y rutas de API auth
-  if (pathname.startsWith('/_next/') || pathname.startsWith('/api/auth/')) {
+  // Ignorar archivos estaticos y rutas de API auth
+  if (pathname.startsWith('/_next/') || pathname === '/favicon.ico') {
     return false;
   }
 
-  // Rutas protegidas
-  if (pathname.startsWith('/devices')) return true;
-  if (pathname.startsWith('/notas')) return true;
-  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/')) return true;
+  // Ignorar rutas de auth
+  if (pathname.startsWith('/auth/login')) return false;
+  if (pathname.startsWith('/api/auth/')) return false;
 
-  return false;
+  // Todo lo demas esta protegido
+  return true;
 }
 
-describe('protección de rutas', () => {
+describe('proteccion de rutas', () => {
+  it('debe proteger la raiz /', () => {
+    expect(isProtectedPath('/')).toBe(true);
+  });
+
   it('debe proteger /devices y subrutas', () => {
     expect(isProtectedPath('/devices')).toBe(true);
     expect(isProtectedPath('/devices/')).toBe(true);
@@ -52,24 +60,26 @@ describe('protección de rutas', () => {
   });
 
   it('debe proteger rutas de API (excepto auth)', () => {
-    expect(isProtectedPath('/api/devices')).toBe(true);
     expect(isProtectedPath('/api/notes')).toBe(true);
+    expect(isProtectedPath('/api/notes/123')).toBe(true);
+    expect(isProtectedPath('/api/devices')).toBe(true);
   });
 
   it('NO debe proteger /auth/login', () => {
     expect(isProtectedPath('/auth/login')).toBe(false);
   });
 
-  it('NO debe proteger archivos estáticos', () => {
+  it('NO debe proteger archivos estaticos', () => {
     expect(isProtectedPath('/_next/static/chunk.js')).toBe(false);
+  });
+
+  it('NO debe proteger favicon', () => {
+    expect(isProtectedPath('/favicon.ico')).toBe(false);
   });
 
   it('NO debe proteger la API de auth', () => {
     expect(isProtectedPath('/api/auth/callback/credentials')).toBe(false);
     expect(isProtectedPath('/api/auth/session')).toBe(false);
-  });
-
-  it('NO debe proteger la raíz /', () => {
-    expect(isProtectedPath('/')).toBe(false);
+    expect(isProtectedPath('/api/auth/csrf')).toBe(false);
   });
 });
