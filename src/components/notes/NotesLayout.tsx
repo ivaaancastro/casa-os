@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { NotesSidebar } from './NotesSidebar';
 import { NotesList } from './NotesList';
@@ -25,31 +25,32 @@ interface NotesLayoutProps {
 
 type FolderFilter = 'ALL' | 'SHOPPING' | 'GENERAL' | 'TODO';
 
-function isDraftId(id: string): boolean {
-  return id.startsWith('draft-') || id.startsWith('temp-');
-}
-
 export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayoutProps) {
   const router = useRouter();
+  const [notesState, setNotesState] = useState<Note[]>(notes);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [activeFolder, setActiveFolder] = useState<FolderFilter>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-  const [mobileView, setMobileView] = useState<'list' | 'editor'>('list');
   const [draftNote, setDraftNote] = useState<Note | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const selectedRealNote = selectedNoteId ? notes.find((n) => n.id === selectedNoteId) ?? null : null;
-  const editorNote = selectedRealNote ?? (draftNote && selectedNoteId === draftNote.id ? draftNote : null);
+  // Adopta el listado del servidor cuando cambia (p.ej. tras refresh)
+  useEffect(() => {
+    setNotesState(notes);
+  }, [notes]);
 
-  const filteredNotes = notes
+  const selectedRealNote = selectedNoteId
+    ? notesState.find((n) => n.id === selectedNoteId) ?? null
+    : null;
+  const editorNote =
+    selectedRealNote ?? (draftNote && selectedNoteId === draftNote.id ? draftNote : null);
+
+  const filteredNotes = notesState
     .filter((note) => {
       if (activeFolder !== 'ALL' && note.type !== activeFolder) return false;
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        return (
-          note.title.toLowerCase().includes(q) ||
-          note.content.toLowerCase().includes(q)
-        );
+        return note.title.toLowerCase().includes(q) || note.content.toLowerCase().includes(q);
       }
       return true;
     })
@@ -58,7 +59,6 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
   function handleSelectNote(id: string) {
     setDraftNote(null);
     setSelectedNoteId(id);
-    setMobileView('editor');
     setSidebarOpen(false);
   }
 
@@ -66,7 +66,6 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
     setActiveFolder(folder);
     setDraftNote(null);
     setSelectedNoteId(null);
-    setMobileView('list');
   }
 
   function handleCreateNote() {
@@ -83,80 +82,86 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
     };
     setDraftNote(draft);
     setSelectedNoteId(draft.id);
-    setMobileView('editor');
     setSidebarOpen(false);
   }
 
-  const handleCreated = useCallback((realId: string) => {
-    setDraftNote(null);
-    setSelectedNoteId(realId);
-    router.refresh();
-  }, [router]);
+  const handleCreated = useCallback(
+    (created: Note) => {
+      setDraftNote(null);
+      setNotesState((prev) => [created, ...prev.filter((n) => n.id !== created.id)]);
+      setSelectedNoteId(created.id);
+      router.refresh();
+    },
+    [router]
+  );
+
+  const handleNoteUpdated = useCallback(
+    (id: string, patch: { title?: string; content?: string }) => {
+      setNotesState((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, ...patch, updatedAt: new Date() } : n))
+      );
+    },
+    []
+  );
 
   function handleDeleted() {
     setDraftNote(null);
     setSelectedNoteId(null);
-    setMobileView('list');
     router.refresh();
   }
 
   return (
-    <div className="flex h-[calc(100vh-9.5rem)] -m-4 lg:-m-8">
-      {/* Mobile overlay */}
+    <div className="relative flex min-h-0 flex-1 overflow-hidden">
+      {/* Overlay móvil */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 lg:hidden"
+          className="absolute inset-0 z-40 bg-ink/10 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar de notas */}
       <aside
         className={`
-          fixed top-0 left-0 z-40 h-full w-72 bg-canvas border-r border-mist
-          transform transition-transform duration-300 ease-edit
-          lg:translate-x-0 lg:static lg:z-auto
+          absolute inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-mist bg-canvas
+          transition-transform duration-300 ease-edit
+          lg:static lg:z-auto lg:translate-x-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-mist px-4 py-4">
-            <span className="font-display text-xl tracking-editorial">Notas</span>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-ash hover:text-ink"
-              aria-label="Cerrar menú"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+        <div className="flex items-center justify-between border-b border-mist px-4 py-3">
+          <span className="font-display text-2xl leading-none tracking-editorial">Notas</span>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="text-ash hover:text-ink lg:hidden"
+            aria-label="Cerrar menú"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
-          <div className="flex-1 overflow-y-auto">
-            <NotesSidebar
-              activeFolder={activeFolder}
-              onFolderChange={handleFolderChange}
-              notes={notes}
-            />
-            <NotesList
-              notes={filteredNotes}
-              selectedNoteId={selectedNoteId}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              onSelectNote={handleSelectNote}
-              onCreateNote={handleCreateNote}
-              onFolderChange={handleFolderChange}
-              isMobile={true}
-            />
-          </div>
+        <div className="flex min-h-0 flex-1 flex-col">
+          <NotesSidebar
+            activeFolder={activeFolder}
+            onFolderChange={handleFolderChange}
+            notes={notesState}
+          />
+          <NotesList
+            notes={filteredNotes}
+            selectedNoteId={selectedNoteId}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onSelectNote={handleSelectNote}
+            onCreateNote={handleCreateNote}
+          />
         </div>
       </aside>
 
       {/* Editor */}
-      <main className="flex-1 flex flex-col min-w-0">
-        {/* Mobile header */}
-        <div className="lg:hidden flex items-center gap-3 border-b border-mist px-4 py-3">
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <div className="flex items-center gap-3 border-b border-mist px-3 py-2 lg:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-ink hover:text-ash"
@@ -166,24 +171,19 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <span className="text-sm text-ash">
-            {editorNote ? (editorNote.title || 'Sin título') : 'Selecciona una nota'}
+          <span className="truncate text-sm text-ash">
+            {editorNote ? editorNote.title || 'Sin título' : 'Selecciona una nota'}
           </span>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          <NoteEditor
-            note={editorNote}
-            currentUserId={currentUserId}
-            currentUserRole={currentUserRole}
-            onDeleted={handleDeleted}
-            onBack={() => {
-              setMobileView('list');
-              setSidebarOpen(true);
-            }}
-            onCreated={handleCreated}
-          />
-        </div>
+        <NoteEditor
+          note={editorNote}
+          currentUserId={currentUserId}
+          currentUserRole={currentUserRole}
+          onDeleted={handleDeleted}
+          onCreated={handleCreated}
+          onNoteUpdated={handleNoteUpdated}
+        />
       </main>
     </div>
   );

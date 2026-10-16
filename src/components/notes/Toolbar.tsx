@@ -46,7 +46,9 @@ export function Toolbar({ editor }: ToolbarProps) {
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (colorRef.current && !colorRef.current.contains(e.target as Node)) setShowColors(false);
-      if (highlightRef.current && !highlightRef.current.contains(e.target as Node)) setShowHighlights(false);
+      if (highlightRef.current && !highlightRef.current.contains(e.target as Node)) {
+        setShowHighlights(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -56,30 +58,44 @@ export function Toolbar({ editor }: ToolbarProps) {
 
   const currentFont = editor.getAttributes('textStyle').fontFamily ?? FONT_FAMILIES[0].value;
   const currentSize = editor.getAttributes('textStyle').fontSize ?? '16px';
+  const currentLineHeight =
+    editor.getAttributes('paragraph').lineHeight ??
+    editor.getAttributes('textStyle').lineHeight ??
+    '1.7';
 
-  const btn = (onClick: () => void, active?: boolean, disabled?: boolean, title?: string, children?: React.ReactNode) => (
+  const btn = (
+    onClick: () => void,
+    active?: boolean,
+    disabled?: boolean,
+    title?: string,
+    children?: React.ReactNode
+  ) => (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`inline-flex h-8 min-w-[28px] items-center justify-center px-2 transition-colors ${
+      className={`inline-flex h-8 min-w-[30px] items-center justify-center px-2 transition-colors ${
         active ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
-      } ${disabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+      } ${disabled ? 'cursor-not-allowed opacity-30' : ''}`}
     >
       {children}
     </button>
   );
 
-  const divider = () => <div className="w-px h-5 bg-mist mx-1" />;
+  const divider = () => <div className="mx-1 h-5 w-px bg-mist" />;
+
+  const selectClass =
+    'h-8 border border-mist bg-canvas px-2 text-sm text-ink focus:border-ink focus:outline-none';
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-mist px-3 py-2 bg-canvas">
-      {/* Fuente y tamano */}
+    <div className="relative flex flex-wrap items-center gap-1 border-b border-mist bg-canvas px-3 py-2">
+      {/* Fuente / tamaño / línea */}
       <select
         id="font-family"
         name="font-family"
-        className="h-8 border border-mist px-2 text-sm bg-canvas text-ink focus:border-ink focus:outline-none"
+        aria-label="Fuente"
+        className={selectClass}
         value={currentFont}
         onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
       >
@@ -92,47 +108,54 @@ export function Toolbar({ editor }: ToolbarProps) {
       <select
         id="font-size"
         name="font-size"
-        className="h-8 w-14 border border-mist px-2 text-sm bg-canvas text-ink focus:border-ink focus:outline-none"
-        value={parseInt(currentSize)}
+        aria-label="Tamaño"
+        className={`${selectClass} w-16`}
+        value={parseInt(currentSize, 10) || 16}
         onChange={(e) => editor.chain().focus().setFontSize(`${e.target.value}px`).run()}
       >
         {FONT_SIZES.map((s) => (
-          <option key={s} value={s}>{s}</option>
+          <option key={s} value={s}>
+            {s}
+          </option>
         ))}
       </select>
       <select
         id="line-height"
         name="line-height"
-        className="h-8 w-14 border border-mist px-2 text-xs text-ash bg-canvas focus:border-ink focus:outline-none"
+        aria-label="Altura de línea"
+        title="Altura de línea"
+        className={`${selectClass} w-16 text-xs text-ash`}
+        value={currentLineHeight}
         onChange={(e) => editor.chain().focus().setLineHeight(e.target.value).run()}
-        title="Altura de linea"
       >
         {LINE_HEIGHTS.map((l) => (
-          <option key={l.value} value={l.value}>{l.label}</option>
+          <option key={l.value} value={l.value}>
+            {l.label}
+          </option>
         ))}
       </select>
 
       {divider()}
 
-      {/* Estilos basicos */}
-      {btn(() => editor.chain().focus().toggleBold().run(), editor.isActive('bold'), false, 'Negrita', <span className="font-bold text-sm">B</span>)}
-      {btn(() => editor.chain().focus().toggleItalic().run(), editor.isActive('italic'), false, 'Cursiva', <span className="italic text-sm">I</span>)}
-      {btn(() => editor.chain().focus().toggleUnderline().run(), editor.isActive('underline'), false, 'Subrayado', <span className="underline text-sm">U</span>)}
-      {btn(() => editor.chain().focus().toggleStrike().run(), editor.isActive('strike'), false, 'Tachado', <span className="line-through text-sm">S</span>)}
+      {/* Estilos básicos */}
+      {btn(() => editor.chain().focus().toggleBold().run(), editor.isActive('bold'), false, 'Negrita', <span className="text-sm font-bold">B</span>)}
+      {btn(() => editor.chain().focus().toggleItalic().run(), editor.isActive('italic'), false, 'Cursiva', <span className="text-sm italic">I</span>)}
+      {btn(() => editor.chain().focus().toggleUnderline().run(), editor.isActive('underline'), false, 'Subrayado', <span className="text-sm underline">U</span>)}
+      {btn(() => editor.chain().focus().toggleStrike().run(), editor.isActive('strike'), false, 'Tachado', <span className="text-sm line-through">S</span>)}
 
       {divider()}
 
       {/* Listas */}
-      {btn(() => editor.chain().focus().toggleBulletList().run(), editor.isActive('bulletList'), false, 'Lista bullets', (
-        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
+      {btn(() => editor.chain().focus().toggleBulletList().run(), editor.isActive('bulletList'), false, 'Lista con viñetas', (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></svg>
       ))}
       {btn(() => editor.chain().focus().toggleOrderedList().run(), editor.isActive('orderedList'), false, 'Lista numerada', (
-        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 20l4-16m2 16l4-16M6 9h14M4 19h14" /></svg>
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 6h11M10 12h11M10 18h11M4 6h1v4M4 10h2M6 18H4v-1a1 1 0 011-1h0a1 1 0 011 1v1" /></svg>
       ))}
 
       {divider()}
 
-      {/* Alineacion */}
+      {/* Alineación */}
       {btn(() => editor.chain().focus().setTextAlign('left').run(), editor.isActive({ textAlign: 'left' }), false, 'Alinear izquierda', (
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h10M4 18h14" /></svg>
       ))}
@@ -145,96 +168,135 @@ export function Toolbar({ editor }: ToolbarProps) {
 
       {divider()}
 
-      {/* Color texto */}
-      <div className="relative" ref={colorRef}>
+      {/* Color de texto */}
+      <div ref={colorRef}>
         <button
           type="button"
           title="Color del texto"
+          aria-label="Color del texto"
+          aria-expanded={showColors}
           onClick={() => {
             setShowColors((v) => !v);
             setShowHighlights(false);
           }}
-          className="inline-flex h-8 w-8 items-center justify-center border border-mist text-sm transition-colors hover:bg-pearl"
+          className={`inline-flex h-8 items-center gap-1 px-2 transition-colors ${
+            showColors ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
+          }`}
         >
-          <span style={{ color: editor.getAttributes('textStyle').color || '#0A0A0A' }}>A</span>
+          <span className="text-sm font-medium" style={{ color: showColors ? undefined : editor.getAttributes('textStyle').color || '#0A0A0A' }}>
+            A
+          </span>
+          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </button>
+
         {showColors && (
-          <div className="absolute top-full left-0 z-50 mt-2 grid grid-cols-6 gap-1 border border-mist bg-canvas p-3 shadow-focus">
-            {TEXT_COLORS.map((c) => (
+          <div className="absolute inset-x-0 top-full z-50 border-b border-mist bg-canvas px-3 py-3">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[10px] tracking-wider2 text-ash">COLOR DEL TEXTO</span>
               <button
-                key={c}
                 type="button"
-                title={c}
                 onClick={() => {
-                  editor.chain().focus().setColor(c).run();
+                  editor.chain().focus().unsetColor().run();
                   setShowColors(false);
                 }}
-                className="h-6 w-6 border border-mist transition-transform hover:scale-110"
-                style={{ backgroundColor: c }}
-              />
-            ))}
+                className="text-xs text-ash hover:text-ink"
+              >
+                Restablecer
+              </button>
+            </div>
+            <div className="grid grid-cols-12 gap-1.5">
+              {TEXT_COLORS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  title={c}
+                  aria-label={`Color ${c}`}
+                  onClick={() => {
+                    editor.chain().focus().setColor(c).run();
+                    setShowColors(false);
+                  }}
+                  className="h-6 w-full border border-mist transition-transform hover:scale-110"
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Highlight */}
-      <div className="relative" ref={highlightRef}>
+      {/* Resaltado */}
+      <div ref={highlightRef}>
         <button
           type="button"
           title="Resaltado"
+          aria-label="Resaltado"
+          aria-expanded={showHighlights}
           onClick={() => {
             setShowHighlights((v) => !v);
             setShowColors(false);
           }}
-          className="inline-flex h-8 w-8 items-center justify-center border border-mist text-sm transition-colors hover:bg-pearl"
+          className={`inline-flex h-8 items-center gap-1 px-2 transition-colors ${
+            showHighlights ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
+          }`}
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
           </svg>
+          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </button>
+
         {showHighlights && (
-          <div className="absolute top-full left-0 z-50 mt-2 flex gap-2 border border-mist bg-canvas p-3 shadow-focus">
-            {HIGHLIGHT_COLORS.map((c) => (
+          <div className="absolute inset-x-0 top-full z-50 border-b border-mist bg-canvas px-3 py-3">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[10px] tracking-wider2 text-ash">RESALTADO</span>
               <button
-                key={c}
                 type="button"
-                title={c}
                 onClick={() => {
-                  editor.chain().focus().toggleHighlight({ color: c }).run();
+                  editor.chain().focus().unsetHighlight().run();
                   setShowHighlights(false);
                 }}
-                className="h-8 w-8 border border-mist transition-transform hover:scale-110"
-                style={{ backgroundColor: c }}
-              />
-            ))}
-            <button
-              type="button"
-              title="Quitar resaltado"
-              onClick={() => {
-                editor.chain().focus().unsetHighlight().run();
-                setShowHighlights(false);
-              }}
-              className="h-8 border border-ink px-2 text-xs text-ink transition-colors hover:bg-ink hover:text-canvas"
-            >
-              Quitar
-            </button>
+                className="text-xs text-ash hover:text-ink"
+              >
+                Quitar
+              </button>
+            </div>
+            <div className="grid grid-cols-12 gap-1.5">
+              {HIGHLIGHT_COLORS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  title={c}
+                  aria-label={`Resaltado ${c}`}
+                  onClick={() => {
+                    editor.chain().focus().toggleHighlight({ color: c }).run();
+                    setShowHighlights(false);
+                  }}
+                  className="h-6 w-full border border-mist transition-transform hover:scale-110"
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
 
       {divider()}
 
-      {/* quote + code */}
+      {/* Cita + código */}
       {btn(() => editor.chain().focus().toggleBlockquote().run(), editor.isActive('blockquote'), false, 'Cita', (
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h8m-8 4h8M10 20V4M16 20V4" /></svg>
       ))}
-      {btn(() => editor.chain().focus().toggleCode().run(), editor.isActive('code'), false, 'Codigo en linea', (
-        <span className="font-mono text-xs">&lt;&gt;</span>
+      {btn(() => editor.chain().focus().toggleCode().run(), editor.isActive('code'), false, 'Código en línea', (
+        <span className="font-mono text-xs">&lt;/&gt;</span>
       ))}
 
       {divider()}
 
-      {/* Undo/redo */}
+      {/* Deshacer / rehacer */}
       {btn(() => editor.chain().focus().undo().run(), false, !editor.can().undo(), 'Deshacer', (
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h10a5 5 0 015 5v2M3 10l6-6m-6 6l6 6" /></svg>
       ))}
@@ -244,7 +306,7 @@ export function Toolbar({ editor }: ToolbarProps) {
 
       {divider()}
 
-      {btn(() => editor.chain().focus().setHorizontalRule().run(), false, false, 'Linea horizontal', (
+      {btn(() => editor.chain().focus().setHorizontalRule().run(), false, false, 'Línea horizontal', (
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 12h16" /></svg>
       ))}
     </div>

@@ -25,7 +25,7 @@
     @apply font-display tracking-editorial;
   }
 
-  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  :where(a, button, input, textarea, select):focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
@@ -66,6 +66,11 @@
 
   .label {
     @apply block text-xs text-ash mb-1 tracking-wide;
+  }
+
+  /* Anula el anillo de foco global para elementos que no lo necesitan (p.ej. el titulo editorial) */
+  .no-focus-outline:focus-visible {
+    outline: none !important;
   }
 }
 
