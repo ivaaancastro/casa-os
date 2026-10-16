@@ -1,6 +1,7 @@
 'use client';
 
 import type { Note } from './NotesLayout';
+import { extractFirstBlockText, removeFirstBlock } from '@/lib/utils/note-html';
 
 interface NoteItemProps {
   note: Note;
@@ -8,10 +9,12 @@ interface NoteItemProps {
   onSelect: () => void;
 }
 
-function extractPreview(html: string): string {
+function extractPreview(html: string, title: string): string {
   if (!html) return '';
-  // Server + client consistent text extraction (strip tags)
-  return html
+  // Si el primer bloque ya es el titulo, no se repite en el preview.
+  const body =
+    title && extractFirstBlockText(html) === title.trim() ? removeFirstBlock(html) : html;
+  return body
     .replace(/<[^>]*>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -32,7 +35,7 @@ function formatDate(dateStr: string): string {
 }
 
 export function NoteItem({ note, isSelected, onSelect }: NoteItemProps) {
-  const preview = extractPreview(note.content).slice(0, 80);
+  const preview = extractPreview(note.content, note.title).slice(0, 80);
   const dateLabel = formatDate(note.createdAt.toISOString());
 
   return (

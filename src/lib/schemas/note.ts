@@ -3,15 +3,20 @@ import { z } from 'zod';
 export const NOTE_TYPES = ['SHOPPING', 'GENERAL', 'TODO'] as const;
 export type NoteType = (typeof NOTE_TYPES)[number];
 
+// Limites amplios: el titulo es la primera linea del contenido (tipo Apple Notas)
+// y el contenido admite formatos ricos (listas, tablas, etc.).
+export const NOTE_TITLE_MAX = 200;
+export const NOTE_CONTENT_MAX = 100000;
+
 export const createNoteSchema = z.object({
   title: z
     .string()
-    .min(3, 'El titulo debe tener al menos 3 caracteres')
-    .max(100, 'El titulo no puede superar 100 caracteres'),
+    .max(NOTE_TITLE_MAX, `El titulo no puede superar ${NOTE_TITLE_MAX} caracteres`)
+    .default(''),
   content: z
     .string()
-    .min(1, 'El contenido no puede estar vacio')
-    .max(2000, 'El contenido no puede superar 2000 caracteres'),
+    .max(NOTE_CONTENT_MAX, `El contenido no puede superar ${NOTE_CONTENT_MAX} caracteres`)
+    .default(''),
   type: z.enum(NOTE_TYPES, {
     errorMap: () => ({ message: 'Tipo debe ser SHOPPING, GENERAL o TODO' }),
   }),
@@ -20,13 +25,11 @@ export const createNoteSchema = z.object({
 export const updateNoteSchema = z.object({
   title: z
     .string()
-    .min(3, 'El titulo debe tener al menos 3 caracteres')
-    .max(100, 'El titulo no puede superar 100 caracteres')
+    .max(NOTE_TITLE_MAX, `El titulo no puede superar ${NOTE_TITLE_MAX} caracteres`)
     .optional(),
   content: z
     .string()
-    .min(1, 'El contenido no puede estar vacio')
-    .max(2000, 'El contenido no puede superar 2000 caracteres')
+    .max(NOTE_CONTENT_MAX, `El contenido no puede superar ${NOTE_CONTENT_MAX} caracteres`)
     .optional(),
   type: z.enum(NOTE_TYPES).optional(),
   completed: z.boolean().optional(),

@@ -2,18 +2,22 @@ import DOMPurify from 'dompurify';
 
 const ALLOWED_TAGS = [
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'p', 'br', 'hr',
+  'p', 'br', 'hr', 'div',
   'strong', 'b', 'em', 'i', 'u', 's', 'strike', 'del',
   'ul', 'ol', 'li',
   'blockquote', 'code', 'pre',
   'a', 'span', 'mark',
+  'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'colgroup', 'col', 'caption',
+  'label', 'input',
   'font',
 ];
 
 const ALLOWED_ATTR = [
   'href', 'target', 'rel',
   'style', 'class',
-  'data-type', 'data-checked',
+  'data-type', 'data-checked', 'data-indent', 'data-list-style', 'data-color',
+  'type', 'checked', 'disabled',
+  'colspan', 'rowspan', 'colwidth',
 ];
 
 const ALLOWED_STYLES = [
@@ -26,6 +30,9 @@ const ALLOWED_STYLES = [
   'font-style',
   'text-decoration',
   'text-align',
+  'margin-left',
+  'width',
+  'min-width',
 ];
 
 export function sanitizeHtml(dirty: string): string {
@@ -48,7 +55,7 @@ export function sanitizeHtml(dirty: string): string {
 export function sanitizeNoteContent(content: string): string {
   const clean = sanitizeHtml(content);
 
-  // Limpiar estilos no permitidos de los spans
+  // Limpiar estilos no permitidos de los elementos con style
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = clean;
 
@@ -68,6 +75,11 @@ export function sanitizeNoteContent(content: string): string {
     } else {
       el.removeAttribute('style');
     }
+  });
+
+  // Solo se permiten checkboxes (listas de tareas); el resto de inputs se elimina
+  tempDiv.querySelectorAll('input').forEach((input) => {
+    if ((input as HTMLInputElement).type !== 'checkbox') input.remove();
   });
 
   return tempDiv.innerHTML;
