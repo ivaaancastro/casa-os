@@ -11,14 +11,30 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
-- Estructura base del proyecto Next.js + TypeScript + Prisma
-- Esquema de base de datos inicial (User, Note, Device, Account, Session)
+- Notas familiares con editor enriquecido (estilo Apple Notas) y carpetas
+- Gestión de usuarios y roles (ADMIN/FAMILY), baja lógica y perfil propio con
+  cambio de contraseña
+- Diseño editorial (Inditex) con tipografías Bodoni Moda + Jost
 - Configuración de Tailwind CSS con paleta de colores personalizada
 - Scripts de utilidad: `scan-network.ts` y `backup-db.ts`
 - CI con GitHub Actions (lint, typecheck, build)
 - Issue templates para bugs y features
 - Skills de OpenCode para desarrollo, despliegue y router
 - Documentación completa: README, AGENTS.md, MEMORY.md
+
+### Changed
+
+- **Base de datos: SQLite → PostgreSQL** (requisito para desplegar en la nube).
+  Añadida migración base `prisma/migrations/0000_init`, PostgreSQL de desarrollo
+  con Docker Compose (`docker compose up -d db`), script de volcado de datos
+  (`db:migrate-data`) y backup con `pg_dump`.
+- `AGENTS.md`, `docs/architecture.md` y ADRs actualizados a PostgreSQL
+  (nuevo ADR 002).
+
+### Fixed
+
+- Login: usar navegación dura tras `signIn` para no adelantarse al `Set-Cookie`
+  de la sesión
 
 ---
 

@@ -20,7 +20,7 @@ Usa esta skill cuando:
 | Framework | Next.js (App Router) | ^14.2 |
 | Lenguaje | TypeScript (strict) | ^5.6 |
 | ORM | Prisma | ^5.22 |
-| Base de datos | SQLite | ^3 |
+| Base de datos | PostgreSQL | ^16 |
 | Estilos | Tailwind CSS | ^3.4 |
 | Auth | NextAuth.js | ^4.24 |
 | Tests | Vitest | ^2.1 |
@@ -29,8 +29,9 @@ Usa esta skill cuando:
 
 ```bash
 npm run dev              # Desarrollo en :3000
+docker compose up -d db  # PostgreSQL de desarrollo (localhost:5433)
 npm run db:migrate       # Crear migración interactiva
-npm run db:push          # Sincronizar schema
+npm run db:migrate:deploy# Aplicar migraciones (producción/CI)
 npm run db:seed          # Poblar datos iniciales
 npm run lint             # ESLint
 npm run typecheck        # TypeScript sin emitir
@@ -157,5 +158,5 @@ Si durante el spec o las tareas surge ambigüedad, **preguntar antes de implemen
 ## Referencias rápidas
 
 - [Next.js App Router](https://nextjs.org/docs/app)
-- [Prisma + SQLite](https://www.prisma.io/docs/concepts/database-connectors/sqlite)
+- [Prisma + PostgreSQL](https://www.prisma.io/docs/concepts/database-connectors/postgresql)
 - [NextAuth.js](https://next-auth.js.org/)

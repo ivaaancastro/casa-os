@@ -16,7 +16,7 @@ Es un proyecto de uso personal/familiar, no un producto comercial.
 | Runtime | Node.js | >= 20 |
 | Framework | Next.js (App Router) | ^14.2 |
 | Lenguaje | TypeScript | ^5.6 |
-| Base de datos | SQLite vía Prisma | ^5.22 |
+| Base de datos | PostgreSQL vía Prisma | ^5.22 |
 | Estilos | Tailwind CSS | ^3.4 |
 | Auth | NextAuth.js | ^4.24 |
 | Tests | Vitest | ^2.1 |
@@ -27,9 +27,11 @@ Es un proyecto de uso personal/familiar, no un producto comercial.
 # Desarrollo
 npm run dev              # Servidor de desarrollo en :3000
 
-# Base de datos
+# Base de datos (PostgreSQL; dev local: `docker compose up -d db`)
 npm run db:generate      # Generar cliente Prisma
 npm run db:migrate       # Crear migración (interactivo)
+npm run db:migrate:deploy # Aplicar migraciones (producción/CI)
+npm run db:migrate-data  # Volcar datos desde un prisma/dev.db antiguo (SQLite)
 npm run db:push          # Sincronizar schema sin migración
 npm run db:studio        # GUI de Prisma
 npm run db:seed          # Poblar datos iniciales
@@ -103,8 +105,9 @@ test(devices): añadir tests del escáner
 4. **Actualizar tipos** → ya incluido en el paso anterior
 
 ### Reglas
-- **NUNCA** modificar `prisma/dev.db` directamente
+- **NUNCA** modificar la base de datos a mano
 - Las migraciones son inmutables — crear nueva migración para cambios
+- En producción/CI se aplican con `npm run db:migrate:deploy`
 - Usar `onDelete: Cascade` solo cuando tenga sentido de dominio
 - Timestamps: `createdAt` y `updatedAt` en todos los modelos
 
@@ -217,6 +220,6 @@ Si surge ambigüedad, **preguntar antes de implementar**.
 ## Recursos útiles
 
 - [Next.js App Router](https://nextjs.org/docs/app)
-- [Prisma con SQLite](https://www.prisma.io/docs/concepts/database-connectors/sqlite)
+- [Prisma con PostgreSQL](https://www.prisma.io/docs/concepts/database-connectors/postgresql)
 - [NextAuth.js](https://next-auth.js.org/)
 - [Tailwind CSS](https://tailwindcss.com/docs)

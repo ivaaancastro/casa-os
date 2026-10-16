@@ -31,6 +31,8 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 | 2026-10-14 | Autoalojado en casa | Privacidad, cero coste, control total |
 | 2026-10-14 | Cloudflare Tunnel para acceso externo | Sin abrir puertos, HTTPS gratis |
 | 2026-10-14 | TypeScript strict | Evitar bugs, mejor DX |
+| 2026-10-16 | **PostgreSQL** en vez de SQLite | Serverless (Vercel) no persiste disco; Postgres gestionado |
+| 2026-10-16 | **Despliegue en la nube** (Vercel + Postgres) | Sin hardware en casa siempre encendido |
 
 ## Preferencias del usuario
 
@@ -76,15 +78,22 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   propio con cambio de contraseña y protecciones (último admin, auto-baja).
   Secciones `/familia` y `/perfil`.
 
+### ✅ Hecho (v0.3 — preparado para la nube)
+
+- **PostgreSQL** (`feat/postgres`): migración de SQLite a PostgreSQL (requisito
+  para alojar en Vercel). Migración base (`prisma/migrations/0000_init`), dev
+  local con Docker Compose, script de volcado de datos y backup con `pg_dump`.
+
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
 
 **Hito 1 — Base familiar (habilitadores)**
 
-- `feat/acceso-remoto` — Cloudflare Tunnel + hardening (headers, HTTPS,
-  variables de entorno documentadas) para usar la app fuera de casa.
-  *Hecho cuando*: la app es accesible por HTTPS desde el móvil sin abrir puertos.
+- `feat/despliegue-vercel` — Despliegue en Vercel + PostgreSQL gestionado
+  (Neon/Vercel Postgres), cabeceras de seguridad y guía del dominio.
+  *Hecho cuando*: la app es accesible por HTTPS en un dominio propio, con datos
+  persistidos en Postgres.
 - `feat/pwa-instalable` — Manifest, iconos, service worker básico, navegación
   mobile-first. *Hecho cuando*: se instala en el móvil y funciona offline básica.
 
@@ -129,15 +138,19 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 
 ### 👉 Foco actual
 
-**Siguiente:** `feat/acceso-remoto` (Hito 1). Poder usar la app fuera de casa.
+**Siguiente:** `feat/despliegue-vercel` (Hito 1). Publicar la app en la nube.
 
 
 ## Notas técnicas
 
 - La red local es `192.168.1.0/24`
 - El router principal es `192.168.1.1`
-- Usar `nmap` para escaneo de red (requiere instalación en el equipo)
-- SQLite es suficiente para el volumen de datos esperado
+- Usar `nmap` para escaneo de red (requiere instalación en el equipo; NO funciona
+  en serverless, solo en local)
+- Base de datos: **PostgreSQL** (antes SQLite). Dev local con
+  `docker compose up -d db` (puerto **5433**; el 5432 lo ocupa otro proyecto,
+  `nexus-postgres`)
+- Destino de despliegue: **Vercel + Postgres gestionado**
 
 ## Lecciones aprendidas
 
@@ -152,6 +165,11 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   `router.push` puede adelantarse al `Set-Cookie` de la sesión y el middleware
   devuelve al login (el botón se queda en "Iniciando sesión..."). Se resuelve con
   navegación dura (`window.location.assign`).
+- **Scripts `tsx` no cargan `.env`**: a diferencia de Prisma, un script suelto no
+  lee `.env`; si necesita variables, hay que cargarlas (loader propio).
+- **SQLite → Postgres**: Prisma guarda Boolean como 0/1 y DateTime como ms en
+  SQLite; al volcar datos hay que coercionar. `node:sqlite` (Node 22) permite leer
+  el `.db` sin dependencias nuevas.
 
 ---
 
