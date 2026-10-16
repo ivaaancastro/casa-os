@@ -23,8 +23,10 @@ dist/
 # Database
 prisma/*.db
 prisma/*.db-journal
+prisma/*.db.backup
 *.db
 *.db-journal
+backups/
 
 # IDEs
 .vscode/
