@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
 import { TextStyle, FontFamily, FontSize, LineHeight } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import TextAlign from '@tiptap/extension-text-align';
@@ -55,7 +54,6 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
-      Underline,
       TextStyle,
       FontFamily.configure({ types: ['textStyle'] }),
       FontSize.configure({ types: ['textStyle'] }),

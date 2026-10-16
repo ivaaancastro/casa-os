@@ -77,6 +77,8 @@ export function Toolbar({ editor }: ToolbarProps) {
     <div className="flex flex-wrap items-center gap-1 border-b border-mist px-3 py-2 bg-canvas">
       {/* Fuente y tamano */}
       <select
+        id="font-family"
+        name="font-family"
         className="h-8 border border-mist px-2 text-sm bg-canvas text-ink focus:border-ink focus:outline-none"
         value={currentFont}
         onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
@@ -88,6 +90,8 @@ export function Toolbar({ editor }: ToolbarProps) {
         ))}
       </select>
       <select
+        id="font-size"
+        name="font-size"
         className="h-8 w-14 border border-mist px-2 text-sm bg-canvas text-ink focus:border-ink focus:outline-none"
         value={parseInt(currentSize)}
         onChange={(e) => editor.chain().focus().setFontSize(`${e.target.value}px`).run()}
@@ -97,6 +101,8 @@ export function Toolbar({ editor }: ToolbarProps) {
         ))}
       </select>
       <select
+        id="line-height"
+        name="line-height"
         className="h-8 w-14 border border-mist px-2 text-xs text-ash bg-canvas focus:border-ink focus:outline-none"
         onChange={(e) => editor.chain().focus().setLineHeight(e.target.value).run()}
         title="Altura de linea"
