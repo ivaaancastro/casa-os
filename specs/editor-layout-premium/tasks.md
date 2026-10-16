@@ -39,3 +39,42 @@
 ## 8. Verificación
 19. [x] Lint/typecheck/test/build.
 20. [x] Verificación visual con Chrome MCP (consola limpia).
+
+---
+
+## Iteración 3 — Editor tipo Apple Notas
+
+### 9. Documentación / norma
+21. [x] `specs/editor-layout-premium/referencia-apple-notas.md`: fijar Apple Notas como norma del feat.
+22. [x] `spec.md`: sección Iteración 3 (RF1/RF2/RF3).
+
+### 10. Título integrado (RF1)
+23. [x] `lib/utils/note-html.ts` + tests: `extractFirstBlockText`, `removeFirstBlock`, `withTitleLine`, `escapeHtml`.
+24. [x] `NoteEditor.tsx`: el título pasa a ser la primera línea del documento (h1); sin `<input>`.
+25. [x] Guardado: `title` derivado del primer bloque; `content` incluye la primera línea.
+26. [x] Migración idempotente al cargar notas antiguas.
+27. [x] `NoteItem.tsx`: el preview excluye el título solo si el primer bloque coincide con él.
+
+### 11. Menos marcos / a sangre (RF2)
+28. [x] `app/layout.tsx`: `main` sin padding ni `max-width`.
+29. [x] `app/page.tsx` y `app/devices/page.tsx`: `max-width`/padding por página.
+30. [x] `app/notas/page.tsx`: workspace a sangre (`100dvh`), sin `section` con borde.
+31. [x] `NoteEditor.tsx`: barra única (formato + estado + acciones) con un solo divisor.
+
+### 12. Más funcionalidades (RF3)
+32. [x] Añadir estilos de párrafo (Título/Encabezado/Subencabezado/Cuerpo/Monoespaciado).
+33. [x] Checklist (TaskList/TaskItem) y lista con guiones (`data-list-style`).
+34. [x] Tablas (`@tiptap/extension-table`) y enlaces.
+35. [x] Indentación (`data-indent`, atajos `⌘]` / `⌘[`).
+36. [x] `Toolbar.tsx`: `shouldRerenderOnTransaction` para reflejar el cursor (estilo activo, negrita…).
+37. [x] `lib/utils/sanitize.ts`: allow-list para checklist, tablas, enlaces e indentación.
+
+### 13. Validación y esquema
+38. [x] `lib/schemas/note.ts`: límites ampliados (título 200, contenido 100000, vacío permitido).
+39. [x] `tests/api/notes.schemas.test.ts` y `tests/sanitize.test.ts` actualizados.
+
+### 14. Verificación
+40. [x] Lint/typecheck/test (78)/build.
+41. [x] Verificación en Chrome MCP: título formateable (30px + negrita) y round-trip,
+    checklist, tabla, lista con guiones y enlace conservados tras recargar; barra
+    refleja el cursor; layout a sangre (aside 544 == editor 544; sin `section`).
