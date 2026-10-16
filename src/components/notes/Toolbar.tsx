@@ -75,7 +75,9 @@ export function Toolbar({ editor }: ToolbarProps) {
 
   if (!editor) return null;
 
-  const currentFont = editor.getAttributes('textStyle').fontFamily ?? FONT_FAMILIES[0].value;
+  const currentFont =
+    editor.getAttributes('textStyle').fontFamily ??
+    (editor.isActive('heading') ? FONT_FAMILIES[1].value : FONT_FAMILIES[0].value);
   const currentSize = editor.getAttributes('textStyle').fontSize ?? '16px';
   const currentLineHeight =
     editor.getAttributes('paragraph').lineHeight ??

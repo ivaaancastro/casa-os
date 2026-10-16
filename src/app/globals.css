@@ -79,3 +79,203 @@
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-rise { animation: fade-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ============================================================
+   Editor de notas (TipTap / ProseMirror)
+   Global (no `style jsx`): TipTap crea el DOM fuera del arbol React,
+   por lo que las reglas con scope de styled-jsx no se aplicarian.
+   ============================================================ */
+.ProseMirror {
+  outline: none;
+  min-height: 60vh;
+}
+
+/* Sin anillo de foco del navegador al hacer clic en la nota */
+.ProseMirror:focus,
+.ProseMirror:focus-visible,
+.ProseMirror.ProseMirror-focused {
+  outline: none;
+  box-shadow: none;
+}
+
+.ProseMirror .is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #b3b3b3;
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.5rem;
+}
+
+.ProseMirror h1 {
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.ProseMirror h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.ProseMirror h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* Listas */
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.6rem;
+}
+.ProseMirror ul {
+  list-style: disc;
+}
+.ProseMirror ol {
+  list-style: decimal;
+}
+.ProseMirror li {
+  margin: 0.1rem 0;
+}
+.ProseMirror li p {
+  margin: 0;
+}
+.ProseMirror li::marker {
+  color: #6b6b6b;
+}
+.ProseMirror ul ul,
+.ProseMirror ol ol,
+.ProseMirror ul ol,
+.ProseMirror ol ul {
+  margin: 0.1rem 0;
+}
+
+/* Lista con guiones */
+.ProseMirror ul[data-list-style='dash'] {
+  list-style: none;
+  padding-left: 1.6rem;
+}
+.ProseMirror ul[data-list-style='dash'] > li {
+  position: relative;
+}
+.ProseMirror ul[data-list-style='dash'] > li::before {
+  content: '\2013';
+  position: absolute;
+  left: -1.15rem;
+  color: #6b6b6b;
+}
+
+/* Checklist */
+.ProseMirror ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 0.15rem;
+}
+.ProseMirror ul[data-type='taskList'] > li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0.15rem 0;
+}
+.ProseMirror ul[data-type='taskList'] > li > label {
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin-top: 0.3rem;
+}
+.ProseMirror ul[data-type='taskList'] > li > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ProseMirror ul[data-type='taskList'] input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: #0a0a0a;
+  cursor: pointer;
+}
+.ProseMirror ul[data-type='taskList'] li[data-checked='true'] > div {
+  color: #8c8c8c;
+  text-decoration: line-through;
+}
+.ProseMirror ul[data-type='taskList'] ul[data-type='taskList'] {
+  padding-left: 1.6rem;
+}
+
+/* Indentacion */
+.ProseMirror [data-indent='1'] {
+  margin-left: 1.5rem;
+}
+.ProseMirror [data-indent='2'] {
+  margin-left: 3rem;
+}
+.ProseMirror [data-indent='3'] {
+  margin-left: 4.5rem;
+}
+
+/* Cita, codigo y divisoria */
+.ProseMirror blockquote {
+  border-left: 2px solid #0a0a0a;
+  padding-left: 1rem;
+  color: #6b6b6b;
+  font-style: italic;
+}
+.ProseMirror code {
+  background-color: #f5f5f5;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.875em;
+  font-family: ui-monospace, monospace;
+}
+.ProseMirror pre {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+}
+.ProseMirror pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+.ProseMirror hr {
+  border: none;
+  border-top: 1px solid #e4e4e4;
+  margin: 1.5rem 0;
+}
+.ProseMirror mark {
+  padding: 0 0.125rem;
+}
+.ProseMirror a {
+  color: #2f5597;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Tablas */
+.ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #e4e4e4;
+  padding: 0.4rem 0.6rem;
+  vertical-align: top;
+  position: relative;
+  min-width: 3rem;
+}
+.ProseMirror th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  text-align: left;
+}
+.ProseMirror .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.08);
+  pointer-events: none;
+}
