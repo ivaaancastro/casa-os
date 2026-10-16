@@ -9,6 +9,7 @@ const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/devices', label: 'Dispositivos' },
   { href: '/notas', label: 'Notas' },
+  { href: '/familia', label: 'Familia' },
 ];
 
 export function Sidebar() {
@@ -80,7 +81,14 @@ export function Sidebar() {
             </nav>
           </div>
 
-          <div className="border-t border-mist pt-4">
+          <div className="space-y-3 border-t border-mist pt-4">
+            <Link
+              href="/perfil"
+              onClick={() => setMobileOpen(false)}
+              className="block text-xs text-ash transition-colors hover:text-ink"
+            >
+              Perfil
+            </Link>
             <LogoutButton />
           </div>
         </div>

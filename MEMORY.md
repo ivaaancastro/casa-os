@@ -69,16 +69,19 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   primera línea, estilos de párrafo, checklist, listas, tablas, enlaces,
   indentación, atajos).
 
+### ✅ Hecho (v0.2 — base familiar)
+
+- **Usuarios y roles** (`feat/usuarios-roles`): crear/editar miembros, roles
+  ADMIN/FAMILY aplicados en API y UI, activar/desactivar (baja lógica), perfil
+  propio con cambio de contraseña y protecciones (último admin, auto-baja).
+  Secciones `/familia` y `/perfil`.
+
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
 
 **Hito 1 — Base familiar (habilitadores)**
 
-- `feat/usuarios-roles` — Gestión de miembros: invitar/crear cuentas, roles
-  ADMIN/FAMILY aplicados de verdad, perfil y cambio de contraseña.
-  *Hecho cuando*: un ADMIN crea usuarios, cada uno entra con su cuenta y los
-  permisos se respetan en API y UI; tests.
 - `feat/acceso-remoto` — Cloudflare Tunnel + hardening (headers, HTTPS,
   variables de entorno documentadas) para usar la app fuera de casa.
   *Hecho cuando*: la app es accesible por HTTPS desde el móvil sin abrir puertos.
@@ -126,7 +129,7 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 
 ### 👉 Foco actual
 
-**Siguiente:** `feat/usuarios-roles` (Hito 1). Es el habilitador de todo lo demás.
+**Siguiente:** `feat/acceso-remoto` (Hito 1). Poder usar la app fuera de casa.
 
 
 ## Notas técnicas
@@ -145,6 +148,10 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   "congelada". Se usa `shouldRerenderOnTransaction: true` para reflejar el cursor.
 - **Zoom Inditex**: los tokens y tipografías viven en `tailwind.config.ts` y
   `globals.css`; mantener ahí el lenguaje visual (radios 0, Bodoni + Jost).
+- **Login NextAuth + middleware**: `signIn({ redirect: false })` seguido de
+  `router.push` puede adelantarse al `Set-Cookie` de la sesión y el middleware
+  devuelve al login (el botón se queda en "Iniciando sesión..."). Se resuelve con
+  navegación dura (`window.location.assign`).
 
 ---
 

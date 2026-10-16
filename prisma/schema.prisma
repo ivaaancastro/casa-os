@@ -15,6 +15,7 @@ model User {
   password      String?
   image         String?
   role          String    @default("FAMILY")
+  active        Boolean   @default(true)
   accounts      Account[]
   sessions      Session[]
   notes         Note[]
