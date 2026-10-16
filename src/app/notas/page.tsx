@@ -23,20 +23,12 @@ export default async function NotasPage() {
   });
 
   return (
-    <div className="grid grid-cols-12 gap-y-8">
-      <header className="col-span-12 border-t border-mist pt-8">
-        <p className="text-xs text-ash tracking-wider2 mb-4">Casa · Notas</p>
-        <h1 className="font-display text-5xl md:text-6xl tracking-editorial leading-[0.9]">
-          Notas
-        </h1>
-      </header>
-      <section className="col-span-12 h-[calc(100vh-13rem)] border border-mist">
-        <NotesLayout
-          notes={notes}
-          currentUserId={session.user.id}
-          currentUserRole={session.user.role}
-        />
-      </section>
+    <div className="flex h-[100dvh] flex-col">
+      <NotesLayout
+        notes={notes}
+        currentUserId={session.user.id}
+        currentUserRole={session.user.role}
+      />
     </div>
   );
 }

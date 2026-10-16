@@ -12,17 +12,19 @@ import { describe, it, expect } from 'vitest';
 
 const ALLOWED_TAGS = [
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'p', 'br', 'hr',
+  'p', 'br', 'hr', 'div',
   'strong', 'b', 'em', 'i', 'u', 's', 'strike', 'del',
   'ul', 'ol', 'li',
   'blockquote', 'code', 'pre',
   'a', 'span', 'mark',
+  'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'colgroup', 'col', 'caption',
+  'label', 'input',
   'font',
 ];
 
 const BLOCKED_TAGS = [
   'script', 'iframe', 'object', 'embed', 'form',
-  'input', 'button', 'select', 'textarea',
+  'button', 'select', 'textarea',
   'img', 'video', 'audio', 'svg', 'math',
   'link', 'meta', 'style', 'base',
 ];
@@ -35,6 +37,8 @@ const ALLOWED_STYLES = [
   'font-style',
   'text-decoration',
   'text-align',
+  'margin-left',
+  'width',
 ];
 
 describe('tags permitidos', () => {
@@ -52,6 +56,12 @@ describe('tags permitidos', () => {
 
   it('debe permitir listas', () => {
     for (const tag of ['ul', 'ol', 'li']) {
+      expect(ALLOWED_TAGS.includes(tag)).toBe(true);
+    }
+  });
+
+  it('debe permitir tablas, checklists e inputs de checkbox', () => {
+    for (const tag of ['table', 'thead', 'tbody', 'tr', 'th', 'td', 'label', 'input']) {
       expect(ALLOWED_TAGS.includes(tag)).toBe(true);
     }
   });
@@ -85,8 +95,8 @@ describe('tags bloqueados (XSS)', () => {
     expect(ALLOWED_TAGS.includes('embed')).toBe(false);
   });
 
-  it('debe bloquear form elements', () => {
-    for (const tag of ['form', 'input', 'button', 'select', 'textarea']) {
+  it('debe bloquear form elements (excepto checkbox de checklist)', () => {
+    for (const tag of ['form', 'button', 'select', 'textarea']) {
       expect(ALLOWED_TAGS.includes(tag)).toBe(false);
     }
   });

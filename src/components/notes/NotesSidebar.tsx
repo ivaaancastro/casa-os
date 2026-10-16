@@ -24,23 +24,30 @@ export function NotesSidebar({ activeFolder, onFolderChange, notes }: NotesSideb
   }
 
   return (
-    <div className="p-4">
-      <h2 className="font-display text-xl tracking-editorial mb-4">Carpetas</h2>
-      <nav className="space-y-1">
+    <div className="px-3 pb-2 pt-3">
+      <p className="mb-2 px-1 text-[10px] tracking-wider2 text-ash">Carpetas</p>
+      <nav className="space-y-px">
         {FOLDERS.map((folder) => (
           <button
             key={folder.value}
             onClick={() => onFolderChange(folder.value)}
             className={`
-              w-full flex items-center justify-between px-3 py-2 rounded-none text-sm transition-colors
-              ${activeFolder === folder.value
-                ? 'bg-ink text-canvas font-medium'
-                : 'text-ash hover:bg-pearl'
+              flex w-full items-center justify-between px-2.5 py-1.5 text-sm transition-colors
+              ${
+                activeFolder === folder.value
+                  ? 'bg-ink font-medium text-canvas'
+                  : 'text-ink hover:bg-pearl'
               }
             `}
           >
             <span>{folder.label}</span>
-            <span className="text-xs text-ash">{getCount(folder.value)}</span>
+            <span
+              className={`text-xs ${
+                activeFolder === folder.value ? 'text-canvas/60' : 'text-ash'
+              }`}
+            >
+              {getCount(folder.value)}
+            </span>
           </button>
         ))}
       </nav>

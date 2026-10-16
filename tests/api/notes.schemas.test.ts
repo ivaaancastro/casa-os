@@ -4,6 +4,8 @@ import {
   updateNoteSchema,
   listNotesSchema,
   NOTE_TYPES,
+  NOTE_TITLE_MAX,
+  NOTE_CONTENT_MAX,
 } from '../../src/lib/schemas/note';
 
 describe('schemas - createNoteSchema', () => {
@@ -25,37 +27,37 @@ describe('schemas - createNoteSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('rechaza titulo con menos de 3 caracteres', () => {
+  it('acepta titulo vacio (la nota se crea y se rellena despues)', () => {
     const result = createNoteSchema.safeParse({
-      title: 'ab',
-      content: 'contenido',
-      type: 'GENERAL',
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it('rechaza titulo con mas de 100 caracteres', () => {
-    const result = createNoteSchema.safeParse({
-      title: 'a'.repeat(101),
-      content: 'contenido',
-      type: 'GENERAL',
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it('rechaza contenido vacio', () => {
-    const result = createNoteSchema.safeParse({
-      title: 'Titulo valido',
+      title: '',
       content: '',
       type: 'GENERAL',
     });
+    expect(result.success).toBe(true);
+  });
+
+  it('por defecto titulo y contenido son cadena vacia', () => {
+    const result = createNoteSchema.safeParse({ type: 'GENERAL' });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.title).toBe('');
+      expect(result.data.content).toBe('');
+    }
+  });
+
+  it(`rechaza titulo con mas de ${NOTE_TITLE_MAX} caracteres`, () => {
+    const result = createNoteSchema.safeParse({
+      title: 'a'.repeat(NOTE_TITLE_MAX + 1),
+      content: 'contenido',
+      type: 'GENERAL',
+    });
     expect(result.success).toBe(false);
   });
 
-  it('rechaza contenido con mas de 2000 caracteres', () => {
+  it(`rechaza contenido con mas de ${NOTE_CONTENT_MAX} caracteres`, () => {
     const result = createNoteSchema.safeParse({
       title: 'Titulo valido',
-      content: 'a'.repeat(2001),
+      content: 'a'.repeat(NOTE_CONTENT_MAX + 1),
       type: 'GENERAL',
     });
     expect(result.success).toBe(false);
@@ -66,22 +68,6 @@ describe('schemas - createNoteSchema', () => {
       title: 'Titulo valido',
       content: 'contenido',
       type: 'INVALIDO' as never,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it('rechaza title ausente', () => {
-    const result = createNoteSchema.safeParse({
-      content: 'contenido',
-      type: 'GENERAL',
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it('rechaza content ausente', () => {
-    const result = createNoteSchema.safeParse({
-      title: 'Titulo valido',
-      type: 'GENERAL',
     });
     expect(result.success).toBe(false);
   });
@@ -106,13 +92,18 @@ describe('schemas - updateNoteSchema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('acepta titulo vacio (primera linea en blanco)', () => {
+    const result = updateNoteSchema.safeParse({ title: '' });
+    expect(result.success).toBe(true);
+  });
+
   it('acepta solo completed', () => {
     const result = updateNoteSchema.safeParse({ completed: true });
     expect(result.success).toBe(true);
   });
 
-  it('rechaza title corto si se envia', () => {
-    const result = updateNoteSchema.safeParse({ title: 'ab' });
+  it(`rechaza title con mas de ${NOTE_TITLE_MAX} caracteres`, () => {
+    const result = updateNoteSchema.safeParse({ title: 'a'.repeat(NOTE_TITLE_MAX + 1) });
     expect(result.success).toBe(false);
   });
 

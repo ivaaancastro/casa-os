@@ -30,10 +30,8 @@ export default function RootLayout({
       <body className="font-ui bg-canvas text-ink antialiased">
         <div className="flex min-h-screen bg-canvas">
           <Sidebar />
-          <main className="flex-1 px-5 py-10 md:px-10 md:py-12 lg:px-16 lg:py-16">
-            <div className="mx-auto max-w-7xl animate-fade-rise">
-              {children}
-            </div>
+          <main className="min-w-0 flex-1">
+            {children}
           </main>
         </div>
       </body>
