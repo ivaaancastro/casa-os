@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { NotesSidebar } from './NotesSidebar';
 import { NotesList } from './NotesList';
@@ -36,8 +36,8 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileView, setMobileView] = useState<'list' | 'editor'>('list');
   const [draftNote, setDraftNote] = useState<Note | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Determine the note currently shown in the editor.
   const selectedRealNote = selectedNoteId ? notes.find((n) => n.id === selectedNoteId) ?? null : null;
   const editorNote = selectedRealNote ?? (draftNote && selectedNoteId === draftNote.id ? draftNote : null);
 
@@ -59,6 +59,7 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
     setDraftNote(null);
     setSelectedNoteId(id);
     setMobileView('editor');
+    setSidebarOpen(false);
   }
 
   function handleFolderChange(folder: FolderFilter) {
@@ -83,6 +84,7 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
     setDraftNote(draft);
     setSelectedNoteId(draft.id);
     setMobileView('editor');
+    setSidebarOpen(false);
   }
 
   const handleCreated = useCallback((realId: string) => {
@@ -99,47 +101,90 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
   }
 
   return (
-    <div className="flex h-[calc(100vh-9.5rem)] -m-4 lg:-m-8 border-t border-mist">
-      {/* Columna 1: Carpetas */}
-      <div className="hidden lg:block w-60 border-r border-mist bg-pearl overflow-y-auto">
-        <NotesSidebar
-          activeFolder={activeFolder}
-          onFolderChange={handleFolderChange}
-          notes={notes}
+    <div className="flex h-[calc(100vh-9.5rem)] -m-4 lg:-m-8">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
         />
-      </div>
+      )}
 
-      {/* Columna 2: Lista de notas */}
-      <div className={`
-        w-full lg:w-80 border-r border-mist flex flex-col
-        ${mobileView === 'editor' ? 'hidden lg:flex' : 'flex'}
-      `}>
-        <NotesList
-          notes={filteredNotes}
-          selectedNoteId={selectedNoteId}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onSelectNote={handleSelectNote}
-          onCreateNote={handleCreateNote}
-          onFolderChange={handleFolderChange}
-          isMobile={mobileView === 'list'}
-        />
-      </div>
+      {/* Sidebar */}
+      <aside
+        className={`
+          fixed top-0 left-0 z-40 h-full w-72 bg-canvas border-r border-mist
+          transform transition-transform duration-300 ease-edit
+          lg:translate-x-0 lg:static lg:z-auto
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+      >
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b border-mist px-4 py-4">
+            <span className="font-display text-xl tracking-editorial">Notas</span>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden text-ash hover:text-ink"
+              aria-label="Cerrar menú"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-      {/* Columna 3: Editor */}
-      <div className={`
-        flex-1 flex flex-col
-        ${mobileView === 'list' ? 'hidden lg:flex' : 'flex'}
-      `}>
-        <NoteEditor
-          note={editorNote}
-          currentUserId={currentUserId}
-          currentUserRole={currentUserRole}
-          onDeleted={handleDeleted}
-          onBack={() => setMobileView('list')}
-          onCreated={handleCreated}
-        />
-      </div>
+          <div className="flex-1 overflow-y-auto">
+            <NotesSidebar
+              activeFolder={activeFolder}
+              onFolderChange={handleFolderChange}
+              notes={notes}
+            />
+            <NotesList
+              notes={filteredNotes}
+              selectedNoteId={selectedNoteId}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onSelectNote={handleSelectNote}
+              onCreateNote={handleCreateNote}
+              onFolderChange={handleFolderChange}
+              isMobile={true}
+            />
+          </div>
+        </div>
+      </aside>
+
+      {/* Editor */}
+      <main className="flex-1 flex flex-col min-w-0">
+        {/* Mobile header */}
+        <div className="lg:hidden flex items-center gap-3 border-b border-mist px-4 py-3">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-ink hover:text-ash"
+            aria-label="Abrir menú"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <span className="text-sm text-ash">
+            {editorNote ? (editorNote.title || 'Sin título') : 'Selecciona una nota'}
+          </span>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          <NoteEditor
+            note={editorNote}
+            currentUserId={currentUserId}
+            currentUserRole={currentUserRole}
+            onDeleted={handleDeleted}
+            onBack={() => {
+              setMobileView('list');
+              setSidebarOpen(true);
+            }}
+            onCreated={handleCreated}
+          />
+        </div>
+      </main>
     </div>
   );
 }

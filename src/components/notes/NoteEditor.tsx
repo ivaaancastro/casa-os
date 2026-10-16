@@ -256,9 +256,17 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-6 py-10 lg:px-10">
+        {/* Toolbar sticky */}
+        <div className="sticky top-0 z-40 bg-canvas border-b border-mist">
+          <Toolbar editor={editor} />
+        </div>
+
+        {/* Content */}
+        <div className="max-w-[720px] mx-auto px-6 py-10 lg:px-10">
           <input
             ref={titleRef}
+            id="note-title"
+            name="note-title"
             type="text"
             value={title}
             onChange={(e) => {
@@ -273,8 +281,6 @@ export function NoteEditor({ note, currentUserId, currentUserRole, onDeleted, on
             placeholder="Titulo"
             className="mb-10 w-full border-none bg-transparent font-display text-5xl tracking-editorial text-ink placeholder-mist outline-none"
           />
-
-          <Toolbar editor={editor} />
 
           <div className="pb-20 pt-4">
             <EditorContent
