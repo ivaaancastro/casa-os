@@ -25,7 +25,7 @@ despliegue y mantenimiento para un uso personal/familiar.
 │  └──────────────┬──────────────────────┘    │
 │                 │                            │
 │  ┌──────────────▼──────────────────────┐    │
-│  │     Prisma ORM  →  SQLite           │    │
+│  │     Prisma ORM  →  PostgreSQL       │    │
 │  └─────────────────────────────────────┘    │
 └─────────────────────────────────────────────┘
 ```
@@ -40,18 +40,20 @@ despliegue y mantenimiento para un uso personal/familiar.
 justifica. Un monolito bien organizado es más fácil de desplegar, debuguear y
 mantener.
 
-### 2. SQLite como base de datos
+### 2. PostgreSQL como base de datos
 
-**Decisión**: SQLite en lugar de PostgreSQL/MySQL.
+**Decisión**: PostgreSQL (antes SQLite).
 
-**Razón**: 
-- Cero configuración, cero servicios adicionales
-- Un solo archivo = backups triviales
-- Volumen de datos del hogar es pequeño (< 1GB en años)
-- Suficiente para lecturas/escrituras concurrentes moderadas
+**Razón**:
+- El destino de despliegue es serverless (Vercel), que no tiene disco persistente:
+  SQLite no es viable allí.
+- PostgreSQL gestionado (Neon, Vercel Postgres) ofrece persistencia, pooling y
+  copias de seguridad sin administrar servidores.
+- En desarrollo se levanta en local con Docker Compose (`docker compose up -d db`).
 
-**Cuándo migrar**: Si en el futuro se necesitan escrituras muy concurrentes o
-datos > 10GB, migrar a PostgreSQL (Prisma hace esto trivial cambiando una línea).
+**Historia**: la versión inicial usaba SQLite por su sencillez para un uso
+doméstico; se migró a PostgreSQL al pasar a alojamiento en la nube (feature
+`feat/postgres`, migración base `prisma/migrations/0000_init`).
 
 ### 3. API Routes en lugar de backend separado
 
@@ -68,19 +70,20 @@ datos > 10GB, migrar a PostgreSQL (Prisma hace esto trivial cambiando una línea
 ## Flujo de datos
 
 ```
-Cliente → Next.js Server → Prisma → SQLite
+Cliente → Next.js Server → Prisma → PostgreSQL
                               ↓
 Cliente ← Next.js Server ←───┘
 ```
 
 1. El cliente hace un request a una página o API route
 2. Next.js Server procesa, valida (Zod), y consulta Prisma
-3. Prisma genera SQL optimizado y lo ejecuta sobre SQLite
+3. Prisma genera SQL optimizado y lo ejecuta sobre PostgreSQL
 4. El resultado se devuelve como JSON (API) o se renderiza como HTML (SSR)
 
 ## Principios de diseño
 
-- **Privacidad primero**: Todo se aloja en casa, sin servicios de terceros
+- **Privacidad primero**: Sin rastreadores ni servicios de terceros innecesarios;
+  los datos viven en la base de datos que tú controlas
 - **Mobile-first**: La familia usará mayoritariamente móviles
 - **Simplicidad**: Sin over-engineering, sin abstractions innecesarias
 - **Incremental**: Empezar simple, escalar solo cuando sea necesario

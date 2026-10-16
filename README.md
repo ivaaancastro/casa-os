@@ -2,7 +2,7 @@
 
 > Sistema operativo para tu hogar — gestión de dispositivos, notas familiares y más.
 
-**casa-os** es una aplicación web personal y autoalojada para centralizar todos los datos de tu casa. Diseñada para uso familiar, con acceso desde cualquier dispositivo de la red local (y opcionalmente desde fuera mediante Cloudflare Tunnel o Tailscale).
+**casa-os** es una aplicación web personal para centralizar todos los datos de tu casa. Diseñada para uso familiar, con acceso desde cualquier dispositivo.
 
 ## Características
 
@@ -23,7 +23,7 @@
 
 - **[Next.js 14](https://nextjs.org/)** (App Router) — Framework full-stack React
 - **[TypeScript](https://www.typescriptlang.org/)** — Tipado estático
-- **[Prisma](https://www.prisma.io/)** + **[SQLite](https://www.sqlite.org/)** — ORM y base de datos
+- **[Prisma](https://www.prisma.io/)** + **[PostgreSQL](https://www.postgresql.org/)** — ORM y base de datos
 - **[NextAuth.js](https://next-auth.js.org/)** — Autenticación
 - **[Tailwind CSS](https://tailwindcss.com/)** — Estilos
 - **[Vitest](https://vitest.dev/)** — Tests
@@ -32,6 +32,7 @@
 
 - Node.js >= 20
 - npm >= 10
+- Docker (para PostgreSQL en desarrollo): [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - nmap (opcional, para escaneo de red): `brew install nmap`
 
 ## Inicio rápido
@@ -48,8 +49,9 @@ npm install
 cp .env.example .env
 # Editar .env y cambiar NEXTAUTH_SECRET
 
-# 4. Inicializar la base de datos
-npm run db:push
+# 4. Levantar PostgreSQL y preparar la base de datos
+docker compose up -d db
+npm run db:migrate:deploy
 npm run db:seed
 
 # 5. Arrancar en desarrollo
@@ -60,39 +62,36 @@ La aplicación estará disponible en **http://localhost:3000**
 
 ## Despliegue
 
-### Opción A: En local (recomendado para empezar)
+La aplicación usa **PostgreSQL** (ya no SQLite). Necesitas una base de datos
+PostgreSQL accesible desde donde corra la app.
+
+### Base de datos
+
+- **Desarrollo**: `docker compose up -d db` levanta PostgreSQL en `localhost:5433`.
+- **Producción**: usa una URL gestionada (Neon, Vercel Postgres…) y configura
+  `DATABASE_URL` y `DIRECT_URL`.
 
 ```bash
+npm run db:migrate:deploy   # crea el esquema
+npm run db:migrate-data     # (opcional) migra datos desde un prisma/dev.db antiguo
+npm run db:seed             # datos iniciales
+```
+
+### Opción A: En local (red de casa)
+
+```bash
+docker compose up -d db
 npm run build
 npm start
 ```
 
-Acceso desde cualquier dispositivo en la misma red: `http://IP-DEL-SERVIDOR:3000`
+Acceso desde cualquier dispositivo en la misma red: `http://IP-DEL-SERVIDOR:3000`.
+Para acceder desde fuera de casa, **Tailscale** (red privada) es la vía sencilla.
 
-### Opción B: Cloudflare Tunnel (acceso desde fuera)
+### Opción B: Nube (Vercel + PostgreSQL)
 
-```bash
-# Instalar cloudflared
-brew install cloudflared
-
-# Crear tunnel
-cloudflared tunnel --url http://localhost:3000
-```
-
-### Opción C: Tailscale (red privada virtual)
-
-Instalar Tailscale en los dispositivos de la familia y acceder por la IP interna.
-
-### Opción D: VPS
-
-```bash
-# En el servidor
-git clone https://github.com/ivaaancastro/casa-os.git
-cd casa-os
-npm ci
-npm run build
-npm start
-```
+> En preparación (feature `despliegue-vercel`). La app ya está lista para
+> PostgreSQL; falta la guía paso a paso del despliegue.
 
 ## Estructura del proyecto
 

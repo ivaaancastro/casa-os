@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: casa-os-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: casa
+      POSTGRES_PASSWORD: casa
+      POSTGRES_DB: casa_os
+    ports:
+      - '5433:5432'
+    volumes:
+      - casa_os_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U casa -d casa_os']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  casa_os_pgdata:

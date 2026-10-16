@@ -40,17 +40,20 @@ async function main() {
     });
   }
 
-  // Dispositivos de ejemplo
-  await prisma.device.create({
-    data: {
-      name: 'Router Principal',
-      ip: '192.168.1.1',
-      type: 'ROUTER',
-      online: true,
-      lastSeen: new Date(),
-      ownerId: admin.id,
-    },
-  });
+  // Dispositivos de ejemplo (solo si no existen)
+  const existingDevices = await prisma.device.count();
+  if (existingDevices === 0) {
+    await prisma.device.create({
+      data: {
+        name: 'Router Principal',
+        ip: '192.168.1.1',
+        type: 'ROUTER',
+        online: true,
+        lastSeen: new Date(),
+        ownerId: admin.id,
+      },
+    });
+  }
 
   console.log('Base de datos poblada con datos iniciales.');
 }

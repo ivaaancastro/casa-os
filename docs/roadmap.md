@@ -2,6 +2,9 @@
 
 > Plan de desarrollo priorizado. Este documento es un vivo y se actualiza
 > según cambien las prioridades.
+>
+> ⚠️ El roadmap **vivo** y el protocolo de trabajo están en `MEMORY.md` (raíz).
+> Este documento es la versión inicial y puede estar desactualizado.
 
 ## Filosofía
 
@@ -93,17 +96,18 @@ qué está a punto de caducar.
 
 ---
 
-## Hito 6 — Acceso desde el Exterior
+## Hito 6 — Despliegue en la nube
 
-**Objetivo**: Acceder a casa-os desde fuera de casa de forma segura.
+**Objetivo**: Publicar casa-os con acceso desde cualquier sitio.
 
-- [ ] Cloudflare Tunnel configurado y documentado
-- [ ] HTTPS con certificado válido
+- [x] Migrar la base de datos a PostgreSQL
+- [ ] Desplegar en Vercel + PostgreSQL gestionado (`feat/despliegue-vercel`)
+- [ ] HTTPS en dominio propio
 - [ ] Guía de acceso para la familia
-- [ ] (Opcional) Tailscale como alternativa
+- [ ] (Alternativa) Tailscale para acceso privado
 
 **Criterio de éxito**: Cualquier miembro de la familia puede abrir la app
-desde su móvil con datos móviles.
+desde su móvil, esté donde esté.
 
 ---
 

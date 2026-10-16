@@ -1,7 +1,7 @@
 # ADR 001: Stack tecnológico inicial
 
 - **Fecha**: 2026-10-14
-- **Estado**: Aceptado
+- **Estado**: Aceptado (base de datos sustituida por [ADR 002](./002-postgresql-y-nube.md): SQLite → PostgreSQL)
 - **Decisores**: Iván
 
 ## Contexto
