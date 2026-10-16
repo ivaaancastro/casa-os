@@ -1,11 +1,10 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
@@ -30,8 +29,10 @@ export function LoginForm() {
         setError('Credenciales incorrectas. Inténtalo de nuevo.');
         setLoading(false);
       } else {
-        router.push(callbackUrl);
-        router.refresh();
+        // Navegacion dura a proposito: `router.push` puede adelantarse al
+        // Set-Cookie de la sesion y el middleware devuelve al login. Una
+        // navegacion completa garantiza que la cookie viaje en la peticion.
+        window.location.assign(callbackUrl);
       }
     } catch {
       setError('Error al iniciar sesión. Inténtalo de nuevo.');

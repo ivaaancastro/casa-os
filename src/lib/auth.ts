@@ -20,7 +20,8 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email },
         });
 
-        if (!user || !user.password) {
+        // Usuarios desactivados (baja logica) no pueden iniciar sesion.
+        if (!user || !user.password || !user.active) {
           return null;
         }
 
