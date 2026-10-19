@@ -32,6 +32,8 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   (nuevo ADR 002).
 - Preparado el despliegue en Vercel: script `vercel-build`, cabeceras de
   seguridad y guía `docs/despliegue-vercel.md`.
+- **Desplegado en producción**: <https://casa-os-mauve.vercel.app> (Vercel +
+  Neon), con migraciones automáticas en el build.
 
 ### Added
 

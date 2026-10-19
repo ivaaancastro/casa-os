@@ -4,6 +4,8 @@
 
 **casa-os** es una aplicación web personal para centralizar todos los datos de tu casa. Diseñada para uso familiar, con acceso desde cualquier dispositivo.
 
+**Producción**: <https://casa-os-mauve.vercel.app> (Vercel + Neon).
+
 ## Características
 
 | Sección | Estado | Descripción |
