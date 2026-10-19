@@ -30,6 +30,12 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   (`db:migrate-data`) y backup con `pg_dump`.
 - `AGENTS.md`, `docs/architecture.md` y ADRs actualizados a PostgreSQL
   (nuevo ADR 002).
+- Preparado el despliegue en Vercel: script `vercel-build`, cabeceras de
+  seguridad y guía `docs/despliegue-vercel.md`.
+
+### Added
+
+- `GET /api/health` (público): estado de la app y de la base de datos.
 
 ### Fixed
 
