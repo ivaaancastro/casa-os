@@ -88,10 +88,26 @@ npm start
 Acceso desde cualquier dispositivo en la misma red: `http://IP-DEL-SERVIDOR:3000`.
 Para acceder desde fuera de casa, **Tailscale** (red privada) es la vía sencilla.
 
-### Opción B: Nube (Vercel + PostgreSQL)
+### Opción B: Nube (Vercel + PostgreSQL) — recomendado
 
-> En preparación (feature `despliegue-vercel`). La app ya está lista para
-> PostgreSQL; falta la guía paso a paso del despliegue.
+Vercel despliega en cada push a `main` y aplica las migraciones en el build
+(`npm run vercel-build`). Guía completa paso a paso:
+**[`docs/despliegue-vercel.md`](docs/despliegue-vercel.md)**.
+
+Resumen:
+
+1. Crear un Postgres gestionado (Vercel Postgres o Neon) → `DATABASE_URL` (con
+   pooler) y `DIRECT_URL` (directa).
+2. Importar el repo en Vercel y definir `DATABASE_URL`, `DIRECT_URL`,
+   `NEXTAUTH_URL` y `NEXTAUTH_SECRET`.
+3. Deploy. Verificar `GET /api/health` → `200`.
+4. (Opcional) Añadir dominio propio; Vercel emite el HTTPS.
+
+### Salud y seguridad
+
+- `GET /api/health` → `200` si la BD responde, `503` si no.
+- Cabeceras de seguridad (CSP, HSTS en producción, nosniff, frame-options) en
+  `next.config.js`.
 
 ## Estructura del proyecto
 

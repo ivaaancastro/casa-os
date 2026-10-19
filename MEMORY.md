@@ -84,6 +84,13 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   para alojar en Vercel). Migración base (`prisma/migrations/0000_init`), dev
   local con Docker Compose, script de volcado de datos y backup con `pg_dump`.
 
+### ✅ Hecho (v0.4 — listo para desplegar)
+
+- **Despliegue en Vercel** (`feat/despliegue-vercel`): `vercel-build` (migraciones
+  + build), `GET /api/health` (200/503, público), cabeceras de seguridad (CSP,
+  HSTS en prod, nosniff, frame-options) y guía paso a paso
+  `docs/despliegue-vercel.md`. **Pendiente**: ejecutar el deploy real (lo hace el
+  usuario con su cuenta, guiado).
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -92,8 +99,8 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 
 - `feat/despliegue-vercel` — Despliegue en Vercel + PostgreSQL gestionado
   (Neon/Vercel Postgres), cabeceras de seguridad y guía del dominio.
-  *Hecho cuando*: la app es accesible por HTTPS en un dominio propio, con datos
-  persistidos en Postgres.
+  *Estado*: **preparado y verificado en local**; falta ejecutar el deploy real con
+  la cuenta del usuario (guía `docs/despliegue-vercel.md`).
 - `feat/pwa-instalable` — Manifest, iconos, service worker básico, navegación
   mobile-first. *Hecho cuando*: se instala en el móvil y funciona offline básica.
 
@@ -138,7 +145,8 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 
 ### 👉 Foco actual
 
-**Siguiente:** `feat/despliegue-vercel` (Hito 1). Publicar la app en la nube.
+**Siguiente:** ejecutar el deploy real en Vercel con la cuenta del usuario
+(guía: `docs/despliegue-vercel.md`). Después: `feat/pwa-instalable` (Hito 1).
 
 
 ## Notas técnicas
