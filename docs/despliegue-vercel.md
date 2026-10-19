@@ -3,6 +3,8 @@
 > Casa-os se despliega en **Vercel** (Next.js) con una base de datos
 > **PostgreSQL** gestionada. Vercel despliega automáticamente en cada push a
 > `main`; las migraciones se aplican solas durante el build.
+>
+> **Instancia actual**: <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
 ---
 

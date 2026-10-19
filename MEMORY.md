@@ -84,13 +84,15 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   para alojar en Vercel). Migración base (`prisma/migrations/0000_init`), dev
   local con Docker Compose, script de volcado de datos y backup con `pg_dump`.
 
-### ✅ Hecho (v0.4 — listo para desplegar)
+### ✅ Hecho (v0.4 — desplegado en producción)
 
 - **Despliegue en Vercel** (`feat/despliegue-vercel`): `vercel-build` (migraciones
   + build), `GET /api/health` (200/503, público), cabeceras de seguridad (CSP,
   HSTS en prod, nosniff, frame-options) y guía paso a paso
-  `docs/despliegue-vercel.md`. **Pendiente**: ejecutar el deploy real (lo hace el
-  usuario con su cuenta, guiado).
+  `docs/despliegue-vercel.md`.
+- **Producción**: <https://casa-os-mauve.vercel.app> (Vercel + Neon). Verificado:
+  health `200`, cabeceras, login real, notas, familia y escritura en Neon.
+  Sin dominio propio por ahora (decisión del usuario).
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -98,9 +100,8 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 **Hito 1 — Base familiar (habilitadores)**
 
 - `feat/despliegue-vercel` — Despliegue en Vercel + PostgreSQL gestionado
-  (Neon/Vercel Postgres), cabeceras de seguridad y guía del dominio.
-  *Estado*: **preparado y verificado en local**; falta ejecutar el deploy real con
-  la cuenta del usuario (guía `docs/despliegue-vercel.md`).
+  (Neon), cabeceras de seguridad y guía del dominio. **Hecho**: producción en
+  <https://casa-os-mauve.vercel.app> (sin dominio propio por ahora).
 - `feat/pwa-instalable` — Manifest, iconos, service worker básico, navegación
   mobile-first. *Hecho cuando*: se instala en el móvil y funciona offline básica.
 
@@ -145,8 +146,11 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 
 ### 👉 Foco actual
 
-**Siguiente:** ejecutar el deploy real en Vercel con la cuenta del usuario
-(guía: `docs/despliegue-vercel.md`). Después: `feat/pwa-instalable` (Hito 1).
+**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
+
+**Siguiente:** `feat/pwa-instalable` (Hito 1): manifest, iconos, service worker
+básico y navegación mobile-first. *Hecho cuando*: se instala en el móvil y
+funciona offline básica.
 
 
 ## Notas técnicas
@@ -158,7 +162,9 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 - Base de datos: **PostgreSQL** (antes SQLite). Dev local con
   `docker compose up -d db` (puerto **5433**; el 5432 lo ocupa otro proyecto,
   `nexus-postgres`)
-- Destino de despliegue: **Vercel + Postgres gestionado**
+- **Producción**: Vercel + **Neon** (`neondb`). Variables: `DATABASE_URL` (pooled)
+  y `DIRECT_URL` (directa). Sin dominio propio por ahora:
+  <https://casa-os-mauve.vercel.app>
 
 ## Lecciones aprendidas
 
@@ -178,6 +184,16 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 - **SQLite → Postgres**: Prisma guarda Boolean como 0/1 y DateTime como ms en
   SQLite; al volcar datos hay que coercionar. `node:sqlite` (Node 22) permite leer
   el `.db` sin dependencias nuevas.
+- **`NEXTAUTH_URL` inválida revienta el build**: si contiene los `< >` del
+  placeholder (`https://<tu-proyecto>.vercel.app`) o va vacía, NextAuth lanza
+  `TypeError: Invalid URL` al prerenderizar `/`, `/devices`, `/auth/login` y
+  `/_not-found`. Debe ser la URL real, sin comillas ni espacios.
+- **Prisma Postgres ≠ Neon**: el producto "Prisma Postgres" del Marketplace
+  inyecta variables con prefijo (`DATABASE_PRISMA_DATABASE_URL`) y puede dar
+  `prisma+postgres://`, que no sirve con Prisma 5.22. En producción usamos
+  **Neon** con `DATABASE_URL` (pooled) + `DIRECT_URL` (directa).
+- **Variables de entorno**: pegar solo el valor de la URL (sin `NOMBRE=`, sin
+  comillas). Validar con `new URL(...)` antes de desplegar.
 
 ---
 
