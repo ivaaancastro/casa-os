@@ -11,6 +11,7 @@ const PUBLIC_PATTERNS = [
   '/api/auth/callback/credentials',
   '/api/auth/session',
   '/api/auth/csrf',
+  '/api/health',
   '/_next/static/chunk.js',
   '/favicon.ico',
 ];
@@ -37,6 +38,9 @@ function isProtectedPath(pathname: string): boolean {
   // Ignorar rutas de auth
   if (pathname.startsWith('/auth/login')) return false;
   if (pathname.startsWith('/api/auth/')) return false;
+
+  // Health publico (solo estado, sin datos)
+  if (pathname.startsWith('/api/health')) return false;
 
   // Todo lo demas esta protegido
   return true;
@@ -81,5 +85,9 @@ describe('proteccion de rutas', () => {
     expect(isProtectedPath('/api/auth/callback/credentials')).toBe(false);
     expect(isProtectedPath('/api/auth/session')).toBe(false);
     expect(isProtectedPath('/api/auth/csrf')).toBe(false);
+  });
+
+  it('NO debe proteger /api/health (estado publico)', () => {
+    expect(isProtectedPath('/api/health')).toBe(false);
   });
 });
