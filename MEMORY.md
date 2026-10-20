@@ -101,6 +101,14 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   conexión (`/offline`). Instalable en Android/iOS; offline básica **sin
   cachear datos privados** (solo se precachea `/offline`). Guía en
   `docs/pwa.md` y generador de iconos en `npm run icons`.
+
+### ✅ Hecho (v0.6 — dispositivos)
+
+- **Dispositivos** (`feat/dispositivos-crud`): inventario manual con CRUD,
+  IP/MAC únicas (índices en Postgres), tipo, propietario, notas y estado
+  online/lastSeen de solo lectura. API con Zod y `409` para duplicados; ADMIN
+  escribe y FAMILY solo lee. UI editorial responsive con borrado en dos pasos.
+
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -116,7 +124,8 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 **Hito 2 — Dispositivos de la red**
 
 - `feat/dispositivos-crud` — Inventario manual (nombre, IP, MAC, tipo,
-  propietario, notas, online/lastSeen). *Hecho cuando*: CRUD completo + tests.
+  propietario, notas, online/lastSeen). **Hecho**: CRUD completo, IP/MAC únicas
+  y permisos ADMIN/FAMILY; tests y verificación móvil.
 - `feat/escaneo-red` — Ejecutar el escáner, mostrar descubiertos e importarlos al
   inventario (deduplicar por MAC/IP). *Hecho cuando*: `npm run scan` alimenta la
   sección y se puede importar con un clic.
@@ -156,8 +165,8 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**Siguiente:** Hito 2, `feat/dispositivos-crud` (inventario manual de
-dispositivos). Después: `feat/escaneo-red` y `feat/dispositivos-estado`.
+**Siguiente:** Hito 2, `feat/escaneo-red` (descubrir equipos e importarlos al
+inventario). Después: `feat/dispositivos-estado`.
 
 
 ## Notas técnicas
@@ -176,6 +185,10 @@ dispositivos). Después: `feat/escaneo-red` y `feat/dispositivos-estado`.
   (`src/app/offline/route.ts`) y registro solo en producción. El SW **solo**
   precachea `/offline`; no cachea `/api/*` ni HTML autenticado. Iconos:
   `npm run icons`. Guía: `docs/pwa.md`.
+- **Dispositivos**: `ip` y `mac` con índice único en Postgres; la MAC se
+  normaliza a `AA:BB:CC:DD:EE:FF`. `online`/`lastSeen` son de solo lectura: los
+  actualizará el escáner. La migración de unicidad es **no destructiva**: aborta
+  con un error claro si hay duplicados.
 
 ## Lecciones aprendidas
 
@@ -215,7 +228,13 @@ dispositivos). Después: `feat/escaneo-red` y `feat/dispositivos-estado`.
   interfieren con HMR y confunden al depurar.
 - **Instalabilidad**: Chrome exige iconos 192 y 512, `start_url`, `display:
   standalone` y un SW con handler `fetch`; el maskable va aparte.
+- **Migraciones con datos existentes**: no borrar filas desde una migración. Un
+  bloque `DO $$ ... RAISE EXCEPTION` aborta con un mensaje claro si hay
+  duplicados y permite resolverlos a mano sin pérdida de datos.
+- **`prisma migrate dev` sin TTY**: el agente no puede usarlo (pide interacción).
+  Crear `prisma/migrations/<timestamp>_<nombre>/migration.sql` y aplicar con
+  `prisma migrate deploy`.
 
 ---
 
-*Última actualización: 2026-10-19*
+*Última actualización: 2026-10-20*

@@ -74,8 +74,8 @@ model Note {
 model Device {
   id          String       @id @default(cuid())
   name        String
-  ip          String
-  mac         String?
+  ip          String       @unique
+  mac         String?      @unique
   type        String       @default("OTHER")
   online      Boolean      @default(false)
   lastSeen    DateTime?
