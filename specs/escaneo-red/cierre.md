@@ -3,8 +3,8 @@
 **Estado:** borrador (Fase A)
 **Fecha:** 2026-10-20
 **Feature:** `escaneo-red`
-**PR de feature:** pendiente
-**Commit:** pendiente
+**PR de feature:** #18
+**Commit:** pendiente (squash merge)
 **PR de cierre:** pendiente
 
 ## Resumen

@@ -146,7 +146,7 @@ El merge del código **no** cierra una feature. La definición completa está en
   `duplicate`/`invalid`, `dryRun` por defecto y `createMany` con
   `skipDuplicates`. No hay cambios de esquema ni se toca `online`/`lastSeen`.
 - **Documentación**: `docs/escaneo-red.md`; API `POST /api/devices/import`;
-  tarea 13 y verificación de producción pendientes de la Fase B.
+  PR #18 abierto, tarea 13 y verificación de producción pendientes de la Fase B.
 - **Cierre:** borrador en
   [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 
@@ -208,8 +208,8 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**En cierre:** `feat/escaneo-red` (escaneo local + importación JSON). Pendiente
-de PR/producción y Fase B.
+**En cierre:** `feat/escaneo-red` (escaneo local + importación JSON), PR #18.
+Pendiente de merge, producción y Fase B.
 
 **Siguiente:** `feat/dispositivos-estado` (actualizar `online`/`lastSeen` y
 detectar equipos ausentes).
@@ -231,7 +231,7 @@ detectar equipos ausentes).
 | feat | PWA instalable | #15 | `ab34d39` | Sí | — (previo al protocolo) |
 | feat | Dispositivos (CRUD) | #16 | `3e38e80` | `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` | [`cierre`](specs/dispositivos-crud/cierre.md) |
 | docs | Protocolo de cierre + cierre de dispositivos | #17 | `e15c34a` | — | [`guía`](docs/cierre-feature.md) |
-| feat | Escaneo de red (local + importación) | — | — | En cierre | [borrador](specs/escaneo-red/cierre.md) |
+| feat | Escaneo de red (local + importación) | #18 | — | En cierre | [borrador](specs/escaneo-red/cierre.md) |
 
 ## Notas técnicas
 
