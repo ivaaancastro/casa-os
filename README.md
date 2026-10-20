@@ -28,6 +28,7 @@
 - **[Prisma](https://www.prisma.io/)** + **[PostgreSQL](https://www.postgresql.org/)** — ORM y base de datos
 - **[NextAuth.js](https://next-auth.js.org/)** — Autenticación
 - **[Tailwind CSS](https://tailwindcss.com/)** — Estilos
+- **PWA** — Manifest, service worker y página offline (instalable en el móvil)
 - **[Vitest](https://vitest.dev/)** — Tests
 
 ## Requisitos
@@ -88,7 +89,7 @@ npm start
 ```
 
 Acceso desde cualquier dispositivo en la misma red: `http://IP-DEL-SERVIDOR:3000`.
-Para acceder desde fuera de casa, **Tailscale** (red privada) es la vía sencilla.
+Para acceder desde fuera de casa, usa la opción B (Vercel).
 
 ### Opción B: Nube (Vercel + PostgreSQL) — recomendado
 
@@ -110,6 +111,17 @@ Resumen:
 - `GET /api/health` → `200` si la BD responde, `503` si no.
 - Cabeceras de seguridad (CSP, HSTS en producción, nosniff, frame-options) en
   `next.config.js`.
+
+## Instalar como app (PWA)
+
+casa-os es instalable desde el navegador, sin tienda:
+
+- **Android/Chrome**: menú → *Instalar aplicación*.
+- **iOS/Safari**: *Compartir* → *Añadir a pantalla de inicio*.
+
+Se abre en ventana propia y, sin conexión, muestra una página de aviso. El
+service worker **no cachea datos privados** (solo `/offline`). Detalles y
+verificación: **[`docs/pwa.md`](docs/pwa.md)**.
 
 ## Estructura del proyecto
 

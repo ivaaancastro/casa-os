@@ -3,34 +3,12 @@ import { describe, it, expect } from 'vitest';
 /**
  * Tests del middleware de NextAuth.
  *
- * Valida que todas las rutas esten protegidas excepto /auth/login.
+ * Valida que todas las rutas esten protegidas excepto las publicas:
+ * login, callbacks de auth, health y los assets de la PWA.
  */
 
-const PUBLIC_PATTERNS = [
-  '/auth/login',
-  '/api/auth/callback/credentials',
-  '/api/auth/session',
-  '/api/auth/csrf',
-  '/api/health',
-  '/_next/static/chunk.js',
-  '/favicon.ico',
-];
-
-const PROTECTED_PATTERNS = [
-  '/',
-  '/devices',
-  '/devices/',
-  '/devices/123',
-  '/notas',
-  '/notas/',
-  '/notas/456',
-  '/api/notes',
-  '/api/notes/123',
-  '/api/devices',
-];
-
 function isProtectedPath(pathname: string): boolean {
-  // Ignorar archivos estaticos y rutas de API auth
+  // Ignorar archivos estaticos
   if (pathname.startsWith('/_next/') || pathname === '/favicon.ico') {
     return false;
   }
@@ -41,6 +19,11 @@ function isProtectedPath(pathname: string): boolean {
 
   // Health publico (solo estado, sin datos)
   if (pathname.startsWith('/api/health')) return false;
+
+  // PWA: aviso sin conexion, service worker, manifest e iconos
+  if (pathname === '/offline' || pathname.startsWith('/offline/')) return false;
+  if (pathname === '/sw.js' || pathname === '/manifest.webmanifest') return false;
+  if (pathname.startsWith('/icons/')) return false;
 
   // Todo lo demas esta protegido
   return true;
@@ -89,5 +72,20 @@ describe('proteccion de rutas', () => {
 
   it('NO debe proteger /api/health (estado publico)', () => {
     expect(isProtectedPath('/api/health')).toBe(false);
+  });
+
+  it('NO debe proteger la pagina offline', () => {
+    expect(isProtectedPath('/offline')).toBe(false);
+    expect(isProtectedPath('/offline/')).toBe(false);
+  });
+
+  it('NO debe proteger los assets de la PWA', () => {
+    expect(isProtectedPath('/sw.js')).toBe(false);
+    expect(isProtectedPath('/manifest.webmanifest')).toBe(false);
+    expect(isProtectedPath('/icons/icon-192.png')).toBe(false);
+  });
+
+  it('debe proteger rutas que solo empiezan por "offline"', () => {
+    expect(isProtectedPath('/offline-extra')).toBe(true);
   });
 });

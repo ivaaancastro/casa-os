@@ -12,6 +12,8 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 ### Added
 
 - Notas familiares con editor enriquecido (estilo Apple Notas) y carpetas
+- PWA instalable: manifest, iconos, service worker y página sin conexión
+  (`docs/pwa.md`)
 - Gestión de usuarios y roles (ADMIN/FAMILY), baja lógica y perfil propio con
   cambio de contraseña
 - Diseño editorial (Inditex) con tipografías Bodoni Moda + Jost
