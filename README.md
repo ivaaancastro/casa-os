@@ -11,15 +11,16 @@
 | Sección | Estado | Descripción |
 |---------|--------|-------------|
 | 📊 Dashboard | 🚧 En desarrollo | Resumen de la casa de un vistazo |
-| 🖥️ Dispositivos | 🚧 En desarrollo | Inventario manual (IP, MAC, tipo, propietario, notas); escaneo pendiente |
-| 🛒 Notas / Compra | 🚧 En desarrollo | Notas compartidas para toda la familia |
+| 🖥️ Dispositivos | ✅ CRUD · 🚧 escaneo | Inventario manual (IP, MAC, tipo, propietario, notas); estado automático pendiente |
+| 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
+| 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
 | 📅 Calendario | 📋 Planificado | Calendario familiar compartido |
 | 📦 Inventario | 📋 Planificado | Control de objetos, caducidades y garantías |
 | 💰 Gastos | 💡 Idea | Registro y reparto de gastos del hogar |
 | 🔧 Mantenimiento | 💡 Idea | Tareas recurrentes y historial |
 | 📄 Documentos | 💡 Idea | Facturas, seguros y manuales |
 
-**Leyenda**: 🚧 En desarrollo · 📋 Planificado · 💡 Idea
+**Leyenda**: ✅ Terminado · 🚧 En desarrollo · 📋 Planificado · 💡 Idea
 
 ## Stack
 
@@ -131,21 +132,54 @@ casa-os/
 ├── src/components/       # Componentes UI
 ├── src/lib/              # Utilidades y configuración
 ├── prisma/               # Esquema y migraciones de BD
-├── scripts/              # Scripts de utilidad
+├── scripts/              # Scripts de utilidad (incl. docs:check)
+├── specs/                # Plan, spec, tasks y cierre de cada feature
 ├── tests/                # Tests
-├── docs/                 # Documentación
+├── docs/                 # Documentación y protocolo de cierre
 ├── .opencode/            # Skills y configuración de OpenCode
-└── .github/              # CI/CD e issue templates
+└── .github/              # CI/CD, PR e issue templates
+```
+
+## Calidad
+
+Antes de abrir o mergear un PR:
+
+```bash
+npm run lint && npm run typecheck && npm run test && npm run build
+```
+
+`npm run test` ejecuta una pasada; para desarrollo, `npm run test:watch`.
+La CI de GitHub ejecuta lint, typecheck, tests y build en cada PR y en `main`.
+
+## Documentación y proceso
+
+- [`AGENTS.md`](AGENTS.md) — reglas del agente, SDD, verificación y cierre.
+- [`MEMORY.md`](MEMORY.md) — roadmap vivo, decisiones, estado y registro de
+  features.
+- [`docs/cierre-feature.md`](docs/cierre-feature.md) — protocolo obligatorio de
+  cierre (código → producción → PR de documentación).
+- [`specs/`](specs/) — `plan.md`, `spec.md`, `tasks.md` y `cierre.md` por feature.
+- [`docs/`](docs/) — arquitectura, despliegue, PWA y guías.
+
+Cada feature se cierra con un PR `docs/cierre-<nombre>` después de verificar
+producción. El registro queda en `specs/<nombre>/cierre.md` y se valida con:
+
+```bash
+npm run docs:check -- <nombre>
 ```
 
 ## Contribuir
 
 Este es un proyecto personal, pero si quieres contribuir:
 
-1. Haz un fork del repositorio
-2. Crea una rama: `git checkout -b feat/nueva-funcionalidad`
-3. Sigue las convenciones de `AGENTS.md`
-4. Abre un PR con descripción clara
+1. Haz un fork del repositorio.
+2. Lee `AGENTS.md` y `MEMORY.md`.
+3. Crea una rama: `git checkout -b feat/nueva-funcionalidad`.
+4. Escribe `specs/<nombre>/plan.md` y `spec.md`; espera la aprobación.
+5. Implementa, verifica y abre un PR con descripción clara.
+6. Tras el merge, completa el cierre documental antes de la siguiente feature.
+
+Nunca se commitea directamente a `main`.
 
 ## Licencia
 

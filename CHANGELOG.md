@@ -21,10 +21,14 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 - Diseño editorial (Inditex) con tipografías Bodoni Moda + Jost
 - Configuración de Tailwind CSS con paleta de colores personalizada
 - Scripts de utilidad: `scan-network.ts` y `backup-db.ts`
-- CI con GitHub Actions (lint, typecheck, build)
+- `GET /api/health` (público): estado de la app y de la base de datos
+- CI con GitHub Actions (lint, typecheck, test y build)
 - Issue templates para bugs y features
 - Skills de OpenCode para desarrollo, despliegue y router
 - Documentación completa: README, AGENTS.md, MEMORY.md
+- Protocolo de cierre de feature (`docs/cierre-feature.md`), plantilla
+  `specs/_template/cierre.md` y comprobación `npm run docs:check`
+- Registro de cierre por feature en `specs/<nombre>/cierre.md`
 
 ### Changed
 
@@ -38,12 +42,15 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   seguridad y guía `docs/despliegue-vercel.md`.
 - **Desplegado en producción**: <https://casa-os-mauve.vercel.app> (Vercel +
   Neon), con migraciones automáticas en el build.
+- **Dispositivos verificado en producción** (PR #16, commit `3e38e80`,
+  deployment `AN59fx6pKkakZqNB5qeQ3v1h1Q4U`): health, cabeceras, rutas
+  protegidas y smoke autenticado.
 - `Device.ip` y `Device.mac` con índice único. La migración no borra datos:
   aborta con un error claro si encuentra duplicados.
-
-### Added
-
-- `GET /api/health` (público): estado de la app y de la base de datos.
+- **Cierre documental obligatorio** tras cada feature: `tasks.md` sin
+  pendientes, `cierre.md`, MEMORY/CHANGELOG/README/docs actualizados y PR
+  `docs/cierre-<nombre>` antes de la siguiente feature.
+- `npm run test` ejecuta Vitest en una pasada; `npm run test:watch` para watch.
 
 ### Fixed
 
