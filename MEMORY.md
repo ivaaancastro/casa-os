@@ -34,6 +34,7 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 | 2026-10-16 | **PostgreSQL** en vez de SQLite | Serverless (Vercel) no persiste disco; Postgres gestionado |
 | 2026-10-16 | **Despliegue en la nube** (Vercel + Postgres) | Sin hardware en casa siempre encendido |
 | 2026-10-20 | **Cierre documental obligatorio por feature** | Evitar documentación desactualizada y dejar un registro verificable de cada entrega |
+| 2026-10-20 | **Escaneo local + importación JSON** | `nmap` no corre en Vercel; evita tokens e historial de escaneos |
 
 ## Preferencias del usuario
 
@@ -137,6 +138,18 @@ El merge del código **no** cierra una feature. La definición completa está en
   autenticado confirmado por Iván.
 - **Cierre:** [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
 
+### 🚧 En cierre (v0.7 — escaneo de red)
+
+- **Escaneo de red** (`feat/escaneo-red`): escáner local con nmap, JSON
+  versionado y panel en `/devices` para previsualizar e importar solo equipos
+  nuevos. Deduplicación por IP/MAC, estados `new`/`existing`/`conflict`/
+  `duplicate`/`invalid`, `dryRun` por defecto y `createMany` con
+  `skipDuplicates`. No hay cambios de esquema ni se toca `online`/`lastSeen`.
+- **Documentación**: `docs/escaneo-red.md`; API `POST /api/devices/import`;
+  tarea 13 y verificación de producción pendientes de la Fase B.
+- **Cierre:** borrador en
+  [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
+
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -156,8 +169,9 @@ El merge del código **no** cierra una feature. La definición completa está en
   CRUD completo, IP/MAC únicas, permisos ADMIN/FAMILY, tests y verificación
   móvil. Cierre: [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
 - `feat/escaneo-red` — Ejecutar el escáner, mostrar descubiertos e importarlos al
-  inventario (deduplicar por MAC/IP). *Hecho cuando*: `npm run scan` alimenta la
-  sección y se puede importar con un clic.
+  inventario (deduplicar por MAC/IP). **En cierre**: escaneo local + JSON,
+  preview e importación de nuevos; pendiente smoke real y producción. Guía:
+  [`docs/escaneo-red.md`](docs/escaneo-red.md).
 - `feat/dispositivos-estado` — Estado online/offline, "última vez visto" y
   alertas básicas de altas/bajas. *Hecho cuando*: la lista refleja el estado real.
 
@@ -194,8 +208,11 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**Siguiente:** Hito 2, `feat/escaneo-red` (descubrir equipos e importarlos al
-inventario). Después: `feat/dispositivos-estado`.
+**En cierre:** `feat/escaneo-red` (escaneo local + importación JSON). Pendiente
+de PR/producción y Fase B.
+
+**Siguiente:** `feat/dispositivos-estado` (actualizar `online`/`lastSeen` y
+detectar equipos ausentes).
 
 ## Registro de features
 
@@ -213,7 +230,8 @@ inventario). Después: `feat/dispositivos-estado`.
 | docs | Registro de producción | #14 | `1f85a9b` | — | — |
 | feat | PWA instalable | #15 | `ab34d39` | Sí | — (previo al protocolo) |
 | feat | Dispositivos (CRUD) | #16 | `3e38e80` | `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` | [`cierre`](specs/dispositivos-crud/cierre.md) |
-| docs | Protocolo de cierre + cierre de dispositivos | #17 | — | — | [`guía`](docs/cierre-feature.md) |
+| docs | Protocolo de cierre + cierre de dispositivos | #17 | `e15c34a` | — | [`guía`](docs/cierre-feature.md) |
+| feat | Escaneo de red (local + importación) | — | — | En cierre | [borrador](specs/escaneo-red/cierre.md) |
 
 ## Notas técnicas
 
@@ -235,6 +253,12 @@ inventario). Después: `feat/dispositivos-estado`.
   normaliza a `AA:BB:CC:DD:EE:FF`. `online`/`lastSeen` son de solo lectura: los
   actualizará el escáner. La migración de unicidad es **no destructiva**: aborta
   con un error claro si hay duplicados.
+- **Escaneo de red**: `nmap` solo en local. `npm run scan -- --out
+  scan-latest.json`, subida en `/devices` y `POST /api/devices/import` con
+  `dryRun` por defecto `true`; solo ADMIN, solo crea filas `new` y no toca
+  `online`/`lastSeen`. La ruta se excluye del middleware para devolver `401`
+  JSON. Guía: `docs/escaneo-red.md`. `nmap` no está instalado en el entorno del
+  agente; el CLI se verificó con un binario simulado.
 - **Documentación**: `MEMORY.md` es la fuente viva del roadmap y el estado;
   `docs/roadmap.md` es un índice histórico (no duplicar roadmaps). Cada feature
   cerrada tiene `specs/<nombre>/cierre.md`; el protocolo está en
@@ -289,6 +313,18 @@ inventario). Después: `feat/dispositivos-estado`.
 - **Cierre de feature**: la verificación de producción ocurre **después** del
   merge, así que no puede completarse en el PR de código. El cierre va en un PR
   `docs/cierre-<nombre>` posterior; el merge del código no es el final.
+- **Escaneo local sin servidor**: `nmap` no puede correr en Vercel ni ver la red
+  de casa. El escaneo se hace en el equipo del usuario y la app importa JSON;
+  así no hacen falta tokens de servicio ni una tabla de historial.
+- **`dryRun` seguro por defecto**: la API de importación solo escribe con
+  `dryRun: false`; una petición ambigua previsualiza. La UI reenvía solo las
+  filas `new` seleccionadas.
+- **APIs que deben devolver JSON**: el middleware de NextAuth redirige a login
+  por defecto. Para que un endpoint devuelva `401`/`403` JSON hay que excluirlo
+  del matcher y confiar en el guard de la ruta (`requireAdmin`).
+- **`npm run --silent` para pipes**: la cabecera de npm contamina el stdout;
+  `npm run scan -- --json` sirve para leer, pero para `> archivo.json` conviene
+  `npm run --silent scan -- --json`.
 - **Evidencia honesta**: si el agente no puede autenticarse en producción, lo
   verifica el usuario y se registra así en `cierre.md`; no se presenta como
   verificación automática.

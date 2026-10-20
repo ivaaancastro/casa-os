@@ -1,61 +1,162 @@
 /**
  * Escáner de red local para detectar dispositivos conectados.
- * 
- * Uso: npm run scan
- * 
- * Requiere que el equipo tenga permisos de red local.
- * En algunos sistemas puede requerir permisos elevados.
+ *
+ * Uso:
+ *   npm run scan
+ *   npm run scan -- --out scan-latest.json
+ *   npm run scan -- --json
+ *   npm run scan -- --cidr 192.168.1.0/24
+ *
+ * Requiere nmap instalado en el equipo que escanea. No se ejecuta en Vercel:
+ * el resultado se sube a /devices para previsualizarlo e importarlo.
  */
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { execFile } from 'node:child_process';
+import { writeFileSync } from 'node:fs';
+import { promisify } from 'node:util';
+import {
+  buildScanPayload,
+  isValidCidr,
+  parseNmapOutput,
+} from '../src/lib/utils/scan';
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
-interface ScannedDevice {
-  ip: string;
-  mac?: string;
-  vendor?: string;
+interface CliOptions {
+  cidr?: string;
+  out?: string;
+  json: boolean;
+  help: boolean;
 }
 
-async function scanNetwork(): Promise<ScannedDevice[]> {
-  const cidr = process.env.NETWORK_CIDR || '192.168.1.0/24';
+interface NmapError extends Error {
+  code?: string;
+  stderr?: string;
+}
 
-  console.log(`Escaneando red ${cidr}...`);
+function printHelp() {
+  console.log(`Uso: npm run scan -- [opciones]
 
-  try {
-    const { stdout } = await execAsync(`nmap -sn ${cidr} -n --max-retries 1`);
+Opciones:
+  --out <archivo>   Guarda el resultado en un JSON para subirlo a /devices
+  --json            Imprime solo el JSON por stdout
+  --cidr <CIDR>     Red a escanear (por defecto NETWORK_CIDR o 192.168.1.0/24)
+  --help            Muestra esta ayuda
 
-    const devices: ScannedDevice[] = [];
-    const lines = stdout.split('\n');
+Ejemplo:
+  npm run scan -- --out scan-latest.json`);
+}
 
-    for (let i = 0; i < lines.length; i++) {
-      const ipMatch = lines[i].match(/Nmap scan report for (\d+\.\d+\.\d+\.\d+)/);
-      if (ipMatch) {
-        const ip = ipMatch[1];
-        const macLine = lines[i + 1] || '';
-        const macMatch = macLine.match(/MAC Address:\s+([0-9A-Fa-f:]+)(?:\s+\((.+?)\))?/);
+function parseArgs(argv: string[]): CliOptions {
+  const options: CliOptions = { json: false, help: false };
 
-        devices.push({
-          ip,
-          mac: macMatch?.[1],
-          vendor: macMatch?.[2],
-        });
-      }
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+
+    if (arg === '--json') {
+      options.json = true;
+      continue;
     }
 
-    console.log(`\nSe encontraron ${devices.length} dispositivos:`);
-    console.table(devices);
+    if (arg === '--help' || arg === '-h') {
+      options.help = true;
+      continue;
+    }
 
-    return devices;
-  } catch (error) {
-    console.error('Error al escanear la red. Asegúrate de tener nmap instalado:');
-    console.error('  brew install nmap  (macOS)');
-    console.error('  sudo apt install nmap  (Linux)');
-    throw error;
+    if (arg === '--out' || arg === '--cidr') {
+      const value = argv[index + 1];
+      if (!value || value.startsWith('--')) {
+        throw new Error(`Falta el valor de ${arg}`);
+      }
+
+      if (arg === '--out') options.out = value;
+      else options.cidr = value;
+
+      index += 1;
+      continue;
+    }
+
+    throw new Error(`Opción no reconocida: ${arg}`);
+  }
+
+  return options;
+}
+
+async function run() {
+  const options = parseArgs(process.argv.slice(2));
+
+  if (options.help) {
+    printHelp();
+    return;
+  }
+
+  const cidr = (
+    options.cidr ??
+    process.env.NETWORK_CIDR ??
+    '192.168.1.0/24'
+  ).trim();
+
+  if (!isValidCidr(cidr)) {
+    throw new Error(
+      `CIDR no válido: "${cidr}". Ejemplo: 192.168.1.0/24`,
+    );
+  }
+
+  console.error(`Escaneando red ${cidr}...`);
+
+  const { stdout } = await execFileAsync(
+    'nmap',
+    ['-sn', cidr, '-n', '--max-retries', '1'],
+    { maxBuffer: 2 * 1024 * 1024 },
+  );
+
+  const devices = parseNmapOutput(stdout);
+  const payload = buildScanPayload(cidr, devices);
+
+  if (options.out) {
+    writeFileSync(options.out, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  }
+
+  if (options.json) {
+    console.log(JSON.stringify(payload, null, 2));
+    return;
+  }
+
+  console.log(`Red: ${cidr}`);
+  console.log(`Dispositivos encontrados: ${devices.length}`);
+
+  if (devices.length > 0) {
+    console.table(
+      devices.map((device) => ({
+        IP: device.ip,
+        MAC: device.mac ?? '—',
+        Fabricante: device.vendor ?? '—',
+      })),
+    );
+  } else {
+    console.log('No se encontró ningún dispositivo.');
+  }
+
+  if (options.out) {
+    console.log(`\nJSON guardado en ${options.out}`);
+    console.log('Súbelo en /devices → Importar escaneo (solo ADMIN).');
+  } else {
+    console.log(
+      '\nPara importarlo: npm run scan -- --out scan-latest.json y súbelo en /devices.',
+    );
   }
 }
 
-scanNetwork()
-  .then(() => process.exit(0))
-  .catch(() => process.exit(1));
+run().catch((error: NmapError) => {
+  if (error.code === 'ENOENT') {
+    console.error(
+      'nmap no está instalado. En macOS: brew install nmap. En Debian/Ubuntu: sudo apt install nmap.',
+    );
+  } else if (error.stderr?.trim()) {
+    console.error(error.stderr.trim());
+  } else {
+    console.error(error.message);
+  }
+
+  process.exit(1);
+});

@@ -20,6 +20,14 @@ function isProtectedPath(pathname: string): boolean {
   // Health publico (solo estado, sin datos)
   if (pathname.startsWith('/api/health')) return false;
 
+  // La importacion de escaneo aplica requireAdmin y devuelve 401/403 JSON
+  if (
+    pathname === '/api/devices/import' ||
+    pathname.startsWith('/api/devices/import/')
+  ) {
+    return false;
+  }
+
   // PWA: aviso sin conexion, service worker, manifest e iconos
   if (pathname === '/offline' || pathname.startsWith('/offline/')) return false;
   if (pathname === '/sw.js' || pathname === '/manifest.webmanifest') return false;
@@ -72,6 +80,12 @@ describe('proteccion de rutas', () => {
 
   it('NO debe proteger /api/health (estado publico)', () => {
     expect(isProtectedPath('/api/health')).toBe(false);
+  });
+
+  it('deja la importacion de escaneo al guard de la ruta', () => {
+    expect(isProtectedPath('/api/devices/import')).toBe(false);
+    expect(isProtectedPath('/api/devices/import/')).toBe(false);
+    expect(isProtectedPath('/api/devices/import-extra')).toBe(true);
   });
 
   it('NO debe proteger la pagina offline', () => {

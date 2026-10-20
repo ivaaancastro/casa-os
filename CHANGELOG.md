@@ -14,6 +14,9 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 - Notas familiares con editor enriquecido (estilo Apple Notas) y carpetas
 - Dispositivos: CRUD manual con IP/MAC únicas, tipo, propietario, notas y
   estado online de solo lectura; ADMIN escribe y FAMILY solo lee
+- Escaneo de red local con nmap: salida JSON, previsualización e importación de
+  equipos nuevos con deduplicación por IP/MAC y detección de conflictos
+  (`docs/escaneo-red.md`)
 - PWA instalable: manifest, iconos, service worker y página sin conexión
   (`docs/pwa.md`)
 - Gestión de usuarios y roles (ADMIN/FAMILY), baja lógica y perfil propio con
@@ -51,6 +54,11 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   pendientes, `cierre.md`, MEMORY/CHANGELOG/README/docs actualizados y PR
   `docs/cierre-<nombre>` antes de la siguiente feature.
 - `npm run test` ejecuta Vitest en una pasada; `npm run test:watch` para watch.
+- **Escáner de red**: valida el CIDR, usa `execFile` (sin shell), soporta
+  `--out`, `--json` y `--cidr`, y normaliza MAC. La importación se previsualiza
+  con `dryRun` y solo crea equipos nuevos (`POST /api/devices/import`).
+- La ruta de importación de escaneo queda fuera del middleware de redirección
+  para devolver `401`/`403` JSON; sigue protegida por `requireAdmin`.
 
 ### Fixed
 

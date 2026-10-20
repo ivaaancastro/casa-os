@@ -20,6 +20,10 @@ dist/
 .env.local
 .env.*.local
 
+# Escaneos locales (contienen IP/MAC de la red de casa)
+/scan-latest.json
+/scan-*.json
+
 # Database
 prisma/*.db
 prisma/*.db-journal
