@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Bodoni_Moda, Jost } from 'next/font/google';
 import './globals.css';
 import { Sidebar } from '@/components/Sidebar';
+import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
 
 const bodoniModa = Bodoni_Moda({
   subsets: ['latin'],
@@ -18,6 +19,31 @@ const jost = Jost({
 export const metadata: Metadata = {
   title: 'casa-os | Tu hogar digital',
   description: 'Gestión de dispositivos, notas familiares y más',
+  applicationName: 'casa·os',
+  appleWebApp: {
+    capable: true,
+    title: 'casa·os',
+    statusBarStyle: 'default',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [
+      {
+        url: '/icons/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
+  },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#FFFFFF',
+  colorScheme: 'light',
 };
 
 export default function RootLayout({
@@ -34,6 +60,7 @@ export default function RootLayout({
             {children}
           </main>
         </div>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
