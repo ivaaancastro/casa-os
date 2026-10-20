@@ -11,7 +11,7 @@
 | Sección | Estado | Descripción |
 |---------|--------|-------------|
 | 📊 Dashboard | 🚧 En desarrollo | Resumen de la casa de un vistazo |
-| 🖥️ Dispositivos | 🚧 En desarrollo | Escaneo y control de dispositivos en la red |
+| 🖥️ Dispositivos | 🚧 En desarrollo | Inventario manual (IP, MAC, tipo, propietario, notas); escaneo pendiente |
 | 🛒 Notas / Compra | 🚧 En desarrollo | Notas compartidas para toda la familia |
 | 📅 Calendario | 📋 Planificado | Calendario familiar compartido |
 | 📦 Inventario | 📋 Planificado | Control de objetos, caducidades y garantías |

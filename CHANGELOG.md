@@ -12,6 +12,8 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 ### Added
 
 - Notas familiares con editor enriquecido (estilo Apple Notas) y carpetas
+- Dispositivos: CRUD manual con IP/MAC únicas, tipo, propietario, notas y
+  estado online de solo lectura; ADMIN escribe y FAMILY solo lee
 - PWA instalable: manifest, iconos, service worker y página sin conexión
   (`docs/pwa.md`)
 - Gestión de usuarios y roles (ADMIN/FAMILY), baja lógica y perfil propio con
@@ -36,6 +38,8 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   seguridad y guía `docs/despliegue-vercel.md`.
 - **Desplegado en producción**: <https://casa-os-mauve.vercel.app> (Vercel +
   Neon), con migraciones automáticas en el build.
+- `Device.ip` y `Device.mac` con índice único. La migración no borra datos:
+  aborta con un error claro si encuentra duplicados.
 
 ### Added
 
