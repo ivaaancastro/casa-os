@@ -22,8 +22,9 @@
     "scan": "tsx scripts/scan-network.ts",
     "backup": "tsx scripts/backup-db.ts",
     "icons": "node scripts/generate-pwa-icons.mjs",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "docs:check": "node scripts/check-docs.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

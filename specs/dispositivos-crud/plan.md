@@ -1,5 +1,8 @@
 # Plan — Dispositivos (CRUD)
 
+> Estado: ✅ cerrada (2026-10-20). Registro final:
+> [`cierre.md`](cierre.md).
+
 ## Contexto
 
 El modelo `Device` ya existe en Prisma (`name`, `ip`, `mac`, `type`, `online`,

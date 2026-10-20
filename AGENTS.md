@@ -39,8 +39,10 @@ npm run db:seed          # Poblar datos iniciales
 # Calidad
 npm run lint             # ESLint
 npm run typecheck        # TypeScript sin emitir
-npm run test             # Tests
+npm run test             # Tests (una pasada)
+npm run test:watch       # Tests en modo watch
 npm run build            # Build de producción
+npm run docs:check -- <feature> # Validar el cierre documental de una feature
 
 # Utilidades
 npm run scan             # Escanear red local
@@ -133,13 +135,18 @@ test(devices): añadir tests del escáner
 > 3. El usuario aprueba el `spec.md`.
 > 4. Tras aprobación, crear `tasks.md` y solo entonces implementar.
 > 5. Ejecutar `lint && typecheck && test && build` antes de reportar.
+> 6. Tras el merge, cerrar la feature con un PR `docs/cierre-<nombre>` (Paso 8).
 
 > **REGLA ABSOLUTA: NUNCA se commitea ni se pushea directamente a `main`.**
-> Todo el trabajo se hace en ramas (`feat/*` o `fix/*`) con PR.
+> Todo el trabajo se hace en ramas (`feat/*`, `fix/*` o `docs/*`) con PR.
 
-> **REGLA ABSOLUTA: Solo UNA rama de feature activa a la vez.**
-> Antes de crear una nueva rama, verificar que no haya PRs abiertos.
-> Si hay un PR abierto, mergearlo o cerrarlo primero.
+> **REGLA ABSOLUTA: Solo UNA feature activa a la vez.**
+> Antes de crear una nueva rama de feature, verificar que no haya PRs abiertos.
+> El PR de cierre documental (`docs/cierre-<nombre>`) es parte del cierre: debe
+> mergearse antes de abrir la siguiente feature.
+
+> **PRs de documentación:** los cambios que no son features/fixes usan
+> `docs/<nombre>`; no requieren `specs/`, pero sí PR y CI verde.
 
 ### Paso 1 — Crear carpeta de spec
 
@@ -150,7 +157,8 @@ specs/
 └── <feature-name>/
     ├── plan.md      # Análisis y enfoque técnico
     ├── spec.md      # Especificación detallada (el usuario la aprueba)
-    └── tasks.md     # Tareas de implementación
+    ├── tasks.md     # Tareas de implementación (checkboxes)
+    └── cierre.md    # Registro final (se completa tras el merge)
 ```
 
 ### Paso 2 — Generar `plan.md`
@@ -168,8 +176,10 @@ UI/UX, criterios de aceptación.
 
 ### Paso 5 — Generar `tasks.md`
 
-Lista numerada de tareas concretas, ordenadas por dependencia, cada una
-pequeña (30 min - 2 horas) con archivos a crear/modificar.
+Tareas concretas con checkboxes (`- [ ]`), ordenadas por dependencia, cada una
+pequeña (30 min - 2 horas) con archivos a crear/modificar. Al cerrar la feature
+no debe quedar ninguna tarea pendiente: se marca `- [x]` o se mueve a
+`cierre.md` → *Pendientes / follow-ups*.
 
 ### Paso 6 — Preguntas al usuario
 
@@ -186,12 +196,70 @@ Si surge ambigüedad, **preguntar antes de implementar**.
    ```
    Si CUALQUIERA falla, corregir antes de continuar. NO reportar como
    completado hasta que todo pase.
-5. Commits atómicos con conventional commits
-6. Push de la rama: `git push -u origin feat/nombre-feature`
-7. Crear PR con descripción que referencia el spec
-8. Verificar que el CI de GitHub pasa en el PR
-9. **Solo entonces** reportar como completado
-10. Tras merge, eliminar rama
+5. Verificación de UI con Chrome MCP si la feature toca interfaz.
+6. Commits atómicos con conventional commits
+7. Push de la rama: `git push -u origin feat/nombre-feature`
+8. Crear PR con descripción que referencia el spec
+9. Verificar que el CI de GitHub pasa en el PR
+10. **No declarar la feature terminada todavía**: queda el cierre
+    documental (Paso 8). El merge de código no es el final.
+11. Squash merge, borrar la rama y verificar el CI de `main`.
+
+### Paso 8 — Cierre documental (OBLIGATORIO)
+
+> Se ejecuta después del merge de la feature y de borrar su rama, antes de abrir
+> la siguiente. La feature **no está cerrada** hasta que el PR de cierre esté
+> mergeado y el CI de `main` esté verde. Guía detallada:
+> [`docs/cierre-feature.md`](docs/cierre-feature.md). Plantilla:
+> [`specs/_template/cierre.md`](specs/_template/cierre.md).
+
+#### Fase A — antes del merge (en el PR de la feature)
+
+- [ ] `specs/<nombre>/tasks.md` con checkboxes; marcar todo lo verificable.
+- [ ] Borrador de `specs/<nombre>/cierre.md`: resumen, alcance, cambios,
+      verificación local/UI, documentación y pendientes. Producción queda
+      como *pendiente*.
+- [ ] `CHANGELOG.md` actualizado (`Added` / `Changed` / `Fixed`).
+- [ ] `README.md` y `docs/*` actualizados si cambian comandos, comportamiento,
+      arquitectura o guías.
+- [ ] `MEMORY.md`: estado "en producción, pendiente de cierre", roadmap,
+      notas técnicas y lecciones. **No marcar todavía como Hecho.**
+- [ ] `spec.md` actualizado si cambian criterios o decisiones.
+- [ ] CI del PR de feature en verde.
+
+#### Fase B — después del merge (PR `docs/cierre-<nombre>`)
+
+- [ ] Crear rama `docs/cierre-<nombre>` desde `main` actualizado.
+- [ ] Verificar producción: deployment *Ready/Current*, health, rutas públicas
+      y smoke autenticado (o dejar constancia de quién lo verificó y por qué).
+- [ ] Completar `cierre.md`: PR, commit, deployment, URL, evidencia, tareas
+      `[x]` y follow-ups. **Sin casillas pendientes.**
+- [ ] `MEMORY.md`: marcar Hecho, añadir fila al *Registro de features*,
+      actualizar foco, fecha y lecciones.
+- [ ] `CHANGELOG.md`, `README.md` y `docs/*`: corregir lo que falte.
+- [ ] `npm run docs:check -- <nombre>` debe pasar.
+- [ ] PR de cierre → CI verde → squash merge → borrar rama.
+- [ ] Verificar el CI de `main` tras el merge del cierre. Solo ahora se puede
+      abrir la siguiente feature.
+
+**Regla de bloqueo:** si producción falla o falta una verificación, la feature
+queda bloqueada. No se marca como Hecho, se registra el fallo en `cierre.md` y
+se abre un `fix/*` antes de continuar. No se inventan evidencias ni se marcan
+tareas no verificadas.
+
+### Definición de terminado (DoD)
+
+Una feature está terminada solo si:
+
+1. Código, tests, lint, typecheck y build pasan en local y en CI.
+2. La UI se verificó con Chrome MCP (incluido móvil si aplica).
+3. El PR de feature está mergeado (squash) y la rama borrada.
+4. Producción está desplegada y verificada (pública y autenticada cuando toca).
+5. `specs/<nombre>/tasks.md` no tiene casillas pendientes.
+6. `specs/<nombre>/cierre.md` está completo y sin casillas pendientes.
+7. `MEMORY.md`, `CHANGELOG.md`, `README.md` y `docs/*` reflejan la realidad.
+8. `npm run docs:check -- <nombre>` pasa.
+9. El PR de cierre está mergeado, su rama borrada y el CI de `main` verde.
 
 ## Seguridad
 
@@ -199,7 +267,11 @@ Si surge ambigüedad, **preguntar antes de implementar**.
 - Variables de entorno en `.env` (nunca en el código)
 - Validar TODA la entrada del usuario con Zod
 - El escaneo de red solo debe ejecutarse en la red local del hogar
-- No almacenar contraseñas ni secretos en la base de datos
+- No almacenar contraseñas en claro: solo hashes bcrypt (el seed crea una
+  credencial inicial conocida; debe cambiarse al primer acceso)
+- Nunca escribir contraseñas, tokens ni secretos en documentación, MEMORY,
+  CHANGELOG, specs o mensajes de commit. Solo se registra dónde se guardan
+  (gestor de contraseñas)
 
 ## Lo que NO debe hacer un agente
 
@@ -213,9 +285,12 @@ Si surge ambigüedad, **preguntar antes de implementar**.
 - **No reportar como completado sin ejecutar TODAS las verificaciones**
 - **No pedir al usuario que compruebe algo que el agente no ha comprobado**
 - **No marcar una spec como aprobada si los tests no pasan**
-- **No reportar como completado sin ejecutar TODAS las verificaciones**
-- **No pedir al usuario que compruebe algo que el agente no ha comprobado**
-- **No marcar una spec como aprobada si los tests no pasan**
+- **No abrir una feature nueva hasta que el cierre documental esté mergeado y
+  el CI de `main` esté verde**
+- **No declarar una feature terminada sin `specs/<nombre>/cierre.md` completo
+  y `npm run docs:check -- <nombre>` en verde**
+- **No inventar evidencias, PRs, commits, deployments ni verificaciones**
+- **No documentar contraseñas o secretos** — solo el gestor donde se guardan
 
 ## Recursos útiles
 

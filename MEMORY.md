@@ -33,6 +33,7 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 | 2026-10-14 | TypeScript strict | Evitar bugs, mejor DX |
 | 2026-10-16 | **PostgreSQL** en vez de SQLite | Serverless (Vercel) no persiste disco; Postgres gestionado |
 | 2026-10-16 | **Despliegue en la nube** (Vercel + Postgres) | Sin hardware en casa siempre encendido |
+| 2026-10-20 | **Cierre documental obligatorio por feature** | Evitar documentación desactualizada y dejar un registro verificable de cada entrega |
 
 ## Preferencias del usuario
 
@@ -43,11 +44,11 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 
 ## Protocolo de trabajo (regla de oro)
 
-**Una sola rama/PR activa a la vez.** Antes de empezar algo nuevo: `gh pr list`
-debe estar vacío. No se abre una rama nueva hasta mergear (squash) o cerrar la
-anterior.
+**Una sola feature activa a la vez.** Antes de empezar algo nuevo: `gh pr list`
+debe estar vacío. No se abre una feature nueva hasta mergear (squash) el cierre
+documental de la anterior.
 
-Flujo por feature (SDD):
+Flujo por feature (SDD + cierre):
 
 1. `git checkout main && git pull` → `git checkout -b feat/<nombre>` (o `fix/<nombre>`).
 2. `specs/<nombre>/`: `plan.md` → `spec.md` → **aprobación del usuario** → `tasks.md`.
@@ -55,10 +56,33 @@ Flujo por feature (SDD):
 4. **Verificación obligatoria**: `npm run lint && npm run typecheck && npm run test && npm run build`.
 5. Verificación de UI con Chrome MCP si toca interfaz.
 6. Commit(s) convencionales en español → push → PR → **CI en verde**.
-7. Merge (squash) → borrar rama → actualizar este `MEMORY.md` (roadmap + lecciones).
+7. Squash merge → borrar rama de feature → verificar CI de `main`.
+8. **Cierre documental obligatorio**: rama `docs/cierre-<nombre>` → completar
+   `specs/<nombre>/cierre.md`, marcar `MEMORY.md` (Hecho + Registro de features
+   + foco), actualizar `CHANGELOG.md`/`README.md`/`docs/*`, ejecutar
+   `npm run docs:check -- <nombre>`, PR, CI verde, squash merge, borrar rama y
+   CI de `main` verde. **Solo entonces** se abre la siguiente feature.
 
-Reglas de código: nunca a `main`; ramas `feat/*`/`fix/*`; validación con Zod;
-estética editorial Inditex; mobile-first; sin over-engineering.
+Reglas de código: nunca a `main`; ramas `feat/*`/`fix/*` para código y `docs/*`
+para documentación; validación con Zod; estética editorial Inditex; mobile-first;
+sin over-engineering.
+
+## Cierre de feature (obligatorio)
+
+El merge del código **no** cierra una feature. La definición completa está en
+`AGENTS.md` (Paso 8 y DoD) y la guía operativa en
+[`docs/cierre-feature.md`](docs/cierre-feature.md).
+
+- **Registro por feature:** `specs/<nombre>/cierre.md` (plantilla:
+  `specs/_template/cierre.md`). Incluye PR, commit, deployment, verificación,
+  documentación actualizada, tareas completadas y follow-ups.
+- **Tareas:** `tasks.md` con checkboxes; al cerrar no puede quedar ninguna
+  pendiente (se marca o se mueve a *Pendientes / follow-ups*).
+- **Comprobación:** `npm run docs:check -- <nombre>` valida que existen
+  `plan/spec/tasks/cierre`, que no hay casillas pendientes y que el cierre está
+  enlazado desde `MEMORY.md`.
+- **Bloqueo:** si producción falla o falta una verificación, la feature no se
+  marca como Hecho; se registra el fallo y se abre un `fix/*`.
 
 ## Roadmap
 
@@ -108,6 +132,10 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   IP/MAC únicas (índices en Postgres), tipo, propietario, notas y estado
   online/lastSeen de solo lectura. API con Zod y `409` para duplicados; ADMIN
   escribe y FAMILY solo lee. UI editorial responsive con borrado en dos pasos.
+- **Producción**: deployment `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` (commit `3e38e80`)
+  *Ready · Current*; health `200`, cabeceras, rutas protegidas y smoke
+  autenticado confirmado por Iván.
+- **Cierre:** [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
 
@@ -124,8 +152,9 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 **Hito 2 — Dispositivos de la red**
 
 - `feat/dispositivos-crud` — Inventario manual (nombre, IP, MAC, tipo,
-  propietario, notas, online/lastSeen). **Hecho**: CRUD completo, IP/MAC únicas
-  y permisos ADMIN/FAMILY; tests y verificación móvil.
+  propietario, notas, online/lastSeen). **Hecho y verificado en producción**:
+  CRUD completo, IP/MAC únicas, permisos ADMIN/FAMILY, tests y verificación
+  móvil. Cierre: [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
 - `feat/escaneo-red` — Ejecutar el escáner, mostrar descubiertos e importarlos al
   inventario (deduplicar por MAC/IP). *Hecho cuando*: `npm run scan` alimenta la
   sección y se puede importar con un clic.
@@ -168,6 +197,23 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 **Siguiente:** Hito 2, `feat/escaneo-red` (descubrir equipos e importarlos al
 inventario). Después: `feat/dispositivos-estado`.
 
+## Registro de features
+
+> Registro de entregas y cierres. A partir de v0.6 cada feature tiene su
+> `specs/<nombre>/cierre.md`; las anteriores se resumen en `CHANGELOG.md` y en
+> el roadmap.
+
+| Tipo | Entrega | PR | Commit | Producción | Cierre |
+|---|---|---|---|---|---|
+| feat | Notas + editor premium | #9 | `8c18cc4` | Sí | — (previo al protocolo) |
+| docs | Roadmap y protocolo | #10 | `6a2e394` | — | — |
+| feat | Usuarios, roles y perfil | #11 | `9459187` | Sí | — (previo al protocolo) |
+| feat | PostgreSQL | #12 | `f6062f0` | Sí | — (previo al protocolo) |
+| feat | Despliegue en Vercel | #13 | `b156d3c` | Sí | — (previo al protocolo) |
+| docs | Registro de producción | #14 | `1f85a9b` | — | — |
+| feat | PWA instalable | #15 | `ab34d39` | Sí | — (previo al protocolo) |
+| feat | Dispositivos (CRUD) | #16 | `3e38e80` | `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` | [`cierre`](specs/dispositivos-crud/cierre.md) |
+| docs | Protocolo de cierre + cierre de dispositivos | #17 | — | — | [`guía`](docs/cierre-feature.md) |
 
 ## Notas técnicas
 
@@ -189,6 +235,12 @@ inventario). Después: `feat/dispositivos-estado`.
   normaliza a `AA:BB:CC:DD:EE:FF`. `online`/`lastSeen` son de solo lectura: los
   actualizará el escáner. La migración de unicidad es **no destructiva**: aborta
   con un error claro si hay duplicados.
+- **Documentación**: `MEMORY.md` es la fuente viva del roadmap y el estado;
+  `docs/roadmap.md` es un índice histórico (no duplicar roadmaps). Cada feature
+  cerrada tiene `specs/<nombre>/cierre.md`; el protocolo está en
+  `docs/cierre-feature.md` y se valida con `npm run docs:check -- <nombre>`.
+- **Tests**: `npm run test` ejecuta una pasada (`vitest run`); para watch,
+  `npm run test:watch`. La CI usa la misma pasada.
 
 ## Lecciones aprendidas
 
@@ -234,6 +286,12 @@ inventario). Después: `feat/dispositivos-estado`.
 - **`prisma migrate dev` sin TTY**: el agente no puede usarlo (pide interacción).
   Crear `prisma/migrations/<timestamp>_<nombre>/migration.sql` y aplicar con
   `prisma migrate deploy`.
+- **Cierre de feature**: la verificación de producción ocurre **después** del
+  merge, así que no puede completarse en el PR de código. El cierre va en un PR
+  `docs/cierre-<nombre>` posterior; el merge del código no es el final.
+- **Evidencia honesta**: si el agente no puede autenticarse en producción, lo
+  verifica el usuario y se registra así en `cierre.md`; no se presenta como
+  verificación automática.
 
 ---
 

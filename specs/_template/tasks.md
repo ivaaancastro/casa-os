@@ -1,5 +1,8 @@
 # Tasks: [Nombre de la feature]
 
+> Al cerrar la feature no puede quedar ninguna casilla `- [ ]`: se marca `- [x]`
+> o se mueve a `specs/<nombre>/cierre.md` → *Pendientes / follow-ups*.
+
 ## Fase 1 — [Nombre de fase]
 
 - [ ] **1.1** [Descripción de la tarea] — `archivo.ts`, `archivo2.tsx`

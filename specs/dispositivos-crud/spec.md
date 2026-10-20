@@ -1,5 +1,8 @@
 # Spec — Dispositivos (CRUD)
 
+> Estado: ✅ cerrada (2026-10-20). Registro final:
+> [`cierre.md`](cierre.md).
+
 ## Objetivo
 
 Gestionar a mano el inventario de dispositivos del hogar desde `/devices`:
