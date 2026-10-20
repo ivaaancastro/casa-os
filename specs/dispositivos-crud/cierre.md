@@ -137,6 +137,6 @@ lectura hasta el escáner.
 - [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
 - [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
 - [x] `npm run docs:check -- dispositivos-crud` pasa.
-- [ ] El PR de cierre #17 tiene el CI verde.
+- [x] El PR de cierre #17 tiene el CI verde.
 
 **Estado final:** cerrada
