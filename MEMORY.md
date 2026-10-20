@@ -93,6 +93,14 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 - **Producción**: <https://casa-os-mauve.vercel.app> (Vercel + Neon). Verificado:
   health `200`, cabeceras, login real, notas, familia y escritura en Neon.
   Sin dominio propio por ahora (decisión del usuario).
+
+### ✅ Hecho (v0.5 — PWA instalable)
+
+- **PWA** (`feat/pwa-instalable`): manifest (`/manifest.webmanifest`), iconos
+  32/192/512 + maskable + Apple, service worker (`/sw.js`) y página sin
+  conexión (`/offline`). Instalable en Android/iOS; offline básica **sin
+  cachear datos privados** (solo se precachea `/offline`). Guía en
+  `docs/pwa.md` y generador de iconos en `npm run icons`.
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -103,7 +111,7 @@ estética editorial Inditex; mobile-first; sin over-engineering.
   (Neon), cabeceras de seguridad y guía del dominio. **Hecho**: producción en
   <https://casa-os-mauve.vercel.app> (sin dominio propio por ahora).
 - `feat/pwa-instalable` — Manifest, iconos, service worker básico, navegación
-  mobile-first. *Hecho cuando*: se instala en el móvil y funciona offline básica.
+  mobile-first. **Hecho**: instalable y con página offline; sin datos offline.
 
 **Hito 2 — Dispositivos de la red**
 
@@ -148,9 +156,8 @@ estética editorial Inditex; mobile-first; sin over-engineering.
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**Siguiente:** `feat/pwa-instalable` (Hito 1): manifest, iconos, service worker
-básico y navegación mobile-first. *Hecho cuando*: se instala en el móvil y
-funciona offline básica.
+**Siguiente:** Hito 2, `feat/dispositivos-crud` (inventario manual de
+dispositivos). Después: `feat/escaneo-red` y `feat/dispositivos-estado`.
 
 
 ## Notas técnicas
@@ -165,6 +172,10 @@ funciona offline básica.
 - **Producción**: Vercel + **Neon** (`neondb`). Variables: `DATABASE_URL` (pooled)
   y `DIRECT_URL` (directa). Sin dominio propio por ahora:
   <https://casa-os-mauve.vercel.app>
+- **PWA**: manifest (`src/app/manifest.ts`), SW (`public/sw.js`), offline
+  (`src/app/offline/route.ts`) y registro solo en producción. El SW **solo**
+  precachea `/offline`; no cachea `/api/*` ni HTML autenticado. Iconos:
+  `npm run icons`. Guía: `docs/pwa.md`.
 
 ## Lecciones aprendidas
 
@@ -194,7 +205,17 @@ funciona offline básica.
   **Neon** con `DATABASE_URL` (pooled) + `DIRECT_URL` (directa).
 - **Variables de entorno**: pegar solo el valor de la URL (sin `NOMBRE=`, sin
   comillas). Validar con `new URL(...)` antes de desplegar.
+- **Service worker y datos privados**: cachear HTML autenticado o `/api/*` haría
+  que un dispositivo pudiera mostrar datos de otra sesión. El SW de casa-os solo
+  precachea `/offline` y deja pasar todo lo demás a la red.
+- **Offline autocontenido**: `/offline` es un Route Handler con CSS inline, no
+  una página del App Router; si dependiera del layout raíz o de chunks de
+  Next.js, sin red se vería sin estilos.
+- **SW solo en producción**: registrarlo en desarrollo deja cachés que
+  interfieren con HMR y confunden al depurar.
+- **Instalabilidad**: Chrome exige iconos 192 y 512, `start_url`, `display:
+  standalone` y un SW con handler `fetch`; el maskable va aparte.
 
 ---
 
-*Última actualización: 2026-10-16*
+*Última actualización: 2026-10-19*
