@@ -11,7 +11,7 @@
 | Sección | Estado | Descripción |
 |---------|--------|-------------|
 | 📊 Dashboard | 🚧 En desarrollo | Resumen de la casa de un vistazo |
-| 🖥️ Dispositivos | ✅ CRUD · 🚧 escaneo | Inventario manual (IP, MAC, tipo, propietario, notas); estado automático pendiente |
+| 🖥️ Dispositivos | ✅ CRUD + escaneo · 🚧 estado | Inventario (IP, MAC, tipo, propietario, notas) e importación de escaneos; estado automático pendiente |
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
 | 📅 Calendario | 📋 Planificado | Calendario familiar compartido |
@@ -37,7 +37,7 @@
 - Node.js >= 20
 - npm >= 10
 - Docker (para PostgreSQL en desarrollo): [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- nmap (opcional, para escaneo de red): `brew install nmap`
+- nmap (necesario para escanear la red): `brew install nmap`
 
 ## Inicio rápido
 
@@ -63,6 +63,22 @@ npm run dev
 ```
 
 La aplicación estará disponible en **http://localhost:3000**
+
+## Escanear la red
+
+`nmap` no puede ejecutarse en Vercel, así que el escaneo corre en tu ordenador y
+la app importa el resultado:
+
+```bash
+npm run scan -- --out scan-latest.json
+```
+
+Después, como ADMIN, entra en **Dispositivos → Importar escaneo**, sube el
+archivo y revisa la previsualización. Solo se importan los equipos nuevos que
+marques; las IP/MAC existentes y los conflictos se muestran sin modificar nada.
+
+Guía completa, formato JSON y resolución de conflictos:
+**[`docs/escaneo-red.md`](docs/escaneo-red.md)**.
 
 ## Despliegue
 
@@ -159,7 +175,7 @@ La CI de GitHub ejecuta lint, typecheck, tests y build en cada PR y en `main`.
 - [`docs/cierre-feature.md`](docs/cierre-feature.md) — protocolo obligatorio de
   cierre (código → producción → PR de documentación).
 - [`specs/`](specs/) — `plan.md`, `spec.md`, `tasks.md` y `cierre.md` por feature.
-- [`docs/`](docs/) — arquitectura, despliegue, PWA y guías.
+- [`docs/`](docs/) — arquitectura, despliegue, PWA, escaneo de red y guías.
 
 Cada feature se cierra con un PR `docs/cierre-<nombre>` después de verificar
 producción. El registro queda en `specs/<nombre>/cierre.md` y se valida con:

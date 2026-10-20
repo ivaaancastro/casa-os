@@ -4,6 +4,14 @@
  * Sin dependencias de React ni de Zod: lo comparten la API, la UI y los tests.
  */
 
+/** IPv4 con octetos 0–255; sin ceros a la izquierda (01.2.3.4 no vale). */
+export const IPV4_REGEX =
+  /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+
+export function isValidIpv4(value: string): boolean {
+  return IPV4_REGEX.test(value);
+}
+
 export const DEVICE_TYPES = [
   'ROUTER',
   'SWITCH',

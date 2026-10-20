@@ -1,12 +1,8 @@
 import { z } from 'zod';
-import { DEVICE_TYPES, normalizeMac } from '../utils/device';
+import { DEVICE_TYPES, IPV4_REGEX, normalizeMac } from '../utils/device';
 
 export const DEVICE_NAME_MAX = 80;
 export const DEVICE_NOTES_MAX = 1000;
-
-/** IPv4 con octetos 0–255; sin ceros a la izquierda (01.2.3.4 no vale). */
-const IPV4_REGEX =
-  /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
 
 const nameField = z
   .string()

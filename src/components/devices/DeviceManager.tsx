@@ -7,6 +7,7 @@ import {
   DEVICE_TYPE_LABELS,
   type DeviceType,
 } from '@/lib/utils/device';
+import { ScanImportPanel } from './ScanImportPanel';
 
 export interface DeviceOwner {
   id: string;
@@ -56,6 +57,7 @@ export function DeviceManager({
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [importingScan, setImportingScan] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
@@ -124,19 +126,39 @@ export function DeviceManager({
         </p>
       )}
 
-      {isAdmin && !creating && (
-        <button
-          type="button"
-          className="btn-secondary"
-          onClick={() => {
-            setCreating(true);
-            setEditingId(null);
-            setConfirmingId(null);
-            setError('');
-          }}
-        >
-          Añadir dispositivo
-        </button>
+      {isAdmin && !creating && !importingScan && (
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              setCreating(true);
+              setImportingScan(false);
+              setEditingId(null);
+              setConfirmingId(null);
+              setError('');
+            }}
+          >
+            Añadir dispositivo
+          </button>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              setImportingScan(true);
+              setCreating(false);
+              setEditingId(null);
+              setConfirmingId(null);
+              setError('');
+            }}
+          >
+            Importar escaneo
+          </button>
+        </div>
+      )}
+
+      {isAdmin && importingScan && (
+        <ScanImportPanel onClose={() => setImportingScan(false)} />
       )}
 
       {isAdmin && creating && (
@@ -215,6 +237,7 @@ export function DeviceManager({
                           onClick={() => {
                             setEditingId(isEditing ? null : device.id);
                             setCreating(false);
+                            setImportingScan(false);
                             setConfirmingId(null);
                             setError('');
                           }}
@@ -248,6 +271,7 @@ export function DeviceManager({
                             onClick={() => {
                               setConfirmingId(device.id);
                               setEditingId(null);
+                              setImportingScan(false);
                               setError('');
                             }}
                           >
