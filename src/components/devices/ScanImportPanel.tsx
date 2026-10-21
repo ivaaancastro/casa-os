@@ -260,7 +260,7 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
         <p className="text-xs text-ash">
           En el ordenador conectado a la red de casa:
         </p>
-        <code className="mt-2 block break-words text-xs text-ink">
+        <code className="mt-2 block overflow-x-auto whitespace-nowrap text-xs text-ink">
           npm run scan -- --out scan-latest.json
         </code>
         <p className="mt-2 text-xs text-ash">
@@ -315,18 +315,30 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
               <strong className="font-normal text-ink">
                 {preview.summary.total}
               </strong>{' '}
-              descubiertos
+              {preview.summary.total === 1 ? 'descubierto' : 'descubiertos'}
             </span>
             <span>
               <strong className="font-normal text-ink">
                 {preview.summary.new}
               </strong>{' '}
-              nuevos
+              {preview.summary.new === 1 ? 'nuevo' : 'nuevos'}
             </span>
-            <span>{preview.summary.existing} ya existentes</span>
-            <span>{preview.summary.conflict} conflictos</span>
-            <span>{preview.summary.duplicate} duplicados</span>
-            <span>{preview.summary.invalid} inválidos</span>
+            <span>
+              {preview.summary.existing}{' '}
+              {preview.summary.existing === 1 ? 'ya existente' : 'ya existentes'}
+            </span>
+            <span>
+              {preview.summary.conflict}{' '}
+              {preview.summary.conflict === 1 ? 'conflicto' : 'conflictos'}
+            </span>
+            <span>
+              {preview.summary.duplicate}{' '}
+              {preview.summary.duplicate === 1 ? 'duplicado' : 'duplicados'}
+            </span>
+            <span>
+              {preview.summary.invalid}{' '}
+              {preview.summary.invalid === 1 ? 'inválido' : 'inválidos'}
+            </span>
           </div>
 
           {(scannedAt || preview.cidr) && (
