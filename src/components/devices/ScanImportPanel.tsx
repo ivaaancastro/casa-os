@@ -260,7 +260,7 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
         <p className="text-xs text-ash">
           En el ordenador conectado a la red de casa:
         </p>
-        <code className="mt-2 block overflow-x-auto whitespace-nowrap text-xs text-ink">
+        <code className="mt-2 block break-words text-[11px] leading-5 text-ink">
           npm run scan -- --out scan-latest.json
         </code>
         <p className="mt-2 text-xs text-ash">
