@@ -1,7 +1,7 @@
 # Spec — Calendario familiar
 
 **Feature:** `calendario`
-**Estado:** propuesta — pendiente de aprobación del usuario
+**Estado:** aprobada — implementación completada; cierre en curso
 **Fecha:** 2026-10-22
 **Hito:** 3 — Organización del hogar
 

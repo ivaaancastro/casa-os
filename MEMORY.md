@@ -35,6 +35,8 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 | 2026-10-16 | **Despliegue en la nube** (Vercel + Postgres) | Sin hardware en casa siempre encendido |
 | 2026-10-20 | **Cierre documental obligatorio por feature** | Evitar documentación desactualizada y dejar un registro verificable de cada entrega |
 | 2026-10-20 | **Escaneo local + importación JSON** | `nmap` no corre en Vercel; evita tokens e historial de escaneos |
+| 2026-10-22 | **Calendario compartido con permisos por creador** | Toda la familia crea planes; editar/borrar queda en el creador o ADMIN |
+| 2026-10-22 | **Recordatorio almacenado, sin envío** | El calendario guarda la preferencia; los avisos van en `feat/recordatorios` |
 
 ## Preferencias del usuario
 
@@ -168,6 +170,16 @@ El merge del código **no** cierra una feature. La definición completa está en
   escritura. Verificado a 390 px sin overflow.
 - **Cierre:** [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
 
+### 🚧 En cierre (v0.9 — calendario)
+
+- **Calendario familiar** (`feat/calendario`): vistas de mes (rejilla de 42
+  celdas, lunes primero) y semana, CRUD de eventos con hora o de todo el día,
+  responsable opcional, recordatorio almacenado y agenda móvil. API autenticada
+  con permisos creador/ADMIN y migración aditiva `add_calendar_events`. Los
+  avisos de recordatorio quedan para `feat/recordatorios`.
+- **Estado**: implementación y verificación local completadas; pendiente de PR,
+  despliegue y cierre documental.
+
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -199,7 +211,9 @@ El merge del código **no** cierra una feature. La definición completa está en
 **Hito 3 — Organización del hogar**
 
 - `feat/calendario` — Eventos familiares (título, fecha, hora, quién, todo el
-  día, recordatorio). *Hecho cuando*: vista mes/semana y CRUD + tests.
+  día, recordatorio). **Implementado**: vista mes/semana, CRUD, permisos y
+  tests; pendiente de verificación en producción y cierre. *Hecho cuando*:
+  vista mes/semana y CRUD + tests.
 - `feat/recordatorios` — Notificaciones/tareas programadas ligadas al calendario
   y a las notas TODO. *Hecho cuando*: llega un aviso en el navegador/móvil.
 
@@ -234,7 +248,11 @@ El merge del código **no** cierra una feature. La definición completa está en
 `34fee9f`. Cierre:
 [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
 
-**Siguiente:** `feat/calendario` (eventos familiares).
+**En curso:** `feat/calendario` (eventos familiares). Implementación y
+verificación local completadas; pendiente de PR, producción y cierre.
+
+**Siguiente:** `feat/recordatorios` (avisos ligados al calendario), cuando el
+cierre de calendario esté mergeado y el CI de `main` esté verde.
 
 ## Registro de features
 
@@ -292,6 +310,11 @@ El merge del código **no** cierra una feature. La definición completa está en
   `docs/roadmap.md` es un índice histórico (no duplicar roadmaps). Cada feature
   cerrada tiene `specs/<nombre>/cierre.md`; el protocolo está en
   `docs/cierre-feature.md` y se valida con `npm run docs:check -- <nombre>`.
+- **Calendario**: eventos con hora en UTC; eventos de todo el día guardados a
+  medianoche UTC y pintados por su clave `YYYY-MM-DD` para no desplazarse de
+  día. `Event.reminderMinutes` admite `null`, `0`, `10`, `30`, `60` y `1440`,
+  pero **no hay envío de avisos** todavía. La API de eventos se excluye del
+  middleware para devolver `401` JSON y cada handler aplica `requireUser`.
 - **Tests**: `npm run test` ejecuta una pasada (`vitest run`); para watch,
   `npm run test:watch`. La CI usa la misma pasada.
 
@@ -369,6 +392,15 @@ El merge del código **no** cierra una feature. La definición completa está en
   vistos y se protege cualquier equipo con una fila ambigua.
 - **Escaneo viejo**: comparar `scannedAt` con el `lastSeen` de cada equipo
   (no solo con la fecha global) evita que un JSON antiguo revierta el estado.
+- **`position: fixed` y ancestros transformados**: un `transform` (aunque venga
+  de una animación con `fill-mode: both`) crea un containing block y rompe el
+  panel a pantalla completa. La solución fue renderizarlo con un portal a
+  `document.body`; se comprobó a 390 px.
+- **Todo el día sin saltos de día**: no convertir a medianoche local; guardar la
+  fecha UTC y comparar claves `YYYY-MM-DD` evita que el evento cambie de día
+  según la zona horaria.
+- **Recordatorio ≠ notificación**: guardar `reminderMinutes` no programa nada.
+  La UI debe decirlo para no prometer avisos que aún no existen.
 
 ---
 

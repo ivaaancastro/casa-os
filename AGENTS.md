@@ -6,8 +6,9 @@ que trabajen en este proyecto.
 ## Descripción del proyecto
 
 **casa-os** es una aplicación web personal para gestionar datos del hogar:
-dispositivos de red, notas familiares, y futuras secciones (calendario, inventario, etc.).
-Es un proyecto de uso personal/familiar, no un producto comercial.
+dispositivos de red, notas familiares, calendario compartido y futuras secciones
+(inventario, gastos, etc.). Es un proyecto de uso personal/familiar, no un
+producto comercial.
 
 ## Stack técnico
 
@@ -58,6 +59,8 @@ src/
 │   ├── page.tsx         # Dashboard
 │   ├── devices/         # Sección dispositivos
 │   ├── notas/           # Sección notas/compra
+│   ├── calendario/      # Calendario familiar (mes/semana)
+│   ├── familia/         # Miembros y roles
 │   ├── api/             # API routes
 │   └── auth/            # Autenticación
 ├── components/          # Componentes React reutilizables
@@ -116,7 +119,8 @@ test(devices): añadir tests del escáner
 ## Autenticación
 
 - NextAuth con credenciales email/contraseña
-- Roles: `ADMIN` (puede todo) y `FAMILY` (solo lectura/escritura de notas)
+- Roles: `ADMIN` (puede todo) y `FAMILY` (lee todo, escribe notas y crea
+  eventos; solo edita/borra sus propios eventos)
 - La sesión se gestiona con JWT
 - Middleware de NextAuth protege rutas en `src/middleware.ts`
 
