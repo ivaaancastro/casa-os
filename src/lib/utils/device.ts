@@ -68,38 +68,55 @@ export interface DeviceStatusInput {
 }
 
 /**
+ * Texto relativo para la última vez visto.
+ *
+ * Devuelve `ahora`, `hace 5 min`, `hace 3 h`, `hace 2 días` o la fecha corta.
+ * Una fecha inválida devuelve `sin datos`.
+ */
+export function formatRelativeTime(
+  value: Date | string,
+  now: Date = new Date(),
+): string {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return 'sin datos';
+
+  const diffMs = now.getTime() - date.getTime();
+  if (diffMs < 60_000) return 'ahora';
+
+  const minutes = Math.floor(diffMs / 60_000);
+  if (minutes < 60) return `hace ${minutes} min`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `hace ${hours} h`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `hace ${days} ${days === 1 ? 'día' : 'días'}`;
+
+  return `el ${new Intl.DateTimeFormat('es-ES', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(date)}`;
+}
+
+/**
  * Texto de estado para la UI.
  *
- * `online` manda; si no, se muestra cuándo se vio por última vez. Sin datos
+ * `online` manda; se acompaña de la última vez visto si existe. Sin datos
  * (nunca escaneado) devuelve "Sin datos".
  */
 export function formatDeviceStatus(
   device: DeviceStatusInput,
   now: Date = new Date(),
 ): string {
-  if (device.online) return 'En línea';
-  if (!device.lastSeen) return 'Sin datos';
+  if (!device.lastSeen) {
+    return device.online ? 'En línea' : 'Sin datos';
+  }
 
-  const lastSeen =
-    device.lastSeen instanceof Date ? device.lastSeen : new Date(device.lastSeen);
+  const relative = formatRelativeTime(device.lastSeen, now);
+  if (relative === 'sin datos') return 'Sin datos';
 
-  if (Number.isNaN(lastSeen.getTime())) return 'Sin datos';
-
-  const diffMs = now.getTime() - lastSeen.getTime();
-  if (diffMs < 60_000) return 'Ahora';
-
-  const minutes = Math.floor(diffMs / 60_000);
-  if (minutes < 60) return `Hace ${minutes} min`;
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `Hace ${hours} h`;
-
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `Hace ${days} ${days === 1 ? 'día' : 'días'}`;
-
-  return new Intl.DateTimeFormat('es-ES', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(lastSeen);
+  return device.online
+    ? `En línea · visto ${relative}`
+    : `Ausente · visto ${relative}`;
 }

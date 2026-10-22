@@ -2,10 +2,8 @@
 
 import { useId, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  SCAN_STATUS_LABELS,
-  type ScanStatus,
-} from '@/lib/utils/scan';
+import { SCAN_STATUS_LABELS, type ScanStatus } from '@/lib/utils/scan';
+import { formatRelativeTime } from '@/lib/utils/device';
 
 interface ScanExistingDevice {
   id: string;
@@ -36,13 +34,34 @@ interface ScanSummary {
   invalid: number;
   created: number;
   skipped: number;
+  connected: number;
+  disconnected: number;
+  stale: number;
+}
+
+interface ScanStatusChange {
+  id: string;
+  name: string;
+}
+
+interface ScanStaleChange extends ScanStatusChange {
+  lastSeen: string;
+}
+
+interface ScanChanges {
+  connected: ScanStatusChange[];
+  disconnected: ScanStatusChange[];
+  stale: ScanStaleChange[];
 }
 
 interface ScanPreview {
   dryRun: boolean;
   scannedAt: string | null;
   cidr: string | null;
+  statusApplied: boolean;
+  offlineChecked: boolean;
   summary: ScanSummary;
+  changes: ScanChanges;
   items: ScanPreviewItem[];
 }
 
@@ -62,6 +81,54 @@ function formatScanDate(value: string | null): string | null {
   if (Number.isNaN(date.getTime())) return value;
 
   return date.toLocaleString('es-ES');
+}
+
+function withNames(changes: { name: string }[]): string {
+  if (changes.length === 0) return '';
+
+  const names = changes.slice(0, 3).map((change) => change.name).join(', ');
+  const rest = changes.length > 3 ? ` y ${changes.length - 3} más` : '';
+  return ` · ${names}${rest}`;
+}
+
+function describeImport(result: ImportResponse): string {
+  const connected = result.changes?.connected.length ?? 0;
+  const disconnected = result.changes?.disconnected.length ?? 0;
+  const stale = result.changes?.stale.length ?? 0;
+  const altas = result.created + connected;
+
+  const parts: string[] = [];
+
+  if (altas > 0) {
+    const detail = [
+      result.created > 0
+        ? `${result.created} ${result.created === 1 ? 'nuevo' : 'nuevos'}`
+        : null,
+      connected > 0 ? `${connected} en línea` : null,
+    ]
+      .filter(Boolean)
+      .join(', ');
+
+    parts.push(
+      `${altas} ${altas === 1 ? 'alta' : 'altas'}${detail ? ` (${detail})` : ''}`,
+    );
+  }
+
+  if (disconnected > 0) {
+    parts.push(
+      `${disconnected} ${disconnected === 1 ? 'baja' : 'bajas'}`,
+    );
+  }
+
+  if (stale > 0) {
+    parts.push(
+      `${stale} ${stale === 1 ? 'ignorado' : 'ignorados'} por fecha`,
+    );
+  }
+
+  return parts.length > 0
+    ? `Escaneo aplicado · ${parts.join(' · ')}.`
+    : 'Escaneo aplicado · sin cambios.';
 }
 
 export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
@@ -176,16 +243,20 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
   }
 
   async function handleImport() {
-    if (!preview || selected.size === 0) return;
+    if (!preview) return;
 
-    const devices = preview.items
-      .filter((item) => selected.has(item.index))
-      .map((item) => ({
-        ip: item.ip,
-        mac: item.mac,
-        vendor: item.vendor,
-        name: item.suggestedName,
-      }));
+    const importIps = preview.items
+      .filter((item) => selected.has(item.index) && item.status === 'new')
+      .map((item) => item.ip);
+
+    if (importIps.length === 0 && !preview.statusApplied) return;
+
+    const devices = preview.items.map((item) => ({
+      ip: item.ip,
+      mac: item.mac,
+      vendor: item.vendor,
+      name: item.suggestedName,
+    }));
 
     setPending(true);
     setError('');
@@ -198,6 +269,7 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
         body: JSON.stringify({
           devices,
           dryRun: false,
+          importIps,
           ...(preview.scannedAt ? { scannedAt: preview.scannedAt } : {}),
           ...(preview.cidr ? { cidr: preview.cidr } : {}),
         }),
@@ -216,10 +288,7 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
       }
 
       const imported = data as ImportResponse;
-      const skipped = imported.skipped > 0 ? ` · ${imported.skipped} omitidos` : '';
-      setSuccess(
-        `${imported.created} ${imported.created === 1 ? 'equipo importado' : 'equipos importados'}${skipped}.`,
-      );
+      setSuccess(describeImport(imported));
       setPreview(null);
       setSelected(new Set());
       if (inputRef.current) inputRef.current.value = '';
@@ -235,6 +304,27 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
     ? preview.items.filter((item) => item.status === 'new').length
     : 0;
   const scannedAt = formatScanDate(preview?.scannedAt ?? null);
+  const connected = preview?.changes?.connected ?? [];
+  const disconnected = preview?.changes?.disconnected ?? [];
+  const stale = preview?.changes?.stale ?? [];
+  const scanAge = preview?.scannedAt
+    ? Date.now() - new Date(preview.scannedAt).getTime()
+    : null;
+  const isOldScan = scanAge !== null && scanAge > 24 * 3_600_000;
+  const canApply = Boolean(
+    preview && (selected.size > 0 || preview.statusApplied),
+  );
+  const applyLabel = !preview
+    ? ''
+    : selected.size > 0
+      ? preview.statusApplied
+        ? `Importar ${selected.size} ${
+            selected.size === 1 ? 'nuevo' : 'nuevos'
+          } y actualizar estado`
+        : `Importar ${selected.size} ${
+            selected.size === 1 ? 'nuevo' : 'nuevos'
+          }`
+      : 'Actualizar estado';
 
   return (
     <div className="card">
@@ -265,7 +355,8 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
         </code>
         <p className="mt-2 text-xs text-ash">
           Luego selecciona <span className="text-ink">scan-latest.json</span>.
-          Solo se importan los equipos nuevos que marques.
+          Se importan los equipos nuevos que marques y se actualiza el estado
+          del inventario.
         </p>
       </div>
 
@@ -349,6 +440,67 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
             </p>
           )}
 
+          <div className="mt-4 border border-mist bg-canvas p-4">
+            <p className="text-[10px] tracking-wider2 text-ash">
+              Estado tras aplicar
+            </p>
+
+            {!preview.statusApplied ? (
+              <p className="mt-2 text-xs text-ash">
+                El archivo no trae una fecha de escaneo válida: solo se crean
+                equipos nuevos y el estado no cambia.
+              </p>
+            ) : (
+              <>
+                <ul className="mt-2 space-y-1 text-xs text-ash">
+                  <li>
+                    <strong className="font-normal text-ink">
+                      {connected.length}
+                    </strong>{' '}
+                    {connected.length === 1
+                      ? 'pasará a en línea'
+                      : 'pasarán a en línea'}
+                    {withNames(connected)}
+                  </li>
+                  <li>
+                    <strong className="font-normal text-ink">
+                      {disconnected.length}
+                    </strong>{' '}
+                    {disconnected.length === 1
+                      ? 'se marcará como ausente'
+                      : 'se marcarán como ausentes'}
+                    {withNames(disconnected)}
+                  </li>
+                  {stale.length > 0 && (
+                    <li>
+                      <strong className="font-normal text-ink">
+                        {stale.length}
+                      </strong>{' '}
+                      {stale.length === 1
+                        ? 'se ignorará por ser anterior a su última vez visto'
+                        : 'se ignorarán por ser anteriores a su última vez visto'}
+                      {withNames(stale)}
+                    </li>
+                  )}
+                </ul>
+
+                {!preview.offlineChecked && (
+                  <p className="mt-2 text-xs text-ash">
+                    El archivo no trae una red válida: no se marcarán equipos
+                    como ausentes.
+                  </p>
+                )}
+
+                {isOldScan && preview.scannedAt && (
+                  <p className="mt-2 text-xs text-alarm">
+                    El escaneo es de {formatRelativeTime(preview.scannedAt)}:
+                    puedes aplicarlo, pero el estado no será reciente.
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+
           <ul className="mt-4 border-t border-mist">
             {preview.items.map((item) => {
               const isSelectable = item.status === 'new';
@@ -421,13 +573,9 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
               type="button"
               className="btn-primary"
               onClick={handleImport}
-              disabled={pending || selected.size === 0}
+              disabled={pending || !canApply}
             >
-              {pending
-                ? 'Importando...'
-                : `Importar ${selected.size} ${
-                    selected.size === 1 ? 'nuevo' : 'nuevos'
-                  }`}
+              {pending ? 'Aplicando...' : applyLabel}
             </button>
             <button
               type="button"
@@ -441,8 +589,8 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
 
           {newCount === 0 && (
             <p className="mt-3 text-xs text-ash">
-              No hay equipos nuevos que importar. Revisa los conflictos o el
-              inventario.
+              No hay equipos nuevos en el archivo. Puedes aplicar el escaneo
+              igualmente para actualizar el estado del inventario.
             </p>
           )}
         </div>

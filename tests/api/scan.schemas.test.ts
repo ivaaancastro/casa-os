@@ -95,4 +95,68 @@ describe('importScanSchema', () => {
 
     expect(result.devices[0].mac).toBe('no-es-una-mac');
   });
+
+  it('acepta la selección de IPs a importar', () => {
+    const result = importScanSchema.parse({
+      devices: [device],
+      importIps: [' 192.168.1.10 ', '192.168.1.20'],
+    });
+
+    expect(result.importIps).toEqual(['192.168.1.10', '192.168.1.20']);
+  });
+
+  it('rechaza IPs de selección inválidas o demasiadas', () => {
+    expect(
+      importScanSchema.safeParse({
+        devices: [device],
+        importIps: ['no-es-ip'],
+      }).success,
+    ).toBe(false);
+
+    const tooMany = Array.from(
+      { length: SCAN_MAX_DEVICES + 1 },
+      (_, index) => `10.0.0.${index % 254}`,
+    );
+    expect(
+      importScanSchema.safeParse({ devices: [device], importIps: tooMany })
+        .success,
+    ).toBe(false);
+  });
+
+  it('valida el CIDR cuando se envía', () => {
+    expect(
+      importScanSchema.safeParse({
+        devices: [device],
+        cidr: '192.168.1.0/24',
+      }).success,
+    ).toBe(true);
+    expect(
+      importScanSchema.safeParse({ devices: [device], cidr: '192.168.1.0/99' })
+        .success,
+    ).toBe(false);
+    expect(
+      importScanSchema.safeParse({ devices: [device], cidr: 'hola' }).success,
+    ).toBe(false);
+  });
+
+  it('acepta una fecha pasada y rechaza una futura o inválida', () => {
+    expect(
+      importScanSchema.safeParse({
+        devices: [device],
+        scannedAt: '2026-10-20T18:00:00.000Z',
+      }).success,
+    ).toBe(true);
+
+    expect(
+      importScanSchema.safeParse({
+        devices: [device],
+        scannedAt: '2999-01-01T00:00:00.000Z',
+      }).success,
+    ).toBe(false);
+
+    expect(
+      importScanSchema.safeParse({ devices: [device], scannedAt: 'ayer' })
+        .success,
+    ).toBe(false);
+  });
 });

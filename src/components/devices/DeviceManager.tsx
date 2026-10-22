@@ -20,6 +20,7 @@ export interface DeviceItem {
   ip: string;
   mac: string | null;
   type: string;
+  online: boolean;
   status: string;
   notes: string | null;
   owner: DeviceOwner | null;
@@ -205,9 +206,7 @@ export function DeviceManager({
                         </span>
                         <span
                           className={`text-[10px] tracking-wider2 ${
-                            device.status === 'En línea'
-                              ? 'text-ink'
-                              : 'text-ash'
+                            device.online ? 'text-ink' : 'text-ash'
                           }`}
                         >
                           {device.status}

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/api-auth';
 import { prisma } from '@/lib/prisma';
 import { deviceWithOwner } from '@/lib/devices';
-import { formatDeviceStatus } from '@/lib/utils/device';
+import { formatDeviceStatus, formatRelativeTime } from '@/lib/utils/device';
 import {
   DeviceManager,
   type DeviceItem,
@@ -33,6 +33,7 @@ export default async function DevicesPage() {
     ip: device.ip,
     mac: device.mac,
     type: device.type,
+    online: device.online,
     status: formatDeviceStatus({
       online: device.online,
       lastSeen: device.lastSeen,
@@ -51,6 +52,13 @@ export default async function DevicesPage() {
 
   const onlineCount = devices.filter((device) => device.online).length;
   const deviceLabel = devices.length === 1 ? 'dispositivo' : 'dispositivos';
+  const latestSeen = devices.reduce<Date | null>((latest, device) => {
+    if (!device.lastSeen) return latest;
+    if (!latest || device.lastSeen > latest) return device.lastSeen;
+    return latest;
+  }, null);
+  const isStale =
+    latestSeen !== null && Date.now() - latestSeen.getTime() > 24 * 3_600_000;
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-12 lg:px-16 lg:py-16">
@@ -67,6 +75,12 @@ export default async function DevicesPage() {
           </p>
           <p className="mt-2 text-[10px] tracking-wider2 text-ash">
             {devices.length} {deviceLabel} · {onlineCount} en línea
+          </p>
+          <p className="mt-1 text-[10px] tracking-wider2 text-ash">
+            {latestSeen
+              ? `Última actualización: ${formatRelativeTime(latestSeen)}`
+              : 'Sin escaneos aplicados'}
+            {isStale && ' · Estado desactualizado, sube un escaneo nuevo'}
           </p>
         </header>
 
