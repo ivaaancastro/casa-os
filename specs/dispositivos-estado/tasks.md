@@ -46,8 +46,8 @@
 - [x] **13. Calidad** — `npm run lint && npm run typecheck && npm run test &&
   npm run build`. `docs:check` se valida en la Fase B, cuando el cierre deja de
   ser borrador.
-- [ ] **14. UI y PR** — Verificación Chrome MCP (escritorio y 390 px), commits,
-  PR, CI verde, squash merge y borrado de rama.
+- [x] **14. UI y PR** — Verificación Chrome MCP (escritorio y 390 px), commits,
+  PR #22, CI verde, squash merge (`34fee9f`) y borrado de rama.
 
 ## Pendientes / follow-ups
 

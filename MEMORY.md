@@ -155,16 +155,18 @@ El merge del código **no** cierra una feature. La definición completa está en
   tarea 14 completada y cuenta temporal desactivada.
 - **Cierre:** [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 
-### 🚧 En cierre (v0.8 — estado de dispositivos)
+### ✅ Hecho (v0.8 — estado de dispositivos)
 
 - **Estado de dispositivos** (`feat/dispositivos-estado`): al aplicar un
   escaneo se actualizan `online` y `lastSeen`; los equipos de la red que ya se
   habían visto y no aparecen se marcan ausentes. Guardia contra escaneos
   anteriores a `lastSeen`, previsualización de altas/bajas y frescura en la
   lista. Sin migración ni historial.
-- **Pendiente de la Fase B:** PR, CI, merge, deployment y smoke en producción.
-- **Cierre:** borrador en
-  [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
+- **Producción**: PR #22 (squash merge `34fee9f`), CI de `main` verde (run
+  `39818616853`), health `200` y alias actualizado. Smoke autenticado ADMIN:
+  lista con estado y aviso de frescura, preview de fixture y descarte sin
+  escritura. Verificado a 390 px sin overflow.
+- **Cierre:** [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
 
@@ -190,9 +192,9 @@ El merge del código **no** cierra una feature. La definición completa está en
   y móvil 390 px. Guía: [`docs/escaneo-red.md`](docs/escaneo-red.md). Cierre:
   [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 - `feat/dispositivos-estado` — Estado online/offline, "última vez visto" y
-  alertas básicas de altas/bajas. **En cierre**: estado aplicado al importar el
-  escaneo, guardia de fechas y UI con proyección; pendiente de merge y smoke.
-  *Hecho cuando*: la lista refleja el estado real.
+  alertas básicas de altas/bajas. ✅ **Hecho (v0.8)**: estado aplicado al
+  importar el escaneo, guardia de fechas, proyección y frescura en la lista.
+  *Cumplido*: la lista refleja el estado real del último escaneo.
 
 **Hito 3 — Organización del hogar**
 
@@ -227,15 +229,12 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**Última feature cerrada:** `feat/escaneo-red` (escaneo local + importación
-JSON), PRs #18/#19/#20 y commit `5835fd2`. Cierre:
-[`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
-
-**En cierre:** `feat/dispositivos-estado` (online/ausente, última vez visto y
-altas/bajas al aplicar el escaneo). Cierre:
+**Última feature cerrada:** `feat/dispositivos-estado` (estado online/ausente,
+última vez visto y altas/bajas al aplicar el escaneo), PR #22 y commit
+`34fee9f`. Cierre:
 [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
 
-**Siguiente:** `feat/calendario` (eventos familiares), tras cerrar esta feature.
+**Siguiente:** `feat/calendario` (eventos familiares).
 
 ## Registro de features
 
@@ -255,7 +254,7 @@ altas/bajas al aplicar el escaneo). Cierre:
 | feat | Dispositivos (CRUD) | #16 | `3e38e80` | `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` | [`cierre`](specs/dispositivos-crud/cierre.md) |
 | docs | Protocolo de cierre + cierre de dispositivos | #17 | `e15c34a` | — | [`guía`](docs/cierre-feature.md) |
 | feat | Escaneo de red (local + importación) | #18, #19, #20 | `5835fd2` | Sí (smoke ADMIN) | [`cierre`](specs/escaneo-red/cierre.md) |
-| feat | Estado de dispositivos (online/ausente) | — | — | En cierre | [borrador](specs/dispositivos-estado/cierre.md) |
+| feat | Estado de dispositivos (online/ausente) | #22 | `34fee9f` | Sí (smoke ADMIN) | [`cierre`](specs/dispositivos-estado/cierre.md) |
 
 ## Notas técnicas
 

@@ -1,6 +1,6 @@
 # Cierre — Estado de dispositivos (online/ausente)
 
-**Estado:** borrador
+**Estado:** cerrada
 **Fecha:** 2026-10-22
 **Feature:** `dispositivos-estado`
 
@@ -48,31 +48,35 @@ lista muestra la última vez visto y la frescura del dato. Se apoya en los campo
 | `npm run typecheck` | OK |
 | `npm run test` | 253 tests OK (24 nuevos) |
 | `npm run build` | OK; `/devices` y `/api/devices/import` compilan |
-| CI del PR | Pendiente de abrir el PR |
+| CI del PR | [PR #22](https://github.com/ivaaancastro/casa-os/pull/22): quality, test, build y Vercel en verde |
 
 ### UI / Chrome
 
-- Navegador y viewport: Chrome DevTools MCP; escritorio y 390 px.
-- Flujos comprobados: previsualización con equipos nuevos y existentes;
-  aplicación con altas y reconexiones; transición a ausente; escaneo antiguo
-  ignorado; cabecera con última actualización; usuario FAMILY sin controles y
-  API con `403`.
+- Navegador y viewport: Chrome DevTools MCP; escritorio y 390 px (producción).
+- Flujos comprobados en local: previsualización con equipos nuevos y
+  existentes; aplicación con altas y reconexiones; transición a ausente;
+  escaneo antiguo ignorado; cabecera con última actualización; usuario FAMILY
+  sin controles y API con `403`.
+- Flujos comprobados en producción: lista con `En línea · visto hace 3 días` y
+  aviso `Estado desactualizado`; previsualización de un fixture con el router
+  existente y un equipo nuevo, proyección `Estado tras aplicar` (0 altas,
+  0 bajas) y fila nueva marcada. Se descartó sin escribir.
 - Consola: limpia, salvo el aviso preexistente de `metadata` de Next.js.
-- Responsive / overflow: sin overflow horizontal a 390 px; panel y lista
+- Responsive / overflow: `scrollWidth = innerWidth = 390`; panel y lista
   legibles en una columna.
-- Evidencia visual: capturas locales de la previsualización, el resultado y la
-  lista; no incluyen datos sensibles.
+- Evidencia visual: capturas locales y de producción de la previsualización, el
+  resultado y la lista; no incluyen datos sensibles.
 
 ### Producción
 
 | Campo | Valor |
 |---|---|
 | URL | https://casa-os-mauve.vercel.app |
-| Deployment | Pendiente (Fase B) |
-| Commit | Pendiente |
-| Health | Pendiente |
-| Rutas | Pendiente |
-| Smoke autenticado | Pendiente |
+| Deployment | Producción automática de Vercel (Git integration); alias actualizado tras el merge |
+| Commit | `34fee9f` |
+| Health | `200` (`{"status":"ok","db":"ok"}`) |
+| Rutas | `/auth/login` 200 · `/manifest.webmanifest` 200 · `/api/health` 200 · `/devices` 307 sin sesión (esperado) |
+| Smoke autenticado | Sesión ADMIN en producción: lista con estado y frescura, previsualización de fixture y descarte sin escritura; verificado el 2026-10-22 |
 
 ## Documentación actualizada
 
@@ -81,9 +85,9 @@ lista muestra la última vez visto y la frescura del dato. Se apoya en los campo
 - [x] `README.md`: características afectadas.
 - [x] `docs/*`: `escaneo-red.md` y `roadmap.md`.
 - [x] `spec.md` y `plan.md`: decisiones finales.
-- [x] `tasks.md`: tareas 1-13 completadas; 14 pendiente hasta el merge.
+- [x] `tasks.md`: todas las tareas completadas.
 - [x] `AGENTS.md`: No aplica (no cambian las reglas del arnés).
-- [ ] `npm run docs:check -- dispositivos-estado` pasa.
+- [x] `npm run docs:check -- dispositivos-estado` pasa.
 
 ## Tareas
 
@@ -94,14 +98,15 @@ lista muestra la última vez visto y la frescura del dato. Se apoya en los campo
 - Planificación y escritura transaccional en `POST /api/devices/import`.
 - Panel de importación con proyección, resultado y refresco de la lista.
 - Lista con última vez visto y cabecera con frescura y aviso de 24 h.
-- Documentación de la feature y borrador de este cierre.
+- Documentación de la feature y cierre completo.
 - `lint`, `typecheck`, `test` y `build` en verde.
-- Verificación de UI con Chrome MCP en escritorio y 390 px.
+- Verificación de UI con Chrome MCP en escritorio y 390 px, local y producción.
+- PR #22 con CI verde, squash merge (`34fee9f`) y rama borrada.
+- CI de `main` verde (run `39818616853`).
+- Deployment de producción y smoke autenticado.
 
 ### Pendientes / follow-ups
 
-- PR de la feature, CI verde, squash merge y borrado de rama (tarea 14).
-- Deployment y smoke de producción (Fase B).
 - Notificaciones push/email de altas y bajas — `feat/recordatorios`.
 - Historial de disponibilidad y gráficas — backlog.
 - Resolución automática de conflictos IP/MAC o IP por DHCP — fuera de alcance.
@@ -133,13 +138,13 @@ lista muestra la última vez visto y la frescura del dato. Se apoya en los campo
 
 ## Checklist de cierre
 
-- [ ] El PR de la feature está mergeado y la rama borrada.
-- [ ] El CI de `main` está verde tras el merge de la feature.
-- [ ] Producción está desplegada y verificada; el smoke autenticado está
+- [x] El PR de la feature está mergeado y la rama borrada.
+- [x] El CI de `main` está verde tras el merge de la feature.
+- [x] Producción está desplegada y verificada; el smoke autenticado está
       documentado.
-- [ ] `tasks.md` no tiene casillas pendientes.
-- [ ] `cierre.md` no tiene casillas pendientes.
-- [ ] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
-- [ ] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
-- [ ] `npm run docs:check -- dispositivos-estado` pasa.
+- [x] `tasks.md` no tiene casillas pendientes.
+- [x] `cierre.md` no tiene casillas pendientes.
+- [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
+- [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
+- [x] `npm run docs:check -- dispositivos-estado` pasa.
 - [ ] El PR de cierre tiene el CI verde.
