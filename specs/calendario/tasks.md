@@ -1,6 +1,6 @@
 # Tasks — Calendario familiar
 
-> Estado: implementación completada; pendiente de PR y cierre en producción.
+> Estado: cerrada. PR #24 mergeado, CI de `main` verde y producción verificada.
 > Spec aprobado el 2026-10-22.
 
 ## Datos y lógica
@@ -48,9 +48,9 @@
 - [x] **14. Documentación** — `README.md`, `docs/calendario.md`, `CHANGELOG.md`,
   `MEMORY.md`, `docs/roadmap.md` y `AGENTS.md`; borrador de
   `specs/calendario/cierre.md`.
-- [ ] **15. UI y PR** — Verificación Chrome MCP (escritorio y 390 px), commits,
+- [x] **15. UI y PR** — Verificación Chrome MCP (escritorio y 390 px), commits,
   PR, CI verde, squash merge y borrado de rama.
-- [ ] **16. Cierre en producción** — Migración aplicada, health, rutas y smoke
+- [x] **16. Cierre en producción** — Migración aplicada, health, rutas y smoke
   autenticado; completar `cierre.md` y PR `docs/cierre-calendario`.
 
 ## Pendientes / follow-ups

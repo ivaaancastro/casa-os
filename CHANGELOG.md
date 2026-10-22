@@ -79,6 +79,10 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   en cada handler.
 - Dashboard y sidebar actualizados: Calendario aparece como módulo disponible y
   enlaza a `/calendario`.
+- **Calendario verificado en producción** (PR #24, commit `94a4d40`, deployment
+  `CYckvdS6Bf8bMXKz1HkRH223bdEn`): health y rutas públicas OK, `/api/events` sin
+  sesión → `401` JSON y smoke autenticado ADMIN con alta, edición, recordatorio
+  y borrado. Evento temporal eliminado; la API quedó con 0 eventos.
 
 ### Fixed
 

@@ -1,7 +1,7 @@
 # Spec — Calendario familiar
 
 **Feature:** `calendario`
-**Estado:** aprobada — implementación completada; cierre en curso
+**Estado:** cerrada — implementada, desplegada y verificada en producción
 **Fecha:** 2026-10-22
 **Hito:** 3 — Organización del hogar
 
@@ -272,21 +272,21 @@ Calendario
 
 ## Criterios de aceptación
 
-- [ ] `/calendario` exige sesión y aparece en sidebar y dashboard.
-- [ ] La vista de mes muestra 42 celdas, empieza en lunes y navega por meses.
-- [ ] La vista de semana muestra de lunes a domingo y navega por semanas.
-- [ ] Se crea un evento con hora, otro de todo el día y otro con recordatorio.
-- [ ] Se edita un evento y se borra con confirmación.
-- [ ] Un evento de todo el día no se desplaza de día en otra zona horaria.
-- [ ] Un evento con hora que cruza medianoche aparece en ambos días.
-- [ ] FAMILY puede crear; no puede editar/borrar eventos ajenos; ADMIN sí.
-- [ ] La API devuelve `401` sin sesión y `403` sin permiso.
-- [ ] El responsable solo admite miembros activos.
-- [ ] La UI funciona a 390 px sin overflow y con consola limpia.
-- [ ] `npm run lint && npm run typecheck && npm run test && npm run build` pasa.
-- [ ] `npm run db:migrate` genera `add_calendar_events` y el build la aplica.
-- [ ] `docs/calendario.md`, README, CHANGELOG, MEMORY y roadmap actualizados.
-- [ ] Producción verificada con health, rutas y smoke autenticado.
+- [x] `/calendario` exige sesión y aparece en sidebar y dashboard.
+- [x] La vista de mes muestra 42 celdas, empieza en lunes y navega por meses.
+- [x] La vista de semana muestra de lunes a domingo y navega por semanas.
+- [x] Se crea un evento con hora, otro de todo el día y otro con recordatorio.
+- [x] Se edita un evento y se borra con confirmación.
+- [x] Un evento de todo el día no se desplaza de día en otra zona horaria.
+- [x] Un evento con hora que cruza medianoche aparece en ambos días.
+- [x] FAMILY puede crear; no puede editar/borrar eventos ajenos; ADMIN sí.
+- [x] La API devuelve `401` sin sesión y `403` sin permiso.
+- [x] El responsable solo admite miembros activos.
+- [x] La UI funciona a 390 px sin overflow y con consola limpia.
+- [x] `npm run lint && npm run typecheck && npm run test && npm run build` pasa.
+- [x] `npm run db:migrate` genera `add_calendar_events` y el build la aplica.
+- [x] `docs/calendario.md`, README, CHANGELOG, MEMORY y roadmap actualizados.
+- [x] Producción verificada con health, rutas y smoke autenticado.
 
 ## Fuera de alcance
 

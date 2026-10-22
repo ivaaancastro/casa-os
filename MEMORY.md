@@ -170,15 +170,20 @@ El merge del código **no** cierra una feature. La definición completa está en
   escritura. Verificado a 390 px sin overflow.
 - **Cierre:** [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
 
-### 🚧 En cierre (v0.9 — calendario)
+### ✅ Hecho (v0.9 — calendario)
 
 - **Calendario familiar** (`feat/calendario`): vistas de mes (rejilla de 42
   celdas, lunes primero) y semana, CRUD de eventos con hora o de todo el día,
   responsable opcional, recordatorio almacenado y agenda móvil. API autenticada
   con permisos creador/ADMIN y migración aditiva `add_calendar_events`. Los
   avisos de recordatorio quedan para `feat/recordatorios`.
-- **Estado**: implementación y verificación local completadas; pendiente de PR,
-  despliegue y cierre documental.
+- **Producción**: PR #24 (squash merge `94a4d40`), CI de `main` verde (run
+  `39828836139`) y Vercel commit status success (deployment
+  `CYckvdS6Bf8bMXKz1HkRH223bdEn`). Health `200` (`db: ok`). Smoke autenticado
+  ADMIN en `/calendario`: alta de evento de todo el día, edición de título y
+  recordatorio, detalle y borrado; `GET /api/events` final con 0 eventos. Sin
+  sesión, `/calendario` → 307 y `/api/events` → 401 JSON.
+- **Cierre:** [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
 
@@ -211,9 +216,9 @@ El merge del código **no** cierra una feature. La definición completa está en
 **Hito 3 — Organización del hogar**
 
 - `feat/calendario` — Eventos familiares (título, fecha, hora, quién, todo el
-  día, recordatorio). **Implementado**: vista mes/semana, CRUD, permisos y
-  tests; pendiente de verificación en producción y cierre. *Hecho cuando*:
-  vista mes/semana y CRUD + tests.
+  día, recordatorio). ✅ **Hecho (v0.9)**: vista mes/semana, CRUD, permisos,
+  recordatorio almacenado y tests; verificado en producción con smoke ADMIN.
+  Cierre: [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 - `feat/recordatorios` — Notificaciones/tareas programadas ligadas al calendario
   y a las notas TODO. *Hecho cuando*: llega un aviso en el navegador/móvil.
 
@@ -243,16 +248,16 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**Última feature cerrada:** `feat/dispositivos-estado` (estado online/ausente,
-última vez visto y altas/bajas al aplicar el escaneo), PR #22 y commit
-`34fee9f`. Cierre:
-[`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
+**Última feature cerrada:** `feat/calendario` (vistas de mes/semana, CRUD de
+eventos, todo el día, responsable y recordatorio almacenado), PR #24 y commit
+`94a4d40`. Cierre:
+[`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 
-**En curso:** `feat/calendario` (eventos familiares). Implementación y
-verificación local completadas; pendiente de PR, producción y cierre.
+**En curso:** ninguna. El calendario está cerrado; el siguiente PR es el cierre
+documental `docs/cierre-calendario`.
 
 **Siguiente:** `feat/recordatorios` (avisos ligados al calendario), cuando el
-cierre de calendario esté mergeado y el CI de `main` esté verde.
+PR de cierre de calendario esté mergeado y el CI de `main` esté verde.
 
 ## Registro de features
 
@@ -273,6 +278,7 @@ cierre de calendario esté mergeado y el CI de `main` esté verde.
 | docs | Protocolo de cierre + cierre de dispositivos | #17 | `e15c34a` | — | [`guía`](docs/cierre-feature.md) |
 | feat | Escaneo de red (local + importación) | #18, #19, #20 | `5835fd2` | Sí (smoke ADMIN) | [`cierre`](specs/escaneo-red/cierre.md) |
 | feat | Estado de dispositivos (online/ausente) | #22 | `34fee9f` | Sí (smoke ADMIN) | [`cierre`](specs/dispositivos-estado/cierre.md) |
+| feat | Calendario familiar (mes/semana, CRUD, recordatorio) | #24 | `94a4d40` | Sí (smoke ADMIN) | [`cierre`](specs/calendario/cierre.md) |
 
 ## Notas técnicas
 

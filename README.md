@@ -14,7 +14,7 @@
 | 🖥️ Dispositivos | ✅ Terminado | Inventario (IP, MAC, tipo, propietario, notas), escaneo e importación, estado en línea/ausente y última vez visto |
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
-| 📅 Calendario | 🚧 En cierre | Calendario compartido con vistas de mes/semana, eventos, todo el día y recordatorio |
+| 📅 Calendario | ✅ Terminado | Calendario compartido con vistas de mes/semana, eventos, todo el día y recordatorio |
 | 📦 Inventario | 📋 Planificado | Control de objetos, caducidades y garantías |
 | 💰 Gastos | 💡 Idea | Registro y reparto de gastos del hogar |
 | 🔧 Mantenimiento | 💡 Idea | Tareas recurrentes y historial |
