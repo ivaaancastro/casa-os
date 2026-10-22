@@ -1,11 +1,11 @@
 # Cierre — Escaneo de red e importación
 
-**Estado:** borrador (Fase A)
-**Fecha:** 2026-10-20
+**Estado:** cerrada
+**Fecha:** 2026-10-21
 **Feature:** `escaneo-red`
 **PR de feature:** #18
-**Commit:** pendiente (squash merge)
-**PR de cierre:** pendiente
+**Commits:** `955bd6a` (feature), `d51aeb6` (#19) y `5835fd2` (#20)
+**PR de cierre:** #21
 
 ## Resumen
 
@@ -37,6 +37,7 @@ por IP/MAC y crea únicamente las filas `new` seleccionadas.
 | Middleware | `src/middleware.ts` | Excepción para devolver `401` JSON en la importación |
 | CLI | `scripts/scan-network.ts` | `execFile`, flags, errores y JSON |
 | UI | `src/components/devices/ScanImportPanel.tsx`, `DeviceManager.tsx` | Subida, preview, selección, importación y permisos |
+| Pulido UI | PR #19 y #20 | Concordancia `1 nuevo`/`N nuevos` y comando completo en móvil |
 | Tests | `tests/scan.test.ts`, `tests/api/scan.schemas.test.ts`, `tests/middleware.test.ts` | Parser, clasificación, esquema y excepción de middleware |
 | Docs | `README.md`, `CHANGELOG.md`, `docs/escaneo-red.md`, `specs/escaneo-red/` | Guía, estado y cierre |
 
@@ -44,13 +45,18 @@ por IP/MAC y crea únicamente las filas `new` seleccionadas.
 
 ### Código y tests
 
-| Comando | Resultado |
+| Comando / comprobación | Resultado |
 |---|---|
 | `npm run lint` | OK |
 | `npm run typecheck` | OK |
 | `npm run test` | 225 tests OK |
 | `npm run build` | OK; `ƒ /api/devices/import` y `ƒ /devices` presentes |
-| CI del PR | pendiente |
+| CI PR #18 | ✅ [run 39464481002](https://github.com/ivaaancastro/casa-os/actions/runs/39464481002) |
+| CI de `main` tras #18 | ✅ [run 39464716601](https://github.com/ivaaancastro/casa-os/actions/runs/39464716601) |
+| CI PR #19 | ✅ [run 39581446625](https://github.com/ivaaancastro/casa-os/actions/runs/39581446625) |
+| CI de `main` tras #19 | ✅ [run 39581639376](https://github.com/ivaaancastro/casa-os/actions/runs/39581639376) |
+| CI PR #20 | ✅ [run 39582032219](https://github.com/ivaaancastro/casa-os/actions/runs/39582032219) |
+| CI de `main` tras #20 | ✅ [run 39582208456](https://github.com/ivaaancastro/casa-os/actions/runs/39582208456) |
 
 ### CLI
 
@@ -82,22 +88,26 @@ por IP/MAC y crea únicamente las filas `new` seleccionadas.
 | Campo | Valor |
 |---|---|
 | URL | <https://casa-os-mauve.vercel.app> |
-| Deployment | pendiente |
-| Commit | pendiente |
-| Health | pendiente |
-| Rutas | pendiente |
-| Smoke autenticado | pendiente |
+| Deployment | Auto-deploy de Vercel desde `main`; ID no disponible sin token de Vercel |
+| Commit | `5835fd2` (`fix(escaneo): mostrar el comando completo en móvil (#20)`) |
+| Health | `GET /api/health` → `200` (`status: ok`, `db: ok`) |
+| Rutas | `/api/devices/import` sin sesión → `401` JSON; `/devices` sin sesión → `307` al login; `/auth/login` → `200`; manifest, SW y `/offline` → `200` |
+| Cabeceras | CSP, HSTS, `nosniff`, `frame-options` y `permissions-policy` correctas |
+| Código nuevo | La UI final muestra `1 nuevo` y el comando completo; el `401` JSON de la ruta nueva confirma que producción sirve el código del merge |
+| Smoke ADMIN | Cuenta temporal: `/devices` con panel, fixture de 2 equipos (1 existente + 1 nuevo), preview sin importar, 390 px sin overflow y consola limpia |
+| Smoke FAMILY | No ejecutado en producción (sin credencial FAMILY); misma lógica verificada en local y API `403` |
+| Limpieza | Cuenta temporal desactivada por Iván desde `/familia`; la app solo permite baja lógica, no borrado duro |
 
 ## Documentación actualizada
 
-- [x] `MEMORY.md`: estado, roadmap, registro y foco (pendiente PR/deployment).
-- [x] `CHANGELOG.md`: entrada de la entrega.
+- [x] `MEMORY.md`: v0.7, producción, registro de features, foco y lecciones.
+- [x] `CHANGELOG.md`: entrada de la entrega, verificación en producción y fixes.
 - [x] `README.md`: característica, requisito de nmap y guía.
-- [x] `docs/*`: `docs/escaneo-red.md`.
+- [x] `docs/*`: `docs/escaneo-red.md` y roadmap histórico.
 - [x] `spec.md` y `plan.md`: decisiones finales.
-- [ ] `tasks.md`: tarea 13 (PR/producción) pendiente hasta Fase B.
+- [x] `tasks.md`: tarea 14 completada y follow-ups separados.
 - [x] `AGENTS.md`: no aplica; no cambian las reglas del arnés.
-- [ ] `npm run docs:check -- escaneo-red` pasa (Fase B).
+- [x] `npm run docs:check -- escaneo-red` pasa.
 
 ## Tareas
 
@@ -110,6 +120,13 @@ por IP/MAC y crea únicamente las filas `new` seleccionadas.
 - Tests de parser, clasificación, esquema y middleware.
 - Documentación, verificación local/UI y build.
 - Datos de prueba eliminados de la base local.
+- PR #18 mergeado en `main` (`955bd6a`), rama borrada y CI de `main` verde.
+- PRs #19 y #20 de pulido UI mergeados; commit final `5835fd2` y CI verde.
+- Producción verificada en público: health, cabeceras, rutas protegidas y
+  `401` JSON de la nueva API.
+- Smoke ADMIN de producción con fixture: panel, preview, móvil 390 px y consola
+  limpia, sin importar datos.
+- Cuenta temporal de producción desactivada.
 
 ### Pendientes / follow-ups
 
@@ -118,7 +135,9 @@ por IP/MAC y crea únicamente las filas `new` seleccionadas.
 - Publicación directa del escaneo con token — evitar la subida manual, si se
   quiere; no entra en esta entrega.
 - Escaneo real — el agente no tiene `nmap` instalado; verificar con la red de
-  casa y registrar el resultado en la Fase B.
+  casa y registrar el resultado.
+- Confirmación FAMILY en producción (opcional) — el guard es el mismo que se
+  verificó en local.
 - Resolver conflictos IP/MAC manualmente — no hay fusión automática.
 
 ## Decisiones y lecciones
@@ -133,10 +152,15 @@ por IP/MAC y crea únicamente las filas `new` seleccionadas.
   equipos existentes. El estado online queda para la siguiente feature.
 - **Excepción de middleware**: las rutas de API deben devolver `401` JSON, no
   redirigir a login; el guard `requireAdmin` sigue siendo la defensa real.
-- **`npm run --silent`** para pipes: la cabecera de npm contaminaría el stdout.
+- **Pulido en PRs pequeños**: el smoke de producción detectó concordancia y un
+  comando recortado; se corrigieron en `fix/*` antes de cerrar, no se dejaron
+  como deuda visual.
+- **Baja lógica ≠ borrado**: no hay `DELETE /api/users` y la autodesactivación
+  está bloqueada; una cuenta temporal debe desactivarla otro ADMIN o borrarse
+  desde la base de datos.
 - **Verificación honesta**: el escaneo real no se pudo ejecutar en el entorno
-  del agente; se probó el CLI con un `nmap` simulado y el usuario deberá hacer
-  el smoke con su red.
+  del agente y FAMILY no se probó en producción; se registra así en vez de
+  presentarlo como verificación automática.
 
 ## Riesgos residuales
 
@@ -147,16 +171,19 @@ por IP/MAC y crea únicamente las filas `new` seleccionadas.
   sin sobrescribir.
 - Un JSON antiguo puede mostrar equipos que ya no están; no se toca el estado
   online en esta entrega.
+- La cuenta temporal queda como baja lógica, no eliminada físicamente; no hay
+  endpoint de borrado duro.
 
 ## Checklist de cierre
 
-- [ ] El PR de la feature está mergeado y la rama borrada.
-- [ ] El CI de `main` está verde tras el merge de la feature.
-- [ ] Producción está desplegada y verificada; el smoke autenticado está
-      documentado.
-- [ ] `tasks.md` no tiene casillas pendientes.
-- [ ] `cierre.md` no tiene casillas pendientes.
-- [ ] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
-- [ ] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
-- [ ] `npm run docs:check -- escaneo-red` pasa.
-- [ ] El PR de cierre tiene el CI verde.
+- [x] El PR de la feature está mergeado (#18) y la rama borrada.
+- [x] El CI de `main` está verde tras el merge de la feature y de los fixes.
+- [x] Producción está desplegada y verificada; el smoke ADMIN está documentado.
+- [x] `tasks.md` no tiene casillas pendientes.
+- [x] `cierre.md` no tiene casillas pendientes.
+- [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
+- [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
+- [x] `npm run docs:check -- escaneo-red` pasa.
+- [x] El PR de cierre #21 tiene el CI verde.
+
+**Estado final:** cerrada

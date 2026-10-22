@@ -138,17 +138,22 @@ El merge del código **no** cierra una feature. La definición completa está en
   autenticado confirmado por Iván.
 - **Cierre:** [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
 
-### 🚧 En cierre (v0.7 — escaneo de red)
+### ✅ Hecho (v0.7 — escaneo de red)
 
 - **Escaneo de red** (`feat/escaneo-red`): escáner local con nmap, JSON
   versionado y panel en `/devices` para previsualizar e importar solo equipos
   nuevos. Deduplicación por IP/MAC, estados `new`/`existing`/`conflict`/
   `duplicate`/`invalid`, `dryRun` por defecto y `createMany` con
   `skipDuplicates`. No hay cambios de esquema ni se toca `online`/`lastSeen`.
+- **Producción**: PRs #18 (feature), #19 y #20 (pulido); commit final
+  `5835fd2`; health `200`, cabeceras correctas y `POST /api/devices/import` sin
+  sesión → `401` JSON, lo que confirma el código nuevo. Smoke autenticado ADMIN
+  confirmado por el agente con la cuenta temporal: panel, preview de fixture y
+  móvil 390 px sin overflow. FAMILY se verificó en local; no hubo credencial
+  FAMILY de producción.
 - **Documentación**: `docs/escaneo-red.md`; API `POST /api/devices/import`;
-  PR #18 abierto, tarea 13 y verificación de producción pendientes de la Fase B.
-- **Cierre:** borrador en
-  [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
+  tarea 14 completada y cuenta temporal desactivada.
+- **Cierre:** [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
 
@@ -169,9 +174,10 @@ El merge del código **no** cierra una feature. La definición completa está en
   CRUD completo, IP/MAC únicas, permisos ADMIN/FAMILY, tests y verificación
   móvil. Cierre: [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
 - `feat/escaneo-red` — Ejecutar el escáner, mostrar descubiertos e importarlos al
-  inventario (deduplicar por MAC/IP). **En cierre**: escaneo local + JSON,
-  preview e importación de nuevos; pendiente smoke real y producción. Guía:
-  [`docs/escaneo-red.md`](docs/escaneo-red.md).
+  inventario (deduplicar por MAC/IP). **Hecho y verificado en producción**:
+  escaneo local + JSON, preview e importación de nuevos; smoke ADMIN con fixture
+  y móvil 390 px. Guía: [`docs/escaneo-red.md`](docs/escaneo-red.md). Cierre:
+  [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 - `feat/dispositivos-estado` — Estado online/offline, "última vez visto" y
   alertas básicas de altas/bajas. *Hecho cuando*: la lista refleja el estado real.
 
@@ -208,8 +214,9 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**En cierre:** `feat/escaneo-red` (escaneo local + importación JSON), PR #18.
-Pendiente de merge, producción y Fase B.
+**Última feature cerrada:** `feat/escaneo-red` (escaneo local + importación
+JSON), PRs #18/#19/#20 y commit `5835fd2`. Cierre:
+[`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 
 **Siguiente:** `feat/dispositivos-estado` (actualizar `online`/`lastSeen` y
 detectar equipos ausentes).
@@ -231,7 +238,7 @@ detectar equipos ausentes).
 | feat | PWA instalable | #15 | `ab34d39` | Sí | — (previo al protocolo) |
 | feat | Dispositivos (CRUD) | #16 | `3e38e80` | `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` | [`cierre`](specs/dispositivos-crud/cierre.md) |
 | docs | Protocolo de cierre + cierre de dispositivos | #17 | `e15c34a` | — | [`guía`](docs/cierre-feature.md) |
-| feat | Escaneo de red (local + importación) | #18 | — | En cierre | [borrador](specs/escaneo-red/cierre.md) |
+| feat | Escaneo de red (local + importación) | #18, #19, #20 | `5835fd2` | Sí (smoke ADMIN) | [`cierre`](specs/escaneo-red/cierre.md) |
 
 ## Notas técnicas
 
@@ -328,7 +335,11 @@ detectar equipos ausentes).
 - **Evidencia honesta**: si el agente no puede autenticarse en producción, lo
   verifica el usuario y se registra así en `cierre.md`; no se presenta como
   verificación automática.
+- **Baja lógica ≠ borrado**: la app no tiene `DELETE /api/users` y bloquea la
+  autodesactivación. Una cuenta temporal de producción debe desactivarla otro
+  ADMIN (o borrarse desde la base de datos); no se puede limpiar desde su propia
+  sesión.
 
 ---
 
-*Última actualización: 2026-10-20*
+*Última actualización: 2026-10-21*

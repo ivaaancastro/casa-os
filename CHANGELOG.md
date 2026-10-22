@@ -59,11 +59,17 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   con `dryRun` y solo crea equipos nuevos (`POST /api/devices/import`).
 - La ruta de importación de escaneo queda fuera del middleware de redirección
   para devolver `401`/`403` JSON; sigue protegida por `requireAdmin`.
+- **Escaneo de red verificado en producción** (PRs #18, #19 y #20; commit
+  `5835fd2`): panel ADMIN con preview de fixture, móvil 390 px sin overflow y
+  consola limpia. FAMILY verificado en local; sin credencial FAMILY en
+  producción. Cuenta temporal desactivada tras el smoke.
 
 ### Fixed
 
 - Login: usar navegación dura tras `signIn` para no adelantarse al `Set-Cookie`
   de la sesión
+- Panel de escaneo: concordancia singular/plural en el resumen (`1 nuevo`,
+  `1 ya existente`) y comando de ejemplo completo en móvil.
 
 ---
 

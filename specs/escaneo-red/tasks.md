@@ -1,6 +1,6 @@
 # Tasks — Escaneo de red e importación
 
-> Estado: en cierre. La tarea 13 (PR y producción) se completa en la Fase B.
+> Estado: cerrada. Feature, pulido y smoke de producción completados.
 
 ## Escáner y utilidades
 
@@ -46,9 +46,14 @@
   spec/tasks y borrador de `cierre.md`.
 - [x] **12. Calidad local** — `npm run lint && npm run typecheck && npm run
   test && npm run build`.
-- [ ] **13. PR y producción** — PR, CI verde, squash merge, deployment y
-  comprobaciones públicas; smoke autenticado con escaneo real o fixture sin
-  dejar datos.
+- [x] **13. PR y despliegue** — PR #18, CI verde, squash merge `955bd6a`,
+  deployment automático y comprobaciones públicas (health, cabeceras, `401`
+  sin sesión y rutas protegidas).
+- [x] **14. Smoke autenticado** — ADMIN confirmado en producción con cuenta
+  temporal: panel, preview de fixture (un equipo existente y uno nuevo) y móvil
+  390 px sin overflow, sin importar datos. FAMILY se verificó en local (sin
+  panel ni botones; API `403`); no se usó una credencial FAMILY de producción.
+  Cuenta temporal desactivada tras el smoke.
 
 ## Pendientes / follow-ups
 
@@ -56,3 +61,7 @@
   equipos ausentes.
 - Publicación directa del escaneo con token (opción B), si se quiere evitar
   subir el archivo manualmente.
+- Confirmación FAMILY en producción (opcional): el guard es el mismo que se
+  verificó en local; no hay credencial FAMILY de producción.
+- Escaneo real con `nmap` instalado en el equipo de casa; el agente solo pudo
+  probar el CLI con un binario simulado.
