@@ -17,11 +17,13 @@
 |---|---|---|
 | 1 — Fundación | ✅ | Auth, layout, notas, usuarios/roles, PostgreSQL, Vercel y PWA |
 | 2 — Dispositivos | ✅ | CRUD manual · escaneo de red · estado de equipos, última vez visto y frescura |
-| 3 — Organización | 📋 | Calendario y recordatorios |
+| 3 — Organización | 🚧 | Calendario (implementado, en cierre) · recordatorios |
 | 4 — Patrimonio | 📋 | Inventario, documentos y gastos |
 | 5 — Automatización | 💡 | Domótica |
 
 Detalle, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) → *Roadmap*.
+El calendario familiar ya está implementado y en cierre; los avisos de
+recordatorio siguen en `feat/recordatorios`.
 
 ## Backlog
 

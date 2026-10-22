@@ -9,6 +9,7 @@ const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/devices', label: 'Dispositivos' },
   { href: '/notas', label: 'Notas' },
+  { href: '/calendario', label: 'Calendario' },
   { href: '/familia', label: 'Familia' },
 ];
 

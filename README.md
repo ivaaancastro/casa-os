@@ -14,7 +14,7 @@
 | 🖥️ Dispositivos | ✅ Terminado | Inventario (IP, MAC, tipo, propietario, notas), escaneo e importación, estado en línea/ausente y última vez visto |
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
-| 📅 Calendario | 📋 Planificado | Calendario familiar compartido |
+| 📅 Calendario | 🚧 En cierre | Calendario compartido con vistas de mes/semana, eventos, todo el día y recordatorio |
 | 📦 Inventario | 📋 Planificado | Control de objetos, caducidades y garantías |
 | 💰 Gastos | 💡 Idea | Registro y reparto de gastos del hogar |
 | 🔧 Mantenimiento | 💡 Idea | Tareas recurrentes y historial |
@@ -63,6 +63,18 @@ npm run dev
 ```
 
 La aplicación estará disponible en **http://localhost:3000**
+
+## Calendario familiar
+
+El calendario compartido de la casa tiene vista de **mes** y **semana**, eventos
+con hora o de **todo el día**, responsable opcional y recordatorio. Cualquier
+miembro activo puede crear; solo el creador o un ADMIN puede editar o borrar.
+
+El recordatorio se guarda y se muestra, pero **todavía no envía avisos**; eso
+llegará en `feat/recordatorios`.
+
+Guía de uso, permisos, API y límites:
+**[`docs/calendario.md`](docs/calendario.md)**.
 
 ## Escanear la red
 
@@ -177,7 +189,7 @@ La CI de GitHub ejecuta lint, typecheck, tests y build en cada PR y en `main`.
 - [`docs/cierre-feature.md`](docs/cierre-feature.md) — protocolo obligatorio de
   cierre (código → producción → PR de documentación).
 - [`specs/`](specs/) — `plan.md`, `spec.md`, `tasks.md` y `cierre.md` por feature.
-- [`docs/`](docs/) — arquitectura, despliegue, PWA, escaneo de red y guías.
+- [`docs/`](docs/) — arquitectura, despliegue, PWA, calendario, escaneo de red y guías.
 
 Cada feature se cierra con un PR `docs/cierre-<nombre>` después de verificar
 producción. El registro queda en `specs/<nombre>/cierre.md` y se valida con:

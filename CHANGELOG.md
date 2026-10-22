@@ -11,6 +11,10 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Calendario familiar**: vistas de mes y semana, eventos con hora o de todo el
+  día, responsable opcional y recordatorio almacenado. Cualquier miembro activo
+  puede crear; solo el creador o un ADMIN puede editar o borrar. Incluye API
+  autenticada, migración aditiva, tests y guía en `docs/calendario.md`.
 - Notas familiares con editor enriquecido (estilo Apple Notas) y carpetas
 - Dispositivos: CRUD manual con IP/MAC únicas, tipo, propietario, notas y
   estado online de solo lectura; ADMIN escribe y FAMILY solo lee
@@ -70,6 +74,11 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   `5835fd2`): panel ADMIN con preview de fixture, móvil 390 px sin overflow y
   consola limpia. FAMILY verificado en local; sin credencial FAMILY en
   producción. Cuenta temporal desactivada tras el smoke.
+- **API de eventos**: se excluye `/api/events` del middleware para que las rutas
+  devuelvan `401` JSON en vez de redirigir al login, manteniendo `requireUser`
+  en cada handler.
+- Dashboard y sidebar actualizados: Calendario aparece como módulo disponible y
+  enlaza a `/calendario`.
 
 ### Fixed
 
@@ -77,6 +86,11 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   de la sesión
 - Panel de escaneo: concordancia singular/plural en el resumen (`1 nuevo`,
   `1 ya existente`) y comando de ejemplo completo en móvil.
+- Panel de evento: se renderiza en un portal sobre `document.body` para que un
+  ancestro con `transform` no limite el `position: fixed`; así cubre todo el
+  viewport en móvil y no se superpone con el botón del menú.
+- Metadatos PWA: añadido `mobile-web-app-capable` junto al de Apple para evitar
+  el aviso de deprecación en consola.
 
 ---
 
