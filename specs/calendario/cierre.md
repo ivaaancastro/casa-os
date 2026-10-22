@@ -1,6 +1,6 @@
 # Cierre — Calendario familiar
 
-**Estado:** borrador
+**Estado:** cerrada
 **Fecha:** 2026-10-22
 **Feature:** `calendario`
 
@@ -9,7 +9,7 @@
 Se entrega el calendario compartido de la casa con vistas de mes y semana, alta,
 detalle, edición y borrado de eventos. Los eventos pueden ser de todo el día o
 tener hora, admiten un responsable opcional y guardan un recordatorio que se
-mostrará en el detalle. Los avisos reales quedan para `feat/recordatorios`.
+muestra en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 
 ## Alcance entregado
 
@@ -31,7 +31,7 @@ mostrará en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 
 | Área | Archivos | Qué cambió |
 |---|---|---|
-| Datos | `prisma/schema.prisma`, `prisma/migrations/20261022172743_add_calendar_events/` | Modelo `Event`, índices y relaciones `owner`/`createdBy` |
+| Datos | `prisma/schema.prisma`, `prisma/migrations/20261022172743_add_calendar_events/` | Modelo `Event`, índice por `start` y relaciones `owner`/`createdBy` |
 | Lógica | `src/lib/utils/calendar.ts`, `src/lib/events.ts`, `src/lib/utils/event.ts` | Rejilla, solapes, formatos, normalización de fechas y permisos |
 | Validación | `src/lib/schemas/event.ts` | Zod para alta/edición y rango de listado |
 | API | `src/app/api/events/route.ts`, `src/app/api/events/[id]/route.ts` | Listado, alta, edición y borrado autenticados |
@@ -51,13 +51,14 @@ mostrará en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 | `npm run typecheck` | OK |
 | `npm run test` | 291 tests en 17 archivos, todos OK |
 | `npm run build` | OK; `/calendario` dinámica y `/api/events` registradas |
-| CI del PR | Pendiente de abrir el PR |
+| CI del PR | [PR #24](https://github.com/ivaaancastro/casa-os/pull/24), checks `quality`, `test`, `build` y Vercel en verde |
+| CI de `main` | [run `39828836139`](https://github.com/ivaaancastro/casa-os/actions/runs/39828836139), en verde tras el squash merge |
 
 ### UI / Chrome
 
 - **Navegador y viewport**: Chrome con Chrome MCP; escritorio 1440 × 1000 y
   móvil emulado 390 × 844 (DPR 2, touch).
-- **Flujos comprobados**:
+- **Flujos comprobados en local**:
   - Vista de mes, navegación anterior/siguiente/hoy y cambio a semana.
   - Alta de evento con hora y de todo el día.
   - Edición, conversión a todo el día y borrado en dos pasos.
@@ -68,33 +69,35 @@ mostrará en el detalle. Los avisos reales quedan para `feat/recordatorios`.
   - Sin sesión: `GET`/`POST`/`PATCH`/`DELETE` de eventos → `401` JSON.
   - Validaciones de API: título vacío, responsable inexistente, fin anterior al
     inicio y rango incompleto → `400`; id inexistente → `404`.
-- **Consola**: limpia; solo el aviso informativo de React DevTools. Se eliminó
-  el warning de metadatos Apple añadiendo `mobile-web-app-capable`.
+- **Consola**: limpia; solo el aviso informativo de React DevTools en local. Se
+  eliminó el warning de metadatos Apple añadiendo `mobile-web-app-capable`.
 - **Responsive / overflow**: a 390 px no hay scroll horizontal; el panel cubre
   el viewport completo tras el portal y las acciones son accesibles con scroll
   interno. A 1440 px la rejilla y el panel se muestran sin solapes.
 - **Evidencia visual**: capturas locales de mes, semana, agenda móvil, panel de
-  alta y detalle; no se adjuntan datos privados.
+  alta y detalle; captura de producción del detalle con recordatorio. No se
+  adjuntan datos privados.
 
 ### Producción
 
 | Campo | Valor |
 |---|---|
-| URL | Pendiente de verificar tras el merge |
-| Deployment | Pendiente |
-| Commit | Pendiente |
-| Health | Pendiente |
-| Rutas | Pendiente |
-| Smoke autenticado | Pendiente |
+| URL | <https://casa-os-mauve.vercel.app> |
+| Deployment | Vercel commit status success, deployment `CYckvdS6Bf8bMXKz1HkRH223bdEn` |
+| Commit | `94a4d40` (squash merge de PR #24) |
+| Health | `GET /api/health` → `200`, `{"status":"ok","db":"ok"}` |
+| Rutas | `/auth/login` → `200`; `/manifest.webmanifest` → `200`; `/calendario` sin sesión → `307` al login; `/api/events` sin sesión → `401` JSON |
+| Smoke autenticado | ADMIN en `/calendario`: alta de evento de todo el día el 28/10/2026, edición de título y recordatorio a «10 min antes», detalle correcto y borrado en dos pasos. `GET /api/events` final con 0 eventos; sin residuos. |
+| Consola | Sin mensajes en producción tras el smoke. |
 
 ## Documentación actualizada
 
-- [x] `MEMORY.md`: estado, roadmap, notas técnicas y lecciones.
-- [x] `CHANGELOG.md`: entrada de la entrega.
-- [x] `README.md`: características, estado y enlace a la guía.
-- [x] `docs/*`: `docs/calendario.md` y `docs/roadmap.md`.
+- [x] `MEMORY.md`: estado Hecho, registro, foco, notas técnicas y lecciones.
+- [x] `CHANGELOG.md`: entrega y verificación en producción.
+- [x] `README.md`: característica terminada y enlace a la guía.
+- [x] `docs/*`: `docs/calendario.md`, `docs/roadmap.md` y `docs/architecture.md`.
 - [x] `spec.md` y `plan.md`: estado y decisiones finales.
-- [ ] `tasks.md`: todas las tareas en `[x]` o movidas a follow-ups.
+- [x] `tasks.md`: todas las tareas en `[x]` o movidas a follow-ups.
 - [x] `AGENTS.md`: FAMILY crea eventos y edita los suyos.
 - [ ] `npm run docs:check -- calendario` pasa.
 
@@ -108,6 +111,8 @@ mostrará en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 - Página `/calendario`, vistas de mes/semana, panel y agenda móvil.
 - Tests de calendario, esquema y middleware.
 - Verificación local de código, UI y permisos.
+- PR #24 mergeado y CI de `main` en verde.
+- Verificación en producción con smoke autenticado y limpieza del evento.
 - Documentación de uso y estado.
 
 ### Pendientes / follow-ups
@@ -115,7 +120,6 @@ mostrará en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 - Recurrencias y eventos de varios días — fuera de alcance — backlog.
 - Notificaciones de recordatorio — `feat/recordatorios`.
 - Invitaciones/asistentes y sincronización externa — backlog.
-- Verificación en producción y PR de cierre — Fase B.
 
 ## Decisiones y lecciones
 
@@ -143,13 +147,13 @@ mostrará en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 
 ## Checklist de cierre
 
-- [ ] El PR de la feature está mergeado y la rama borrada.
-- [ ] El CI de `main` está verde tras el merge de la feature.
-- [ ] Producción está desplegada y verificada; el smoke autenticado está
+- [x] El PR de la feature está mergeado y la rama borrada.
+- [x] El CI de `main` está verde tras el merge de la feature.
+- [x] Producción está desplegada y verificada; el smoke autenticado está
       documentado.
-- [ ] `tasks.md` no tiene casillas pendientes.
+- [x] `tasks.md` no tiene casillas pendientes.
 - [ ] `cierre.md` no tiene casillas pendientes.
-- [ ] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
-- [ ] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
+- [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
+- [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
 - [ ] `npm run docs:check -- calendario` pasa.
 - [ ] El PR de cierre tiene el CI verde.
