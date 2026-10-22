@@ -147,4 +147,4 @@ lista muestra la última vez visto y la frescura del dato. Se apoya en los campo
 - [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
 - [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
 - [x] `npm run docs:check -- dispositivos-estado` pasa.
-- [ ] El PR de cierre tiene el CI verde.
+- [x] El PR de cierre (#23) tiene el CI verde.
