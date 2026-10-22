@@ -21,6 +21,8 @@ model User {
   sessions      Session[]
   notes         Note[]
   devices       Device[]
+  eventsOwned   Event[]   @relation("EventOwner")
+  eventsCreated Event[]   @relation("EventCreator")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -84,6 +86,24 @@ model Device {
   owner       User?        @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+}
+
+model Event {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  start           DateTime
+  end             DateTime?
+  allDay          Boolean  @default(false)
+  reminderMinutes Int?
+  ownerId         String?
+  owner           User?    @relation("EventOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdById     String
+  createdBy       User     @relation("EventCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([start])
 }
 
 

@@ -28,6 +28,11 @@ function isProtectedPath(pathname: string): boolean {
     return false;
   }
 
+  // La API de eventos aplica requireUser y devuelve 401 JSON
+  if (pathname === '/api/events' || pathname.startsWith('/api/events/')) {
+    return false;
+  }
+
   // PWA: aviso sin conexion, service worker, manifest e iconos
   if (pathname === '/offline' || pathname.startsWith('/offline/')) return false;
   if (pathname === '/sw.js' || pathname === '/manifest.webmanifest') return false;
@@ -86,6 +91,12 @@ describe('proteccion de rutas', () => {
     expect(isProtectedPath('/api/devices/import')).toBe(false);
     expect(isProtectedPath('/api/devices/import/')).toBe(false);
     expect(isProtectedPath('/api/devices/import-extra')).toBe(true);
+  });
+
+  it('deja la API de eventos al guard de la ruta', () => {
+    expect(isProtectedPath('/api/events')).toBe(false);
+    expect(isProtectedPath('/api/events/evt_1')).toBe(false);
+    expect(isProtectedPath('/api/events-extra')).toBe(true);
   });
 
   it('NO debe proteger la pagina offline', () => {

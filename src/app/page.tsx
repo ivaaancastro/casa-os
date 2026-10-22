@@ -1,11 +1,11 @@
 export default function Home() {
   const modules = [
-    { title: 'Dashboard', status: 'En desarrollo' },
-    { title: 'Dispositivos', status: 'En desarrollo' },
-    { title: 'Notas', status: 'Disponible' },
-    { title: 'Calendario', status: 'Planificado' },
-    { title: 'Inventario', status: 'Planificado' },
-    { title: 'Gastos', status: 'Idea' },
+    { title: 'Dashboard', status: 'En desarrollo', href: '/' },
+    { title: 'Dispositivos', status: 'Disponible', href: '/devices' },
+    { title: 'Notas', status: 'Disponible', href: '/notas' },
+    { title: 'Calendario', status: 'Disponible', href: '/calendario' },
+    { title: 'Inventario', status: 'Planificado', href: '#' },
+    { title: 'Gastos', status: 'Idea', href: '#' },
   ];
 
   return (
@@ -26,7 +26,7 @@ export default function Home() {
             {modules.map((m, i) => (
               <a
                 key={m.title}
-                href={m.title === 'Dashboard' ? '/' : m.title === 'Dispositivos' ? '/devices' : m.title === 'Notas' ? '/notas' : '#'}
+                href={m.href}
                 className="group col-span-12 border-b border-mist border-r-0 p-6 transition-colors hover:bg-ink hover:text-canvas md:col-span-4 md:border-r"
               >
                 <div className="flex items-baseline justify-between">
