@@ -99,7 +99,7 @@ muestra en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 - [x] `spec.md` y `plan.md`: estado y decisiones finales.
 - [x] `tasks.md`: todas las tareas en `[x]` o movidas a follow-ups.
 - [x] `AGENTS.md`: FAMILY crea eventos y edita los suyos.
-- [ ] `npm run docs:check -- calendario` pasa.
+- [x] `npm run docs:check -- calendario` pasa.
 
 ## Tareas
 
@@ -152,8 +152,8 @@ muestra en el detalle. Los avisos reales quedan para `feat/recordatorios`.
 - [x] Producción está desplegada y verificada; el smoke autenticado está
       documentado.
 - [x] `tasks.md` no tiene casillas pendientes.
-- [ ] `cierre.md` no tiene casillas pendientes.
+- [x] `cierre.md` no tiene casillas pendientes.
 - [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
 - [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
-- [ ] `npm run docs:check -- calendario` pasa.
-- [ ] El PR de cierre tiene el CI verde.
+- [x] `npm run docs:check -- calendario` pasa.
+- [x] El [PR de cierre #25](https://github.com/ivaaancastro/casa-os/pull/25) tiene el CI verde.
