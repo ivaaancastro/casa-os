@@ -11,7 +11,7 @@
 | Sección | Estado | Descripción |
 |---------|--------|-------------|
 | 📊 Dashboard | 🚧 En desarrollo | Resumen de la casa de un vistazo |
-| 🖥️ Dispositivos | ✅ CRUD + escaneo · 🚧 estado | Inventario (IP, MAC, tipo, propietario, notas) e importación de escaneos; estado automático pendiente |
+| 🖥️ Dispositivos | 🚧 En cierre | Inventario (IP, MAC, tipo, propietario, notas), escaneo e importación, estado en línea/ausente y última vez visto |
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
 | 📅 Calendario | 📋 Planificado | Calendario familiar compartido |
@@ -74,8 +74,10 @@ npm run scan -- --out scan-latest.json
 ```
 
 Después, como ADMIN, entra en **Dispositivos → Importar escaneo**, sube el
-archivo y revisa la previsualización. Solo se importan los equipos nuevos que
-marques; las IP/MAC existentes y los conflictos se muestran sin modificar nada.
+archivo y revisa la previsualización. Se importan los equipos nuevos que marques
+y, al aplicar el escaneo, se actualiza el estado del inventario: los equipos
+vistos pasan a en línea y los que ya no aparecen en esa red se marcan como
+ausentes. Las IP/MAC existentes y los conflictos se muestran sin duplicar nada.
 
 Guía completa, formato JSON y resolución de conflictos:
 **[`docs/escaneo-red.md`](docs/escaneo-red.md)**.

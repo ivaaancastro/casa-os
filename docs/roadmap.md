@@ -16,7 +16,7 @@
 | Hito | Estado | Contenido |
 |---|---|---|
 | 1 — Fundación | ✅ | Auth, layout, notas, usuarios/roles, PostgreSQL, Vercel y PWA |
-| 2 — Dispositivos | 🚧 | CRUD manual ✅ · escaneo de red ✅ · estado automático pendiente |
+| 2 — Dispositivos | 🚧 | CRUD manual ✅ · escaneo de red ✅ · estado de equipos en cierre |
 | 3 — Organización | 📋 | Calendario y recordatorios |
 | 4 — Patrimonio | 📋 | Inventario, documentos y gastos |
 | 5 — Automatización | 💡 | Domótica |
