@@ -11,7 +11,7 @@
 | Sección | Estado | Descripción |
 |---------|--------|-------------|
 | 📊 Dashboard | 🚧 En desarrollo | Resumen de la casa de un vistazo |
-| 🖥️ Dispositivos | 🚧 En cierre | Inventario (IP, MAC, tipo, propietario, notas), escaneo e importación, estado en línea/ausente y última vez visto |
+| 🖥️ Dispositivos | ✅ Terminado | Inventario (IP, MAC, tipo, propietario, notas), escaneo e importación, estado en línea/ausente y última vez visto |
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
 | 📅 Calendario | 📋 Planificado | Calendario familiar compartido |
