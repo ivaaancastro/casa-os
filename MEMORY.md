@@ -155,6 +155,17 @@ El merge del código **no** cierra una feature. La definición completa está en
   tarea 14 completada y cuenta temporal desactivada.
 - **Cierre:** [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 
+### 🚧 En cierre (v0.8 — estado de dispositivos)
+
+- **Estado de dispositivos** (`feat/dispositivos-estado`): al aplicar un
+  escaneo se actualizan `online` y `lastSeen`; los equipos de la red que ya se
+  habían visto y no aparecen se marcan ausentes. Guardia contra escaneos
+  anteriores a `lastSeen`, previsualización de altas/bajas y frescura en la
+  lista. Sin migración ni historial.
+- **Pendiente de la Fase B:** PR, CI, merge, deployment y smoke en producción.
+- **Cierre:** borrador en
+  [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
+
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -179,7 +190,9 @@ El merge del código **no** cierra una feature. La definición completa está en
   y móvil 390 px. Guía: [`docs/escaneo-red.md`](docs/escaneo-red.md). Cierre:
   [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 - `feat/dispositivos-estado` — Estado online/offline, "última vez visto" y
-  alertas básicas de altas/bajas. *Hecho cuando*: la lista refleja el estado real.
+  alertas básicas de altas/bajas. **En cierre**: estado aplicado al importar el
+  escaneo, guardia de fechas y UI con proyección; pendiente de merge y smoke.
+  *Hecho cuando*: la lista refleja el estado real.
 
 **Hito 3 — Organización del hogar**
 
@@ -218,8 +231,11 @@ El merge del código **no** cierra una feature. La definición completa está en
 JSON), PRs #18/#19/#20 y commit `5835fd2`. Cierre:
 [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
 
-**Siguiente:** `feat/dispositivos-estado` (actualizar `online`/`lastSeen` y
-detectar equipos ausentes).
+**En cierre:** `feat/dispositivos-estado` (online/ausente, última vez visto y
+altas/bajas al aplicar el escaneo). Cierre:
+[`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
+
+**Siguiente:** `feat/calendario` (eventos familiares), tras cerrar esta feature.
 
 ## Registro de features
 
@@ -239,6 +255,7 @@ detectar equipos ausentes).
 | feat | Dispositivos (CRUD) | #16 | `3e38e80` | `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` | [`cierre`](specs/dispositivos-crud/cierre.md) |
 | docs | Protocolo de cierre + cierre de dispositivos | #17 | `e15c34a` | — | [`guía`](docs/cierre-feature.md) |
 | feat | Escaneo de red (local + importación) | #18, #19, #20 | `5835fd2` | Sí (smoke ADMIN) | [`cierre`](specs/escaneo-red/cierre.md) |
+| feat | Estado de dispositivos (online/ausente) | — | — | En cierre | [borrador](specs/dispositivos-estado/cierre.md) |
 
 ## Notas técnicas
 
@@ -262,10 +279,16 @@ detectar equipos ausentes).
   con un error claro si hay duplicados.
 - **Escaneo de red**: `nmap` solo en local. `npm run scan -- --out
   scan-latest.json`, subida en `/devices` y `POST /api/devices/import` con
-  `dryRun` por defecto `true`; solo ADMIN, solo crea filas `new` y no toca
-  `online`/`lastSeen`. La ruta se excluye del middleware para devolver `401`
+  `dryRun` por defecto `true`; solo ADMIN y solo crea filas `new` (el estado se
+  aplica desde v0.8). La ruta se excluye del middleware para devolver `401`
   JSON. Guía: `docs/escaneo-red.md`. `nmap` no está instalado en el entorno del
   agente; el CLI se verificó con un binario simulado.
+- **Estado de dispositivos**: se aplica al importar el escaneo (no hay cron ni
+  `nmap` en Vercel). La UI envía todas las filas + `importIps`; la API pone
+  `online`/`lastSeen` a los vistos, crea los nuevos ya en línea y marca
+  ausentes solo dentro del `cidr`, con `lastSeen` previo y sin conflicto. Un
+  `scannedAt` anterior al `lastSeen` se ignora (`stale`). Sin migración ni
+  historial; la frescura se deriva de `lastSeen`.
 - **Documentación**: `MEMORY.md` es la fuente viva del roadmap y el estado;
   `docs/roadmap.md` es un índice histórico (no duplicar roadmaps). Cada feature
   cerrada tiene `specs/<nombre>/cierre.md`; el protocolo está en
@@ -339,7 +362,15 @@ detectar equipos ausentes).
   autodesactivación. Una cuenta temporal de producción debe desactivarla otro
   ADMIN (o borrarse desde la base de datos); no se puede limpiar desde su propia
   sesión.
+- **Estado sin tiempo real**: en serverless no hay forma de sondear la red de
+  casa. El estado es tan reciente como el último escaneo aplicado; la UI debe
+  decirlo y avisar si tiene más de 24 h.
+- **Ausencias conservadoras**: marcar offline sin CIDR, sin `lastSeen` o con
+  filas en conflicto produce falsos positivos. Se limita al CIDR, a equipos ya
+  vistos y se protege cualquier equipo con una fila ambigua.
+- **Escaneo viejo**: comparar `scannedAt` con el `lastSeen` de cada equipo
+  (no solo con la fecha global) evita que un JSON antiguo revierta el estado.
 
 ---
 
-*Última actualización: 2026-10-21*
+*Última actualización: 2026-10-22*

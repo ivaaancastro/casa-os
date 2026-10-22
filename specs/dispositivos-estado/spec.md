@@ -1,7 +1,7 @@
 # Spec — Estado online/offline y última vez visto
 
 **Feature:** `dispositivos-estado`
-**Estado:** propuesta — pendiente de aprobación del usuario
+**Estado:** aprobada el 2026-10-22
 **Fecha:** 2026-10-22
 **Hito:** 2 — Dispositivos de la red
 
@@ -67,7 +67,7 @@ La respuesta de una importación real incluye:
 - `statusApplied`: si se aplicó lógica de estado (`scannedAt` válido);
 - `offlineChecked`: si se pudo evaluar ausencias (había `cidr` válido).
 
-La UI resume: «X altas (N nuevos, M reconectados) · Y bajas» y, si hay,
+La UI resume: «X altas (N nuevos, M en línea) · Y bajas» y, si hay,
 «Z equipos ignorados por ser un escaneo antiguo».
 
 ### RF-6 — Lista y cabecera reflejan la frescura
@@ -86,6 +86,8 @@ La UI resume: «X altas (N nuevos, M reconectados) · Y bajas» y, si hay,
   sigue en solo lectura y no ve el panel.
 - El JSON se valida con Zod: versión 1, entre 1 y 512 filas, `scannedAt` ISO,
   `cidr` IPv4 válido, `importIps` IPv4 y máximo 512.
+- Un archivo sin equipos se rechaza: evita marcar toda la red como ausente por
+  un escaneo vacío.
 - `scannedAt` con más de 5 minutos en el futuro → `400`.
 - `scannedAt` ausente o inválido → no se aplica estado (`statusApplied: false`);
   se puede seguir creando equipos nuevos con `online: false` y `lastSeen: null`.
@@ -270,3 +272,7 @@ errores `role="alert"`.
 3. **Alertas sin historial**: resumen de altas/bajas al aplicar + frescura en
    la lista y la cabecera. Sin tabla de eventos ni push.
 4. **Sin migración**: se reutilizan `online` y `lastSeen`.
+5. **Filas ambiguas**: un conflicto o una fila inválida no prueba que el equipo
+   se haya ido; esos equipos quedan protegidos de la detección de ausencias
+   (pero sí se actualizan si otra fila del mismo archivo los vio).
+6. **Escaneo vacío rechazado**: un archivo sin equipos no se puede aplicar.

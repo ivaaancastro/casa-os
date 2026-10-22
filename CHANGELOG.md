@@ -17,6 +17,9 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 - Escaneo de red local con nmap: salida JSON, previsualización e importación de
   equipos nuevos con deduplicación por IP/MAC y detección de conflictos
   (`docs/escaneo-red.md`)
+- Estado de dispositivos al aplicar un escaneo: en línea/ausente, última vez
+  visto, proyección de altas y bajas antes de aplicar y aviso de frescura si el
+  último dato tiene más de 24 h. Sin cambios de esquema.
 - PWA instalable: manifest, iconos, service worker y página sin conexión
   (`docs/pwa.md`)
 - Gestión de usuarios y roles (ADMIN/FAMILY), baja lógica y perfil propio con
@@ -59,6 +62,10 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   con `dryRun` y solo crea equipos nuevos (`POST /api/devices/import`).
 - La ruta de importación de escaneo queda fuera del middleware de redirección
   para devolver `401`/`403` JSON; sigue protegida por `requireAdmin`.
+- **Importación de escaneos con estado**: la UI envía todas las filas (no solo
+  las nuevas) y `importIps` con la selección; la API actualiza `online` y
+  `lastSeen`, marca ausentes solo dentro del CIDR y nunca pisa un `lastSeen`
+  posterior. Los equipos nuevos nacen en línea.
 - **Escaneo de red verificado en producción** (PRs #18, #19 y #20; commit
   `5835fd2`): panel ADMIN con preview de fixture, móvil 390 px sin overflow y
   consola limpia. FAMILY verificado en local; sin credencial FAMILY en
