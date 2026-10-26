@@ -16,7 +16,9 @@ El código se mergeó en `main` con el PR #26 (commit `76f0683`) y la
 documentación de seguimiento con el PR #27 (commit `bfb7477`). Este cierre se
 publica en el PR #28. La configuración de producción quedó completa (VAPID,
 `CRON_SECRET`, `HOUSE_TIMEZONE`, variable y secreto de GitHub) y el redeploy
-final es `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready · Current*, health `200`).
+de verificación es `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready*, health `200`);
+el merge del cierre generó después un deployment docs-only sin cambios
+funcionales.
 
 La verificación real se completó con un navegador Chrome y una suscripción FCM
 real: llegó el aviso de prueba, un evento con recordatorio recibió **un solo**
@@ -108,7 +110,7 @@ cerrada.
 | Campo | Valor |
 |---|---|
 | URL | <https://casa-os-mauve.vercel.app> |
-| Deployment final | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`, estado **Ready** y alias actual |
+| Deployment de verificación | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`, estado **Ready** |
 | Commit de la feature | `76f0683` (squash merge de PR #26) |
 | Commit de documentación | `bfb7477` (squash merge de PR #27) |
 | Health | `GET /api/health` → `200`, `{"status":"ok","db":"ok"}` |

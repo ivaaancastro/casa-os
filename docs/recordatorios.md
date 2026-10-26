@@ -283,8 +283,10 @@ desplegada: en desarrollo el service worker no se registra.
 
 ### Verificación en producción (2026-10-26)
 
-- Deployment `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready · Current*), health
-  `200`; workflow `Recordatorios` activo cada 5 minutos.
+- Deployment de verificación `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready*),
+  health `200`; workflow `Recordatorios` activo cada 5 minutos. El merge de
+  documentación posterior generó un deployment docs-only sin cambios
+  funcionales.
 - VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE=Europe/Madrid` y la variable/secreto de
   GitHub configurados (valores solo en Vercel/GitHub y en el gestor de
   contraseñas).
