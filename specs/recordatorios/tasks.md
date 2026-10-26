@@ -71,8 +71,9 @@
   `docs/calendario.md`, `docs/pwa.md`, `docs/despliegue-vercel.md`,
   `docs/architecture.md`, `CHANGELOG.md`, `MEMORY.md`, `docs/roadmap.md` y
   borrador de `specs/recordatorios/cierre.md`.
-- [ ] **18. PR y CI** — Commits atómicos, push de la rama, PR con el spec,
-  CI verde, squash merge y borrado de rama. **En curso.**
+- [x] **18. PR y CI** — Commits atómicos, push de la rama, PR #26 con el spec,
+  CI verde, squash merge `76f0683`, rama borrada y CI de `main` verde (run
+  `40313415200`).
 - [ ] **19. Producción y smoke real** — Configurar VAPID, `CRON_SECRET` y
   `HOUSE_TIMEZONE` en Vercel; `CASA_OS_URL`/`CRON_SECRET` en GitHub; verificar
   health, suscripción real, aviso de prueba, evento con recordatorio recibido
