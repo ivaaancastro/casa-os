@@ -68,12 +68,21 @@ Preview) añade:
 | `DIRECT_URL` | URL directa (sin pooler) | Migraciones |
 | `NEXTAUTH_URL` | `https://<tu-dominio>` | En el primer deploy usa la URL de Vercel |
 | `NEXTAUTH_SECRET` | secreto aleatorio | Genera con `openssl rand -base64 32` |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | clave pública VAPID | Solo si se usan recordatorios |
+| `VAPID_PRIVATE_KEY` | clave privada VAPID | Solo servidor; nunca en el cliente |
+| `VAPID_SUBJECT` | `mailto:tu-correo@example.com` | Contacto VAPID |
+| `CRON_SECRET` | secreto aleatorio | Compartido con GitHub Actions |
+| `HOUSE_TIMEZONE` | `Europe/Madrid` | Zona para eventos de todo el día |
 
-Genera el secreto en tu máquina:
+Genera los secretos en tu máquina:
 
 ```bash
-openssl rand -base64 32
+openssl rand -base64 32                 # NEXTAUTH_SECRET y CRON_SECRET
+npx web-push generate-vapid-keys        # par VAPID
 ```
+
+Guarda las claves VAPID y `CRON_SECRET` en tu gestor de contraseñas. No las
+escribas en documentación, commits ni logs.
 
 > **Primer despliegue sin dominio**: usa como `NEXTAUTH_URL` la URL que Vercel te
 > asigne (p. ej. `https://casa-os-xxxx.vercel.app`). Cuando conectes el dominio,
@@ -99,12 +108,34 @@ export DIRECT_URL="<URL directa>"
 npm run db:seed
 ```
 
-Crea (o actualiza) `admin@casa.local` con contraseña `admin123`.
-**Cambia esa contraseña** en `/perfil` en cuanto entres.
+Crea (o actualiza) la credencial inicial del seed. La contraseña está definida
+en el propio seed; guárdala en el gestor de contraseñas y **cámbiala** en
+`/perfil` en cuanto entres.
 
 ---
 
-## 5. Verificar
+## 5. Scheduler de recordatorios (GitHub Actions)
+
+Vercel Hobby solo permite cron una vez al día, así que los avisos se procesan
+desde GitHub Actions cada 5 minutos. El workflow ya está en el repo:
+`.github/workflows/recordatorios.yml`.
+
+En GitHub, **Settings → Secrets and variables → Actions**:
+
+1. Crea la **variable** `CASA_OS_URL` con la URL pública de producción.
+2. Crea el **secreto** `CRON_SECRET` con el mismo valor que pusiste en Vercel.
+
+El workflow llama a `POST /api/reminders/dispatch` con
+`Authorization: Bearer <CRON_SECRET>`. Puedes lanzarlo manualmente desde
+**Actions → Recordatorios → Run workflow** para comprobar la configuración.
+
+> GitHub puede retrasar ejecuciones y desactiva los workflows programados tras
+> 60 días sin actividad del repositorio. Si ocurre, relánzalo a mano. Si pasas a
+> Vercel Pro, puedes sustituirlo por Vercel Cron cada 5 minutos.
+
+Guía funcional y de seguridad: [`docs/recordatorios.md`](recordatorios.md).
+
+## 6. Verificar
 
 1. Abre `https://<tu-url>/api/health` → debe devolver:
 
@@ -114,12 +145,18 @@ Crea (o actualiza) `admin@casa.local` con contraseña `admin123`.
 
    Si devuelve `503`, revisa `DATABASE_URL` y que la base esté activa.
 
-2. Entra en `/auth/login` con `admin@casa.local` / `admin123`.
+2. Entra en `/auth/login` con la credencial inicial del seed y cámbiala en
+   `/perfil`.
 3. Comprueba notas (crear y guardar), familia y perfil.
+4. Entra en **Calendario → Avisos**: debe mostrar el botón para activar los
+   avisos. Actívalos, envía una prueba y comprueba que llega.
+5. Lanza el workflow de GitHub Actions y verifica que responde `ok: true` sin
+   errores. Después crea un evento con recordatorio a unos minutos y confirma
+   que se recibe una sola vez.
 
 ---
 
-## 6. Dominio propio (opcional)
+## 7. Dominio propio (opcional)
 
 1. Compra un dominio (Cloudflare Registrar, Namecheap, etc.).
 2. En Vercel: **Settings → Domains → Add**, escribe tu dominio.
@@ -139,7 +176,7 @@ dig +short casa.tudominio.com
 
 ---
 
-## 7. Actualizaciones
+## 8. Actualizaciones
 
 Cada push a `main` dispara un despliegue:
 
@@ -166,7 +203,9 @@ Si añades una migración nueva, se aplica automáticamente en el deploy.
 
 ## Notas de seguridad
 
-- **Nunca** subas `.env` al repo; los secretos viven en Vercel.
+- **Nunca** subas `.env` al repo; los secretos viven en Vercel y en GitHub
+  Actions. La clave privada VAPID y `CRON_SECRET` no deben aparecer en
+  documentación, commits ni logs.
 - El repo ya envía cabeceras de seguridad (CSP, HSTS, nosniff, frame-options).
 - El endpoint `/api/health` es público **a propósito**: solo revela estado, no datos.
 - El escaneo de red (`npm run scan`) **no funciona en Vercel** (serverless); es una

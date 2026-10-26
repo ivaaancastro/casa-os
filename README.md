@@ -15,6 +15,7 @@
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
 | 📅 Calendario | ✅ Terminado | Calendario compartido con vistas de mes/semana, eventos, todo el día y recordatorio |
+| 🔔 Recordatorios | 🚧 En desarrollo | Avisos Web Push de eventos, prueba y panel in-app; pendiente de verificación en producción |
 | 📦 Inventario | 📋 Planificado | Control de objetos, caducidades y garantías |
 | 💰 Gastos | 💡 Idea | Registro y reparto de gastos del hogar |
 | 🔧 Mantenimiento | 💡 Idea | Tareas recurrentes y historial |
@@ -70,11 +71,16 @@ El calendario compartido de la casa tiene vista de **mes** y **semana**, eventos
 con hora o de **todo el día**, responsable opcional y recordatorio. Cualquier
 miembro activo puede crear; solo el creador o un ADMIN puede editar o borrar.
 
-El recordatorio se guarda y se muestra, pero **todavía no envía avisos**; eso
-llegará en `feat/recordatorios`.
+El botón **Avisos** permite activar Web Push en cada dispositivo, enviar una
+prueba y consultar los próximos recordatorios. Los eventos con hora avisan
+`inicio - recordatorio`; los de todo el día, a las 09:00 de `Europe/Madrid`
+(configurable con `HOUSE_TIMEZONE`). Un cron cada 5 minutos procesa la ventana
+de envío y deduplica las entregas.
 
 Guía de uso, permisos, API y límites:
 **[`docs/calendario.md`](docs/calendario.md)**.
+Configuración de VAPID, scheduler y funcionamiento:
+**[`docs/recordatorios.md`](docs/recordatorios.md)**.
 
 ## Escanear la red
 
@@ -134,8 +140,13 @@ Resumen:
    pooler) y `DIRECT_URL` (directa).
 2. Importar el repo en Vercel y definir `DATABASE_URL`, `DIRECT_URL`,
    `NEXTAUTH_URL` y `NEXTAUTH_SECRET`.
-3. Deploy. Verificar `GET /api/health` → `200`.
-4. (Opcional) Añadir dominio propio; Vercel emite el HTTPS.
+3. Para los recordatorios, añadir `NEXT_PUBLIC_VAPID_PUBLIC_KEY`,
+   `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`, `CRON_SECRET` y, si aplica,
+   `HOUSE_TIMEZONE`. Configurar el workflow de GitHub Actions con
+   `CASA_OS_URL` y `CRON_SECRET` (ver
+   [`docs/recordatorios.md`](docs/recordatorios.md)).
+4. Deploy. Verificar `GET /api/health` → `200`.
+5. (Opcional) Añadir dominio propio; Vercel emite el HTTPS.
 
 ### Salud y seguridad
 
@@ -151,8 +162,9 @@ casa-os es instalable desde el navegador, sin tienda:
 - **iOS/Safari**: *Compartir* → *Añadir a pantalla de inicio*.
 
 Se abre en ventana propia y, sin conexión, muestra una página de aviso. El
-service worker **no cachea datos privados** (solo `/offline`). Detalles y
-verificación: **[`docs/pwa.md`](docs/pwa.md)**.
+service worker **no cachea datos privados** (solo `/offline`) y gestiona los
+avisos push de los recordatorios. Detalles y verificación:
+**[`docs/pwa.md`](docs/pwa.md)**.
 
 ## Estructura del proyecto
 
@@ -189,7 +201,8 @@ La CI de GitHub ejecuta lint, typecheck, tests y build en cada PR y en `main`.
 - [`docs/cierre-feature.md`](docs/cierre-feature.md) — protocolo obligatorio de
   cierre (código → producción → PR de documentación).
 - [`specs/`](specs/) — `plan.md`, `spec.md`, `tasks.md` y `cierre.md` por feature.
-- [`docs/`](docs/) — arquitectura, despliegue, PWA, calendario, escaneo de red y guías.
+- [`docs/`](docs/) — arquitectura, despliegue, PWA, calendario, recordatorios,
+  escaneo de red y guías.
 
 Cada feature se cierra con un PR `docs/cierre-<nombre>` después de verificar
 producción. El registro queda en `specs/<nombre>/cierre.md` y se valida con:

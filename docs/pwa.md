@@ -31,6 +31,17 @@ La app debe abrirse desde **HTTPS** (producción) o `localhost`.
 - El service worker **solo precachea `/offline`**. No intercepta `/api/*` ni
   `/_next/static/*`, y no guarda HTML autenticado.
 
+## Avisos push
+
+El service worker también muestra las notificaciones de los recordatorios del
+calendario y gestiona su clic. La URL del aviso se valida contra el origen de la
+app; un enlace externo no puede abrir otra web. El clic enfoca una pestaña
+abierta o abre una nueva en `/calendario?date=YYYY-MM-DD`.
+
+La activación se hace desde **Calendario → Avisos**. En iOS/iPadOS hay que
+instalar la PWA y abrirla desde la pantalla de inicio. Guía completa:
+[`docs/recordatorios.md`](recordatorios.md).
+
 ## Piezas
 
 | Pieza | Archivo |
@@ -63,7 +74,8 @@ mantiene la marca dentro de la zona segura.
 `sw.js` se sirve con `Cache-Control: public, max-age=0, must-revalidate`, así
 que el navegador lo revisa en cada visita. Si cambia su lógica (por ejemplo, qué
 se precachea), **subir `CACHE_VERSION`** en `public/sw.js`: en `activate` se
-borran las cachés con otro nombre.
+borran las cachés con otro nombre. La versión actual es `v2`, que añade push y
+limpia la caché de la PWA anterior.
 
 ## Verificación
 
@@ -76,10 +88,13 @@ En Chrome (build de producción):
 1. DevTools → Application → Manifest: nombre, iconos y `standalone` sin errores.
 2. Application → Service Workers: `/sw.js` activo y controlando la página.
 3. Network → Offline + recargar `/notas`: aparece `No hay red.`
-4. Cache Storage → solo `casa-os-v1` con `/offline`; ninguna respuesta de `/api`.
+4. Cache Storage → solo `casa-os-v2` con `/offline`; ninguna respuesta de `/api`.
+5. Pestaña **Push Messaging**: tras activar los avisos en **Calendario →
+   Avisos**, comprobar que la suscripción existe. El envío real se prueba con
+   **Enviar prueba** o con un evento programado.
 
 ## Fuera de alcance
 
 - Datos offline (leer o editar sin red).
-- Push notifications y background sync.
+- Background sync y notificaciones nativas fuera de la PWA.
 - Prompt de instalación personalizado.

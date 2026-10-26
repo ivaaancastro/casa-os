@@ -22,6 +22,7 @@ despliegue y mantenimiento para un uso personal/familiar.
 │  ┌──────────────▼──────────────────────────┐  │
 │  │         API Routes (Backend)            │  │
 │  │ /api/devices /api/notes /api/events     │  │
+│  │ /api/push /api/reminders                │  │
 │  └──────────────┬──────────────────────────┘  │
 │                 │                             │
 │  ┌──────────────▼──────────────────────────┐  │
@@ -66,6 +67,20 @@ doméstico; se migró a PostgreSQL al pasar a alojamiento en la nube (feature
 **Decisión**: NextAuth con sesiones JWT (no de base de datos).
 
 **Razón**: Stateless, más rápido, no requiere consultas a BD en cada request.
+
+### 5. Web Push con scheduler externo
+
+**Decisión**: Web Push con `web-push` y un workflow de GitHub Actions cada 5
+minutos que llama a `POST /api/reminders/dispatch`.
+
+**Razón**: Vercel Hobby no permite cron sub-diario. El workflow usa
+`CRON_SECRET`, no cambia el plan de Vercel y mantiene el envío fuera de la
+request del usuario. La deduplicación vive en PostgreSQL
+(`ReminderDelivery`), no en memoria del proceso serverless.
+
+Los avisos de todo el día se calculan a las 09:00 de `HOUSE_TIMEZONE`; los
+eventos con hora usan `start - reminderMinutes`. El service worker solo recibe
+el payload mínimo y no cachea datos privados.
 
 ## Flujo de datos
 
