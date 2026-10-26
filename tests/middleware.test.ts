@@ -33,6 +33,17 @@ function isProtectedPath(pathname: string): boolean {
     return false;
   }
 
+  // Push y recordatorios aplican requireUser o CRON_SECRET y devuelven JSON
+  if (pathname === '/api/push' || pathname.startsWith('/api/push/')) {
+    return false;
+  }
+  if (
+    pathname === '/api/reminders' ||
+    pathname.startsWith('/api/reminders/')
+  ) {
+    return false;
+  }
+
   // PWA: aviso sin conexion, service worker, manifest e iconos
   if (pathname === '/offline' || pathname.startsWith('/offline/')) return false;
   if (pathname === '/sw.js' || pathname === '/manifest.webmanifest') return false;
@@ -97,6 +108,17 @@ describe('proteccion de rutas', () => {
     expect(isProtectedPath('/api/events')).toBe(false);
     expect(isProtectedPath('/api/events/evt_1')).toBe(false);
     expect(isProtectedPath('/api/events-extra')).toBe(true);
+  });
+
+  it('deja push y recordatorios a sus guards', () => {
+    expect(isProtectedPath('/api/push/config')).toBe(false);
+    expect(isProtectedPath('/api/push/subscriptions')).toBe(false);
+    expect(isProtectedPath('/api/push/subscriptions/sub_1')).toBe(false);
+    expect(isProtectedPath('/api/push-extra')).toBe(true);
+
+    expect(isProtectedPath('/api/reminders/upcoming')).toBe(false);
+    expect(isProtectedPath('/api/reminders/dispatch')).toBe(false);
+    expect(isProtectedPath('/api/reminders-extra')).toBe(true);
   });
 
   it('NO debe proteger la pagina offline', () => {

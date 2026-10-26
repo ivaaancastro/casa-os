@@ -9,22 +9,23 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  role          String    @default("FAMILY")
-  active        Boolean   @default(true)
-  accounts      Account[]
-  sessions      Session[]
-  notes         Note[]
-  devices       Device[]
-  eventsOwned   Event[]   @relation("EventOwner")
-  eventsCreated Event[]   @relation("EventCreator")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                String             @id @default(cuid())
+  name              String?
+  email             String?            @unique
+  emailVerified     DateTime?
+  password          String?
+  image             String?
+  role              String             @default("FAMILY")
+  active            Boolean            @default(true)
+  accounts          Account[]
+  sessions          Session[]
+  notes             Note[]
+  devices           Device[]
+  eventsOwned       Event[]            @relation("EventOwner")
+  eventsCreated     Event[]            @relation("EventCreator")
+  pushSubscriptions PushSubscription[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model Account {
@@ -74,36 +75,73 @@ model Note {
 }
 
 model Device {
-  id          String       @id @default(cuid())
-  name        String
-  ip          String       @unique
-  mac         String?      @unique
-  type        String       @default("OTHER")
-  online      Boolean      @default(false)
-  lastSeen    DateTime?
-  notes       String?
-  ownerId     String?
-  owner       User?        @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id        String    @id @default(cuid())
+  name      String
+  ip        String    @unique
+  mac       String?   @unique
+  type      String    @default("OTHER")
+  online    Boolean   @default(false)
+  lastSeen  DateTime?
+  notes     String?
+  ownerId   String?
+  owner     User?     @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Event {
-  id              String   @id @default(cuid())
-  title           String
-  description     String?
-  start           DateTime
-  end             DateTime?
-  allDay          Boolean  @default(false)
-  reminderMinutes Int?
-  ownerId         String?
-  owner           User?    @relation("EventOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-  createdById     String
-  createdBy       User     @relation("EventCreator", fields: [createdById], references: [id], onDelete: Cascade)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                 String             @id @default(cuid())
+  title              String
+  description        String?
+  start              DateTime
+  end                DateTime?
+  allDay             Boolean            @default(false)
+  reminderMinutes    Int?
+  ownerId            String?
+  owner              User?              @relation("EventOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdById        String
+  createdBy          User               @relation("EventCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  reminderDeliveries ReminderDelivery[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   @@index([start])
 }
 
+model PushSubscription {
+  id            String             @id @default(cuid())
+  userId        String
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint      String             @unique @db.VarChar(1024)
+  p256dh        String             @db.VarChar(255)
+  auth          String             @db.VarChar(64)
+  userAgent     String?            @db.VarChar(512)
+  active        Boolean            @default(true)
+  failureCount  Int                @default(0)
+  lastSuccessAt DateTime?
+  lastFailureAt DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  deliveries    ReminderDelivery[]
 
+  @@index([userId, active])
+  @@index([active])
+}
+
+model ReminderDelivery {
+  id             String           @id @default(cuid())
+  eventId        String
+  event          Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  subscriptionId String
+  subscription   PushSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  scheduledFor   DateTime
+  status         String
+  attempts       Int              @default(1)
+  error          String?          @db.VarChar(500)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@unique([eventId, subscriptionId, scheduledFor])
+  @@index([scheduledFor])
+  @@index([createdAt])
+}

@@ -14,6 +14,10 @@ crear eventos; editar y borrar queda limitado a quien los creó o a un ADMIN.
 - Alta, detalle, edición y borrado en dos pasos.
 - Agenda del día en móvil: al tocar una celda se muestran sus eventos debajo.
 - En escritorio, clic en un día vacío abre el alta para esa fecha.
+- Panel **Avisos** para activar Web Push en el dispositivo, enviar una prueba,
+  desactivarlo y ver los próximos recordatorios.
+- Enlace profundo `/calendario?date=YYYY-MM-DD`, que posiciona el calendario en
+  ese día y abre su agenda.
 
 ## Permisos
 
@@ -40,6 +44,11 @@ intenta igualmente. Un evento ajeno se puede consultar en modo lectura.
 En móvil, tocar un día abre su agenda debajo de la rejilla. En la vista de
 semana cada día tiene su propio acceso **+ Añadir**.
 
+El botón **Avisos** abre el panel de Web Push. Desde ahí se activa el aviso en
+el dispositivo actual, se envía una prueba y se consultan los próximos
+recordatorios. La configuración completa está en
+[`docs/recordatorios.md`](recordatorios.md).
+
 ## Fechas y zonas horarias
 
 - **Con hora**: se guarda como instante UTC y se muestra en la zona horaria del
@@ -51,12 +60,21 @@ semana cada día tiene su propio acceso **+ Añadir**.
 
 ## Recordatorios
 
-El recordatorio se **guarda y se muestra** en el detalle, pero el calendario
-todavía **no envía avisos**. Las notificaciones (navegador, email o push) se
-implementarán en `feat/recordatorios`.
+El recordatorio se guarda en el evento y se envía por Web Push si el usuario
+tiene los avisos activados en algún dispositivo. Los eventos con hora avisan
+`inicio - recordatorio`; los de todo el día, a las 09:00 de `HOUSE_TIMEZONE`
+(por defecto `Europe/Madrid`).
 
 Valores admitidos: `null` (sin recordatorio), `0` (a la hora), `10`, `30`, `60`
 minutos y `1440` (un día antes).
+
+El envío lo comprueba un cron cada 5 minutos dentro de una ventana de 15
+minutos. Si el aviso llega tarde y queda fuera de la ventana, no se envía
+retroactivamente. Cada dispositivo recibe como máximo un aviso por evento y hora
+programada.
+
+El funcionamiento, la configuración VAPID, el scheduler de GitHub Actions y los
+límites están en [`docs/recordatorios.md`](recordatorios.md).
 
 ## API
 
@@ -138,7 +156,9 @@ Modelo `Event` (`prisma/schema.prisma`):
 - `createdAt`, `updatedAt` e índice por `start`
 
 La migración `add_calendar_events` es aditiva: solo crea `Event` y sus relaciones
-con `User`; no modifica tablas existentes.
+con `User`; no modifica tablas existentes. La feature de recordatorios añade
+después `PushSubscription` y `ReminderDelivery` (ver
+[`docs/recordatorios.md`](recordatorios.md)).
 
 ## Límites actuales
 
@@ -146,7 +166,9 @@ con `User`; no modifica tablas existentes.
 - Sin invitaciones, asistentes, aceptación/rechazo ni comentarios.
 - Sin sincronización con Google Calendar/ICS ni arrastrar para mover.
 - Sin historial de cambios ni papelera.
-- Sin notificaciones: eso pertenece a `feat/recordatorios`.
+- Un solo recordatorio por evento; sin recurrencias ni varios avisos.
+- Los avisos dependen de que el dispositivo tenga Web Push activado y de que el
+  cron pueda ejecutarse.
 
 ## Verificación
 

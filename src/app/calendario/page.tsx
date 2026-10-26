@@ -27,7 +27,7 @@ export default async function CalendarioPage() {
           </h1>
           <p className="mt-4 max-w-xl text-sm text-ash">
             La vida de la casa, día a día. Crea planes, marca quién se encarga y
-            guarda un recordatorio.
+            recibe un aviso cuando toque.
           </p>
         </header>
 

@@ -37,6 +37,9 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 | 2026-10-20 | **Escaneo local + importación JSON** | `nmap` no corre en Vercel; evita tokens e historial de escaneos |
 | 2026-10-22 | **Calendario compartido con permisos por creador** | Toda la familia crea planes; editar/borrar queda en el creador o ADMIN |
 | 2026-10-22 | **Recordatorio almacenado, sin envío** | El calendario guarda la preferencia; los avisos van en `feat/recordatorios` |
+| 2026-10-26 | **Web Push + GitHub Actions cada 5 min** | Vercel Hobby no permite cron sub-diario; el workflow usa `CRON_SECRET` |
+| 2026-10-26 | **Todo el día a las 09:00 de `HOUSE_TIMEZONE`** | Evita avisos a medianoche UTC y respeta el DST |
+| 2026-10-26 | **Deduplicación `[eventId, subscriptionId, scheduledFor]`** | Evita duplicados con reintentos o cron solapado |
 
 ## Preferencias del usuario
 
@@ -176,7 +179,8 @@ El merge del código **no** cierra una feature. La definición completa está en
   celdas, lunes primero) y semana, CRUD de eventos con hora o de todo el día,
   responsable opcional, recordatorio almacenado y agenda móvil. API autenticada
   con permisos creador/ADMIN y migración aditiva `add_calendar_events`. Los
-  avisos de recordatorio quedan para `feat/recordatorios`.
+  avisos de recordatorio se desarrollan en `feat/recordatorios` (v0.10, en
+  cierre).
 - **Producción**: PR #24 (squash merge `94a4d40`), CI de `main` verde (run
   `39828836139`) y Vercel commit status success (deployment
   `CYckvdS6Bf8bMXKz1HkRH223bdEn`). Health `200` (`db: ok`). Smoke autenticado
@@ -184,6 +188,22 @@ El merge del código **no** cierra una feature. La definición completa está en
   recordatorio, detalle y borrado; `GET /api/events` final con 0 eventos. Sin
   sesión, `/calendario` → 307 y `/api/events` → 401 JSON.
 - **Cierre:** [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
+
+### 🚧 En cierre (v0.10 — recordatorios)
+
+- **Recordatorios Web Push** (`feat/recordatorios`): avisos de eventos con hora
+  y de todo el día, suscripciones por dispositivo, prueba, panel **Avisos**,
+  enlace profundo al calendario y cron de GitHub Actions cada 5 minutos. Modelos
+  `PushSubscription` y `ReminderDelivery`, migración aditiva
+  `add_push_reminders`, rutas `/api/push/*` y `/api/reminders/*`, tests y guía
+  `docs/recordatorios.md`.
+- **Estado**: código y verificación local completados; PR pendiente. Producción
+  sigue pendiente de configurar VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE`,
+  `CASA_OS_URL` y de recibir un aviso real. No marcar como Hecho hasta el cierre.
+- **Bloqueo conocido**: Vercel CLI no tiene sesión iniciada en el entorno del
+  agente; la configuración de producción y el smoke real quedan para el usuario
+  o para una sesión autenticada.
+- **Cierre (borrador)**: [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
 
@@ -220,7 +240,8 @@ El merge del código **no** cierra una feature. La definición completa está en
   recordatorio almacenado y tests; verificado en producción con smoke ADMIN.
   Cierre: [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 - `feat/recordatorios` — Notificaciones/tareas programadas ligadas al calendario
-  y a las notas TODO. *Hecho cuando*: llega un aviso en el navegador/móvil.
+  y a las notas TODO. 🚧 **En cierre**: Web Push y panel implementados; *Hecho
+  cuando* llegue un aviso real en producción y se complete el cierre.
 
 **Hito 4 — Patrimonio del hogar**
 
@@ -253,11 +274,14 @@ eventos, todo el día, responsable y recordatorio almacenado), PR #24 y commit
 `94a4d40`. Cierre:
 [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 
-**En curso:** ninguna. El calendario está cerrado; el siguiente PR es el cierre
-documental `docs/cierre-calendario`.
+**En curso:** `feat/recordatorios` (Web Push, panel **Avisos** y cron cada 5
+minutos). Código, tests y UI local verificados; falta PR/CI, configurar Vercel y
+GitHub, desplegar y probar un aviso real. Después, cierre
+`docs/cierre-recordatorios`.
 
-**Siguiente:** `feat/recordatorios` (avisos ligados al calendario), cuando el
-PR de cierre de calendario esté mergeado y el CI de `main` esté verde.
+**Siguiente:** ninguna feature nueva hasta cerrar `recordatorios` y tener el CI
+de `main` verde. Después, el siguiente hito del roadmap (inventario/documentos/
+gastos) según prioridad del usuario.
 
 ## Registro de features
 
@@ -318,9 +342,18 @@ PR de cierre de calendario esté mergeado y el CI de `main` esté verde.
   `docs/cierre-feature.md` y se valida con `npm run docs:check -- <nombre>`.
 - **Calendario**: eventos con hora en UTC; eventos de todo el día guardados a
   medianoche UTC y pintados por su clave `YYYY-MM-DD` para no desplazarse de
-  día. `Event.reminderMinutes` admite `null`, `0`, `10`, `30`, `60` y `1440`,
-  pero **no hay envío de avisos** todavía. La API de eventos se excluye del
-  middleware para devolver `401` JSON y cada handler aplica `requireUser`.
+  día. `Event.reminderMinutes` admite `null`, `0`, `10`, `30`, `60` y `1440`.
+  La API de eventos se excluye del middleware para devolver `401` JSON y cada
+  handler aplica `requireUser`.
+- **Recordatorios**: Web Push con `web-push`; `PushSubscription` guarda
+  endpoint/claves por dispositivo y `ReminderDelivery` deduplica por
+  `[eventId, subscriptionId, scheduledFor]`. Los eventos con hora usan
+  `start - reminderMinutes`; los de todo el día, 09:00 de `HOUSE_TIMEZONE`
+  (por defecto `Europe/Madrid`). Ventana de 15 min y workflow de GitHub Actions
+  cada 5 min (`CASA_OS_URL` + `CRON_SECRET`). El dispatch exige
+  `Authorization: Bearer`; sin secreto configurado devuelve `503`. La UI de
+  activación solo funciona en build de producción porque el SW no se registra
+  en desarrollo.
 - **Tests**: `npm run test` ejecuta una pasada (`vitest run`); para watch,
   `npm run test:watch`. La CI usa la misma pasada.
 
@@ -355,6 +388,16 @@ PR de cierre de calendario esté mergeado y el CI de `main` esté verde.
 - **Service worker y datos privados**: cachear HTML autenticado o `/api/*` haría
   que un dispositivo pudiera mostrar datos de otra sesión. El SW de casa-os solo
   precachea `/offline` y deja pasar todo lo demás a la red.
+- **Push solo en producción**: el SW se registra únicamente con
+  `NODE_ENV=production`; en `npm run dev` el panel debe mostrar que los avisos
+  no están disponibles. La prueba real de suscripción/push se hace con
+  `npm run build && npm start` o en Vercel.
+- **iOS necesita PWA instalada**: Safari no entrega push a una pestaña normal.
+  El panel muestra la instrucción de **Añadir a pantalla de inicio** y no intenta
+  suscribir en ese estado.
+- **Vercel Hobby no permite cron sub-diario**: el scheduler va en GitHub Actions.
+  El workflow puede retrasarse y se desactiva tras 60 días sin actividad; hay
+  que documentarlo y permitir `workflow_dispatch`.
 - **Offline autocontenido**: `/offline` es un Route Handler con CSS inline, no
   una página del App Router; si dependiera del layout raíz o de chunks de
   Next.js, sin red se vería sin estilos.
