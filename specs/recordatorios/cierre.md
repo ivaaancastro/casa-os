@@ -11,9 +11,11 @@ dispositivo, aviso de prueba, panel **Avisos** con próximos recordatorios y
 enlace profundo al día del evento. El envío lo comprueba un workflow de GitHub
 Actions cada 5 minutos y se deduplica en PostgreSQL.
 
-La implementación, los tests y la UI local están completados. La feature **no
-está cerrada**: falta PR/CI, configurar Vercel y GitHub, desplegar y verificar un
-aviso real.
+La implementación, los tests y la UI local están completados. El código está
+mergeado en `main` (PR #26, commit `76f0683`) y desplegado en producción
+(deployment `AbHRRwJror3iHMpVKbvMnfqWCYE3`, health `200`). La feature **no está
+cerrada**: falta configurar VAPID/`CRON_SECRET`/GitHub Actions y verificar un
+aviso real con sesión de producción.
 
 ## Alcance entregado
 
@@ -54,7 +56,8 @@ aviso real.
 | `npm run typecheck` | OK |
 | `npm run test` | 334 tests en 22 archivos, todos OK |
 | `npm run build` | OK; rutas `/api/push/*` y `/api/reminders/*` registradas |
-| CI del PR | Pendiente |
+| CI del PR | [PR #26](https://github.com/ivaaancastro/casa-os/pull/26): `quality`, `test`, `build` y Vercel en verde |
+| CI de `main` | [run `40313415200`](https://github.com/ivaaancastro/casa-os/actions/runs/40313415200), en verde tras el squash merge |
 
 ### UI / Chrome
 
@@ -94,12 +97,12 @@ aviso real.
 | Campo | Valor |
 |---|---|
 | URL | <https://casa-os-mauve.vercel.app> |
-| Deployment | Pendiente |
-| Commit | Pendiente |
-| Health | Pendiente |
-| Rutas | Pendiente |
-| Smoke autenticado | Pendiente: Vercel CLI sin sesión en el entorno del agente |
-| Aviso real | Pendiente: suscripción, prueba, evento y recepción única |
+| Deployment | Vercel `AbHRRwJror3iHMpVKbvMnfqWCYE3`, estado success |
+| Commit | `76f0683` (squash merge de PR #26) |
+| Health | `GET /api/health` → `200`, `{"status":"ok","db":"ok"}` |
+| Rutas | `GET /api/push/config`, `/api/push/subscriptions` y `/api/reminders/upcoming` sin sesión → `401` JSON; `POST /api/reminders/dispatch` → `503` («El cron no está configurado»); `/sw.js` → `200` con la versión nueva; manifest → `200` |
+| Smoke autenticado | Pendiente: no hay sesión de producción disponible para el agente |
+| Aviso real | Pendiente: configurar VAPID/`CRON_SECRET`, suscripción, prueba, evento y recepción única |
 
 ## Documentación actualizada
 
@@ -112,7 +115,8 @@ aviso real.
 - [x] `tasks.md`: tareas locales en `[x]`; pendientes de producción marcadas.
 - [x] `AGENTS.md`: no aplica; no cambian reglas del arnés.
 - [ ] `npm run docs:check -- recordatorios`: pendiente hasta completar
-      producción y marcar el cierre como cerrada.
+      producción y marcar el cierre como cerrada. Hoy falla por las tareas 19 y
+      20 y por las casillas de producción, no por documentación ausente.
 
 ## Tareas
 
@@ -126,12 +130,14 @@ aviso real.
 - Scheduler de GitHub Actions.
 - Tests, lint, typecheck, build y verificación de UI/API local.
 - Documentación de uso y configuración.
+- PR #26 mergeado, CI de `main` verde y deployment de producción con health
+  `200`.
 
 ### Pendientes / follow-ups
 
-- PR de la feature, CI verde, squash merge y borrado de rama.
 - Configurar VAPID, `CRON_SECRET` y `HOUSE_TIMEZONE` en Vercel; `CASA_OS_URL` y
-  `CRON_SECRET` en GitHub; desplegar y verificar health/rutas.
+  `CRON_SECRET` en GitHub. Hoy el dispatch de producción responde `503` porque
+  falta el secreto.
 - Suscripción real, aviso de prueba, evento con recordatorio recibido una sola
   vez y desactivación.
 - Desactivar `admin-temporal` si sigue activa en producción.
@@ -166,8 +172,8 @@ aviso real.
 
 ## Checklist de cierre
 
-- [ ] El PR de la feature está mergeado y la rama borrada.
-- [ ] El CI de `main` está verde tras el merge de la feature.
+- [x] El PR de la feature está mergeado y la rama borrada.
+- [x] El CI de `main` está verde tras el merge de la feature.
 - [ ] Producción está desplegada y verificada; el smoke autenticado está
       documentado.
 - [ ] `tasks.md` no tiene casillas pendientes.

@@ -197,12 +197,14 @@ El merge del código **no** cierra una feature. La definición completa está en
   `PushSubscription` y `ReminderDelivery`, migración aditiva
   `add_push_reminders`, rutas `/api/push/*` y `/api/reminders/*`, tests y guía
   `docs/recordatorios.md`.
-- **Estado**: código y verificación local completados; PR pendiente. Producción
-  sigue pendiente de configurar VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE`,
-  `CASA_OS_URL` y de recibir un aviso real. No marcar como Hecho hasta el cierre.
-- **Bloqueo conocido**: Vercel CLI no tiene sesión iniciada en el entorno del
-  agente; la configuración de producción y el smoke real quedan para el usuario
-  o para una sesión autenticada.
+- **Estado**: código mergeado en `main` (PR #26, commit `76f0683`), CI de `main`
+  verde y deployment de producción `AbHRRwJror3iHMpVKbvMnfqWCYE3` con health
+  `200`. La configuración de avisos sigue pendiente: el dispatch de producción
+  responde `503` porque falta `CRON_SECRET`/VAPID. No marcar como Hecho hasta el
+  cierre.
+- **Bloqueo conocido**: no hay sesión de Vercel ni de producción disponible en
+  el entorno del agente. La configuración y el smoke autenticado quedan para el
+  usuario o para una sesión autenticada; no se inventan evidencias.
 - **Cierre (borrador)**: [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
@@ -275,9 +277,9 @@ eventos, todo el día, responsable y recordatorio almacenado), PR #24 y commit
 [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 
 **En curso:** `feat/recordatorios` (Web Push, panel **Avisos** y cron cada 5
-minutos). Código, tests y UI local verificados; falta PR/CI, configurar Vercel y
-GitHub, desplegar y probar un aviso real. Después, cierre
-`docs/cierre-recordatorios`.
+minutos). Código mergeado (PR #26), CI de `main` verde y producción desplegada
+con health `200`. Faltan VAPID/`CRON_SECRET`, el workflow de GitHub, el smoke
+autenticado y el aviso real. Después, cierre `docs/cierre-recordatorios`.
 
 **Siguiente:** ninguna feature nueva hasta cerrar `recordatorios` y tener el CI
 de `main` verde. Después, el siguiente hito del roadmap (inventario/documentos/

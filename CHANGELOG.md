@@ -89,6 +89,11 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   `CYckvdS6Bf8bMXKz1HkRH223bdEn`): health y rutas públicas OK, `/api/events` sin
   sesión → `401` JSON y smoke autenticado ADMIN con alta, edición, recordatorio
   y borrado. Evento temporal eliminado; la API quedó con 0 eventos.
+- **Recordatorios desplegados en producción** (PR #26, commit `76f0683`,
+  deployment `AbHRRwJror3iHMpVKbvMnfqWCYE3`): health `200`; rutas de push y
+  reminders sin sesión → `401` JSON; dispatch → `503` porque falta
+  `CRON_SECRET`. La configuración VAPID/cron y el aviso real quedan pendientes;
+  la feature no está cerrada.
 - **PWA**: el service worker sube a `CACHE_VERSION = v2` para añadir `push` y
   `notificationclick`, limpiar la caché de la PWA anterior y mantener la
   política de no cachear APIs ni datos privados.
