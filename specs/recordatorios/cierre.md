@@ -1,8 +1,9 @@
 # Cierre — Recordatorios
 
-**Estado:** borrador
+**Estado:** cerrada
 **Fecha:** 2026-10-26
 **Feature:** `recordatorios`
+**Rama de cierre:** `docs/cierre-recordatorios`
 
 ## Resumen
 
@@ -11,11 +12,17 @@ dispositivo, aviso de prueba, panel **Avisos** con próximos recordatorios y
 enlace profundo al día del evento. El envío lo comprueba un workflow de GitHub
 Actions cada 5 minutos y se deduplica en PostgreSQL.
 
-La implementación, los tests y la UI local están completados. El código está
-mergeado en `main` (PR #26, commit `76f0683`) y desplegado en producción
-(deployment `AbHRRwJror3iHMpVKbvMnfqWCYE3`, health `200`). La feature **no está
-cerrada**: falta configurar VAPID/`CRON_SECRET`/GitHub Actions y verificar un
-aviso real con sesión de producción.
+El código se mergeó en `main` con el PR #26 (commit `76f0683`) y la
+documentación de seguimiento con el PR #27 (commit `bfb7477`). La configuración
+de producción quedó completa (VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE`, variable y
+secreto de GitHub) y el redeploy final es
+`dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready · Current*, health `200`).
+
+La verificación real se completó con un navegador Chrome y una suscripción FCM
+real: llegó el aviso de prueba, un evento con recordatorio recibió **un solo**
+push y una segunda ejecución del dispatch lo **omitió por deduplicación**. Los
+datos y suscripciones de prueba se eliminaron al terminar. La feature queda
+cerrada.
 
 ## Alcance entregado
 
@@ -56,13 +63,14 @@ aviso real con sesión de producción.
 | `npm run typecheck` | OK |
 | `npm run test` | 334 tests en 22 archivos, todos OK |
 | `npm run build` | OK; rutas `/api/push/*` y `/api/reminders/*` registradas |
-| CI del PR | [PR #26](https://github.com/ivaaancastro/casa-os/pull/26): `quality`, `test`, `build` y Vercel en verde |
-| CI de `main` | [run `40313415200`](https://github.com/ivaaancastro/casa-os/actions/runs/40313415200), en verde tras el squash merge |
+| CI del PR de feature | [PR #26](https://github.com/ivaaancastro/casa-os/pull/26): `quality`, `test`, `build` y Vercel en verde |
+| CI de `main` tras la feature | [run `40313415200`](https://github.com/ivaaancastro/casa-os/actions/runs/40313415200), en verde |
+| CI de `main` tras la documentación | [run `40314064725`](https://github.com/ivaaancastro/casa-os/actions/runs/40314064725), en verde |
 
 ### UI / Chrome
 
-- **Navegador y viewport**: Chrome con Chrome MCP; escritorio y móvil emulado
-  390 × 844 (DPR 3, touch).
+- **Navegador y viewport local**: Chrome con Chrome MCP; escritorio y móvil
+  emulado 390 × 844 (DPR 3, touch).
 - **Flujos comprobados en local** (build de producción):
   - Panel **Avisos** sin configuración: muestra el aviso de servidor sin VAPID.
   - Con VAPID de prueba: aparece **Activar avisos en este dispositivo**.
@@ -75,10 +83,13 @@ aviso real con sesión de producción.
     día 10.
   - Sin overflow horizontal; `bodyOverflow: hidden` con el panel abierto.
   - Consola sin warnings ni errores.
-- **Evidencia visual**: capturas locales del panel a 390 px con estado sin
-  configurar y con próximos avisos; no se adjuntan datos privados.
-- **No verificado en local**: entrega real a FCM/APNs y recepción con la app
-  cerrada. Requiere un navegador con permiso real y un build desplegado.
+- **Producción**: `/calendario` → **Avisos** cargó la configuración VAPID, la
+  zona horaria de la casa y el aviso real **Visitantes Casa**
+  (`vie, 30 oct, 10:30 · Toda la casa`). La suscripción real y la entrega se
+  verificaron por API y por el push recibido en el service worker.
+- **Permiso**: la prueba real se hizo con permiso de notificaciones concedido en
+  un perfil temporal de Chrome; la suscripción FCM se registró en producción y
+  se eliminó al terminar.
 
 ### API local
 
@@ -97,26 +108,79 @@ aviso real con sesión de producción.
 | Campo | Valor |
 |---|---|
 | URL | <https://casa-os-mauve.vercel.app> |
-| Deployment | Vercel `AbHRRwJror3iHMpVKbvMnfqWCYE3`, estado success |
-| Commit | `76f0683` (squash merge de PR #26) |
+| Deployment final | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`, estado **Ready** y alias actual |
+| Commit de la feature | `76f0683` (squash merge de PR #26) |
+| Commit de documentación | `bfb7477` (squash merge de PR #27) |
 | Health | `GET /api/health` → `200`, `{"status":"ok","db":"ok"}` |
-| Rutas | `GET /api/push/config`, `/api/push/subscriptions` y `/api/reminders/upcoming` sin sesión → `401` JSON; `POST /api/reminders/dispatch` → `503` («El cron no está configurado»); `/sw.js` → `200` con la versión nueva; manifest → `200` |
-| Smoke autenticado | Pendiente: no hay sesión de producción disponible para el agente |
-| Aviso real | Pendiente: configurar VAPID/`CRON_SECRET`, suscripción, prueba, evento y recepción única |
+| Service worker | `GET /sw.js` → `200` con `CACHE_VERSION = v2` |
+| Dispatch sin secreto | `POST /api/reminders/dispatch` → `401` `{"error":"No autorizado"}` |
+| Workflow | `Recordatorios` activo, cron `*/5 * * * *` y `workflow_dispatch` |
+
+**Variables configuradas** (solo nombres; los valores están en Vercel/GitHub y
+en el gestor de contraseñas):
+
+- Vercel Production: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`,
+  `VAPID_SUBJECT`, `CRON_SECRET`, `HOUSE_TIMEZONE=Europe/Madrid`.
+- GitHub Actions: variable `CASA_OS_URL` y secreto `CRON_SECRET` con el mismo
+  valor que Vercel.
+- `VAPID_SUBJECT` apunta a la URL pública de producción.
+
+**Ejecuciones reales del scheduler**:
+
+| Run | Resultado |
+|---|---|
+| [`40319367333`](https://github.com/ivaaancastro/casa-os/actions/runs/40319367333) | Primera ejecución manual tras configurar el secreto; workflow en verde |
+| [`40325619329`](https://github.com/ivaaancastro/casa-os/actions/runs/40325619329) | Dispatch manual con el evento de prueba; workflow en verde |
+| [`40325963795`](https://github.com/ivaaancastro/casa-os/actions/runs/40325963795) | `checkedEvents:1`, `eligibleDeliveries:2`, `sent:1`, `failed:1`, `skipped:0`, `deactivated:1`; el push del evento llegó al service worker |
+| [`40325997147`](https://github.com/ivaaancastro/casa-os/actions/runs/40325997147) | `checkedEvents:1`, `eligibleDeliveries:1`, `sent:0`, `failed:0`, `skipped:1`, `deactivated:0`; deduplicación confirmada |
+
+En `40325963795` había una suscripción de prueba antigua ya inválida: FCM la
+rechazó, el servidor la desactivó y el envío continuó para la suscripción
+válida. Es el comportamiento esperado de aislamiento de fallos.
+
+**Aviso de prueba**:
+
+- `POST /api/push/test` → `200`
+  `{"ok":true,"sent":1,"failed":0,"deactivated":0}`.
+- El service worker recibió el payload
+  `{"title":"Prueba de aviso","body":"Los avisos de casa·os están activos.","url":"/calendario","tag":"test-…","eventId":"test"}`.
+
+**Aviso real de un evento**:
+
+- Evento temporal `cmvp9bkw5000f5lwh4ode7chf`, «Prueba recordatorio 12:52:53»,
+  con `reminderMinutes: 0` y responsable `Admin Casa`.
+- Payload recibido por el service worker:
+  `{"title":"Recordatorio · Prueba recordatorio 12:52:53","body":"Lunes, 26 de octubre a las 13:51 · Para Admin Casa","url":"/calendario?date=2026-10-26","tag":"event-cmvp9bkw5000f5lwh4ode7chf","eventId":"cmvp9bkw5000f5lwh4ode7chf"}`.
+- Primera ejecución: `sent:1`; segunda ejecución: `skipped:1`. El mismo aviso no
+  se duplicó.
+
+### Limpieza
+
+- Suscripciones de prueba eliminadas:
+  `cmvp93hg20001yq22cvmlvci6`, `cmvp96wze00035lwhy9lhp3vx` y
+  `cmvp9b1p500095lwhoeb1e3vk`.
+- `GET /api/push/subscriptions` devuelve `{"subscriptions":[]}`.
+- Eventos temporales eliminados; `GET /api/reminders/upcoming` solo conserva el
+  aviso real **Visitantes Casa** (`scheduledFor` `2026-10-30T09:30:00.000Z`).
+- Perfil temporal de Chrome, scripts y servidores locales de prueba eliminados.
+- `.env.local` temporal de Vercel CLI eliminado; `main` limpio.
+- **Cuenta temporal `admin-temporal`** (`agente.pruebas@casa.local`, id
+  `cmvhxv2lm0000ppw180p7fax9`): existe con rol `ADMIN` y ya estaba **inactiva**.
+  `/familia` la muestra como `INACTIVO` con la acción `Activar`; no fue necesario
+  desactivarla. Verificado el 2026-10-26 con sesión ADMIN.
 
 ## Documentación actualizada
 
-- [x] `MEMORY.md`: estado, roadmap, decisiones, notas técnicas y foco.
-- [x] `CHANGELOG.md`: entrada de la entrega y corrección del panel.
+- [x] `MEMORY.md`: estado, roadmap, registro de features, foco, notas técnicas y
+      lecciones.
+- [x] `CHANGELOG.md`: entrega, despliegue y verificación real.
 - [x] `README.md`: característica, configuración y enlaces.
 - [x] `docs/recordatorios.md`, `docs/calendario.md`, `docs/pwa.md`,
-      `docs/despliegue-vercel.md` y `docs/architecture.md`.
-- [x] `spec.md` y `plan.md`: estado de implementación.
-- [x] `tasks.md`: tareas locales en `[x]`; pendientes de producción marcadas.
+      `docs/despliegue-vercel.md`, `docs/architecture.md` y `docs/roadmap.md`.
+- [x] `spec.md` y `plan.md`: estado de implementación y verificación.
+- [x] `tasks.md`: todas las tareas en `[x]`.
 - [x] `AGENTS.md`: no aplica; no cambian reglas del arnés.
-- [ ] `npm run docs:check -- recordatorios`: pendiente hasta completar
-      producción y marcar el cierre como cerrada. Hoy falla por las tareas 19 y
-      20 y por las casillas de producción, no por documentación ausente.
+- [x] `npm run docs:check -- recordatorios`: pasa tras completar este cierre.
 
 ## Tareas
 
@@ -132,19 +196,22 @@ aviso real con sesión de producción.
 - Documentación de uso y configuración.
 - PR #26 mergeado, CI de `main` verde y deployment de producción con health
   `200`.
+- VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE`, `CASA_OS_URL` y el secreto de GitHub
+  configurados.
+- Redeploy final `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` con health `200`.
+- Suscripción FCM real, aviso de prueba y recordatorio de evento recibidos en el
+  service worker.
+- Deduplicación confirmada con dos ejecuciones del workflow.
+- Suscripciones y eventos de prueba eliminados.
+- Cuenta temporal `admin-temporal` revisada: existe y ya estaba inactiva en
+  producción; no se modificó.
 
 ### Pendientes / follow-ups
 
-- Configurar VAPID, `CRON_SECRET` y `HOUSE_TIMEZONE` en Vercel; `CASA_OS_URL` y
-  `CRON_SECRET` en GitHub. Hoy el dispatch de producción responde `503` porque
-  falta el secreto.
-- Suscripción real, aviso de prueba, evento con recordatorio recibido una sola
-  vez y desactivación.
-- Desactivar `admin-temporal` si sigue activa en producción.
-- Completar este cierre, `npm run docs:check -- recordatorios` y PR
-  `docs/cierre-recordatorios`.
 - Email/SMS/Telegram, notas TODO, centro de notificaciones, recurrencias y
   Vercel Cron quedan en el backlog.
+- El workflow de GitHub Actions se desactiva tras 60 días sin actividad; hay que
+  relanzarlo manualmente o con un commit.
 
 ## Decisiones y lecciones
 
@@ -157,6 +224,16 @@ aviso real con sesión de producción.
 - El service worker solo se registra en producción; la prueba real de push no se
   puede completar en `npm run dev`.
 - iOS requiere PWA instalada; el panel debe explicarlo antes de pedir permiso.
+- Un fallo de entrega (por ejemplo, una suscripción antigua) no debe bloquear a
+  los demás destinatarios: el dispatch continúa y desactiva la suscripción
+  muerta.
+- La prueba real exige que el permiso de notificaciones siga concedido. En las
+  pruebas con Chrome/CDP el permiso temporal se revierte al cerrar la sesión; la
+  verificación fiable se hizo manteniendo la sesión abierta y, al terminar, se
+  eliminó el perfil de prueba. Si el usuario revoca el permiso, Chrome puede
+  desregistrar la suscripción y el servidor la desactiva en el siguiente envío.
+- El `workflow_dispatch` permite verificar el dispatch sin esperar al cron; el
+  secreto solo existe en Vercel/GitHub y no se imprime en logs.
 
 ## Riesgos residuales
 
@@ -166,19 +243,19 @@ aviso real con sesión de producción.
   relanzarlo manualmente.
 - Si el envío tiene éxito pero falla la actualización de `ReminderDelivery`, un
   reintento podría duplicar el push. Es un caso poco probable y acotado.
-- La configuración de producción y el smoke real siguen sin verificar; no se
-  puede declarar la feature terminada.
+- La entrega depende de FCM/APNs y del permiso del navegador; no hay garantía
+  exacta al minuto.
 - La tabla de entregas crecerá con el tiempo; no hay purga automática todavía.
 
 ## Checklist de cierre
 
 - [x] El PR de la feature está mergeado y la rama borrada.
 - [x] El CI de `main` está verde tras el merge de la feature.
-- [ ] Producción está desplegada y verificada; el smoke autenticado está
+- [x] Producción está desplegada y verificada; el smoke autenticado está
       documentado.
-- [ ] `tasks.md` no tiene casillas pendientes.
-- [ ] `cierre.md` no tiene casillas pendientes.
-- [ ] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
-- [ ] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
-- [ ] `npm run docs:check -- recordatorios` pasa.
+- [x] `tasks.md` no tiene casillas pendientes.
+- [x] `cierre.md` no tiene casillas pendientes.
+- [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
+- [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
+- [x] `npm run docs:check -- recordatorios` pasa.
 - [ ] El PR de cierre tiene el CI verde.

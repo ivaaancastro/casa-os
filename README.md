@@ -15,7 +15,7 @@
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
 | 📅 Calendario | ✅ Terminado | Calendario compartido con vistas de mes/semana, eventos, todo el día y recordatorio |
-| 🔔 Recordatorios | 🚧 En desarrollo | Avisos Web Push de eventos, prueba y panel in-app; pendiente de verificación en producción |
+| 🔔 Recordatorios | ✅ Terminado | Avisos Web Push de eventos, prueba, panel in-app y scheduler cada 5 minutos; verificado en producción |
 | 📦 Inventario | 📋 Planificado | Control de objetos, caducidades y garantías |
 | 💰 Gastos | 💡 Idea | Registro y reparto de gastos del hogar |
 | 🔧 Mantenimiento | 💡 Idea | Tareas recurrentes y historial |
@@ -77,7 +77,9 @@ prueba y consultar los próximos recordatorios. Los eventos con hora avisan
 (configurable con `HOUSE_TIMEZONE`). Un cron cada 5 minutos procesa la ventana
 de envío y deduplica las entregas.
 
-Guía de uso, permisos, API y límites:
+Verificado en producción el 2026-10-26 con una suscripción real: llegó el aviso
+de prueba y un recordatorio de evento; una segunda ejecución lo omitió por
+deduplicación. Guía de uso, permisos, API y límites:
 **[`docs/calendario.md`](docs/calendario.md)**.
 Configuración de VAPID, scheduler y funcionamiento:
 **[`docs/recordatorios.md`](docs/recordatorios.md)**.

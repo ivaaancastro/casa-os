@@ -40,7 +40,8 @@ abierta o abre una nueva en `/calendario?date=YYYY-MM-DD`.
 
 La activación se hace desde **Calendario → Avisos**. En iOS/iPadOS hay que
 instalar la PWA y abrirla desde la pantalla de inicio. Guía completa:
-[`docs/recordatorios.md`](recordatorios.md).
+[`docs/recordatorios.md`](recordatorios.md). La recepción real de un aviso de
+prueba y de un recordatorio de evento se verificó en producción el 2026-10-26.
 
 ## Piezas
 

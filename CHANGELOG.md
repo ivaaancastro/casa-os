@@ -15,8 +15,9 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   PWA, activación por dispositivo, envío de prueba, panel **Avisos** con
   próximos recordatorios y enlace profundo al día del evento. Incluye VAPID,
   suscripciones, deduplicación de entregas, scheduler de GitHub Actions cada 5
-  minutos y guía en `docs/recordatorios.md`. Pendiente de verificación real en
-  producción.
+  minutos y guía en `docs/recordatorios.md`. Verificado en producción el
+  2026-10-26 con una suscripción FCM real, aviso de prueba y recordatorio
+  recibido una sola vez.
 - **Calendario familiar**: vistas de mes y semana, eventos con hora o de todo el
   día, responsable opcional y recordatorio almacenado. Cualquier miembro activo
   puede crear; solo el creador o un ADMIN puede editar o borrar. Incluye API
@@ -89,11 +90,13 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   `CYckvdS6Bf8bMXKz1HkRH223bdEn`): health y rutas públicas OK, `/api/events` sin
   sesión → `401` JSON y smoke autenticado ADMIN con alta, edición, recordatorio
   y borrado. Evento temporal eliminado; la API quedó con 0 eventos.
-- **Recordatorios desplegados en producción** (PR #26, commit `76f0683`,
-  deployment `AbHRRwJror3iHMpVKbvMnfqWCYE3`): health `200`; rutas de push y
-  reminders sin sesión → `401` JSON; dispatch → `503` porque falta
-  `CRON_SECRET`. La configuración VAPID/cron y el aviso real quedan pendientes;
-  la feature no está cerrada.
+- **Recordatorios verificados en producción** (PR #26, commit `76f0683`; PR #27
+  de documentación, commit `bfb7477`; deployment final
+  `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`): health `200`, workflow `Recordatorios`
+  activo cada 5 minutos y VAPID/`CRON_SECRET`/`HOUSE_TIMEZONE`/`CASA_OS_URL`
+  configurados. Suscripción FCM real, aviso de prueba `sent:1`, recordatorio de
+  evento `sent:1` y segunda ejecución `skipped:1` por deduplicación. Datos y
+  suscripciones de prueba eliminados; feature cerrada.
 - **PWA**: el service worker sube a `CACHE_VERSION = v2` para añadir `push` y
   `notificationclick`, limpiar la caché de la PWA anterior y mantener la
   política de no cachear APIs ni datos privados.
