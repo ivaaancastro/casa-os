@@ -1,8 +1,8 @@
 # Tasks — Recordatorios
 
-> Estado: implementación local completada; pendiente de PR, producción y cierre.
-> Spec aprobado el 2026-10-26.
-> Rama: `feat/recordatorios`.
+> Estado: implementación y producción verificadas; cierre documental en curso.
+> Spec aprobado el 2026-10-26. Producción verificada el 2026-10-26.
+> Rama de cierre: `docs/cierre-recordatorios`.
 
 ## Base y datos
 
@@ -74,15 +74,18 @@
 - [x] **18. PR y CI** — Commits atómicos, push de la rama, PR #26 con el spec,
   CI verde, squash merge `76f0683`, rama borrada y CI de `main` verde (run
   `40313415200`).
-- [ ] **19. Producción y smoke real** — Configurar VAPID, `CRON_SECRET` y
+- [x] **19. Producción y smoke real** — Configurar VAPID, `CRON_SECRET` y
   `HOUSE_TIMEZONE` en Vercel; `CASA_OS_URL`/`CRON_SECRET` en GitHub; verificar
-  health, suscripción real, aviso de prueba, evento con recordatorio recibido
-  una sola vez y desactivación. Completar `cierre.md` y PR
-  `docs/cierre-recordatorios`. **Bloqueado por acceso a Vercel; no inventar
-  evidencias.**
-- [ ] **20. Cuenta temporal** — Si `admin-temporal`
-  (`agente.pruebas@casa.local`) sigue activa en producción, desactivarla y
-  dejar constancia en el cierre. **No verificable sin sesión de producción.**
+  health, suscripción real, aviso de prueba y evento con recordatorio recibido
+  una sola vez. Baja del dispositivo verificada en local; suscripciones de
+  producción eliminadas por API. Deployment final
+  `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`, health `200`; runs `40325963795`
+  (`sent:1`) y `40325997147` (`skipped:1`); evento y suscripciones de prueba
+  eliminados. `cierre.md` completado y PR `docs/cierre-recordatorios` abierto.
+- [x] **20. Cuenta temporal** — `admin-temporal`
+  (`agente.pruebas@casa.local`, id `cmvhxv2lm0000ppw180p7fax9`, rol `ADMIN`) ya
+  estaba **inactiva** en producción. `/familia` la muestra como `INACTIVO` con
+  la acción `Activar`; no se modificó.
 
 ## Pendientes / follow-ups
 

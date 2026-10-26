@@ -135,6 +135,13 @@ El workflow llama a `POST /api/reminders/dispatch` con
 
 Guía funcional y de seguridad: [`docs/recordatorios.md`](recordatorios.md).
 
+> **Estado actual en producción (2026-10-26):** VAPID, `CRON_SECRET`,
+> `HOUSE_TIMEZONE` y la variable/secreto de GitHub están configurados. El
+> workflow está activo, el dispatch sin secreto devuelve `401`, el aviso de
+> prueba llegó al navegador y un recordatorio real se envió una sola vez
+> (`sent:1`; segunda ejecución `skipped:1`). Deployment final:
+> `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`.
+
 ## 6. Verificar
 
 1. Abre `https://<tu-url>/api/health` → debe devolver:

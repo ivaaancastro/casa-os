@@ -74,7 +74,9 @@ retroactivamente. Cada dispositivo recibe como máximo un aviso por evento y hor
 programada.
 
 El funcionamiento, la configuración VAPID, el scheduler de GitHub Actions y los
-límites están en [`docs/recordatorios.md`](recordatorios.md).
+límites están en [`docs/recordatorios.md`](recordatorios.md). Los avisos Web Push
+se verificaron en producción el 2026-10-26 con una suscripción real y un
+recordatorio recibido una sola vez.
 
 ## API
 

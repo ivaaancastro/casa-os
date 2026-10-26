@@ -189,7 +189,7 @@ El merge del código **no** cierra una feature. La definición completa está en
   sesión, `/calendario` → 307 y `/api/events` → 401 JSON.
 - **Cierre:** [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 
-### 🚧 En cierre (v0.10 — recordatorios)
+### ✅ Hecho (v0.10 — recordatorios)
 
 - **Recordatorios Web Push** (`feat/recordatorios`): avisos de eventos con hora
   y de todo el día, suscripciones por dispositivo, prueba, panel **Avisos**,
@@ -197,15 +197,17 @@ El merge del código **no** cierra una feature. La definición completa está en
   `PushSubscription` y `ReminderDelivery`, migración aditiva
   `add_push_reminders`, rutas `/api/push/*` y `/api/reminders/*`, tests y guía
   `docs/recordatorios.md`.
-- **Estado**: código mergeado en `main` (PR #26, commit `76f0683`), CI de `main`
-  verde y deployment de producción `AbHRRwJror3iHMpVKbvMnfqWCYE3` con health
-  `200`. La configuración de avisos sigue pendiente: el dispatch de producción
-  responde `503` porque falta `CRON_SECRET`/VAPID. No marcar como Hecho hasta el
-  cierre.
-- **Bloqueo conocido**: no hay sesión de Vercel ni de producción disponible en
-  el entorno del agente. La configuración y el smoke autenticado quedan para el
-  usuario o para una sesión autenticada; no se inventan evidencias.
-- **Cierre (borrador)**: [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
+- **Producción**: PR #26 (commit `76f0683`) y PR #27 de documentación (commit
+  `bfb7477`). Deployment final `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`
+  (*Ready · Current*), health `200`. VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE` y
+  `CASA_OS_URL` configurados; workflow `Recordatorios` activo cada 5 minutos.
+- **Verificación real**: suscripción FCM en Chrome, aviso de prueba `sent:1` y
+  recordatorio de un evento recibido en el service worker. El run
+  `40325963795` envió `1` aviso; `40325997147` lo omitió por deduplicación
+  (`skipped:1`). Suscripciones y eventos de prueba eliminados.
+- **Cuenta temporal**: `admin-temporal` (`agente.pruebas@casa.local`) existe,
+  pero ya estaba inactiva en `/familia` (`INACTIVO`); no se modificó.
+- **Cierre:** [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
 
@@ -242,8 +244,10 @@ El merge del código **no** cierra una feature. La definición completa está en
   recordatorio almacenado y tests; verificado en producción con smoke ADMIN.
   Cierre: [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
 - `feat/recordatorios` — Notificaciones/tareas programadas ligadas al calendario
-  y a las notas TODO. 🚧 **En cierre**: Web Push y panel implementados; *Hecho
-  cuando* llegue un aviso real en producción y se complete el cierre.
+  y a las notas TODO. ✅ **Hecho (v0.10)**: Web Push, panel **Avisos**, prueba,
+  deduplicación y scheduler de GitHub Actions; aviso real verificado en
+  producción. Cierre:
+  [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
 **Hito 4 — Patrimonio del hogar**
 
@@ -271,19 +275,17 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
-**Última feature cerrada:** `feat/calendario` (vistas de mes/semana, CRUD de
-eventos, todo el día, responsable y recordatorio almacenado), PR #24 y commit
-`94a4d40`. Cierre:
-[`specs/calendario/cierre.md`](specs/calendario/cierre.md).
+**Última feature cerrada:** `feat/recordatorios` (Web Push, panel **Avisos**,
+prueba, deduplicación y scheduler cada 5 minutos), PR #26, #27 y #28, commits
+`76f0683` y `bfb7477`, deployment `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`. Cierre:
+[`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
-**En curso:** `feat/recordatorios` (Web Push, panel **Avisos** y cron cada 5
-minutos). Código mergeado (PR #26), CI de `main` verde y producción desplegada
-con health `200`. Faltan VAPID/`CRON_SECRET`, el workflow de GitHub, el smoke
-autenticado y el aviso real. Después, cierre `docs/cierre-recordatorios`.
+**En curso:** ninguna feature nueva. El cierre documental de `recordatorios` se
+publica en el PR `docs/cierre-recordatorios`; no se abre la siguiente feature
+hasta mergearlo y ver el CI de `main` verde.
 
-**Siguiente:** ninguna feature nueva hasta cerrar `recordatorios` y tener el CI
-de `main` verde. Después, el siguiente hito del roadmap (inventario/documentos/
-gastos) según prioridad del usuario.
+**Siguiente:** el siguiente hito del roadmap (inventario/documentos/gastos)
+según prioridad del usuario.
 
 ## Registro de features
 
@@ -305,6 +307,7 @@ gastos) según prioridad del usuario.
 | feat | Escaneo de red (local + importación) | #18, #19, #20 | `5835fd2` | Sí (smoke ADMIN) | [`cierre`](specs/escaneo-red/cierre.md) |
 | feat | Estado de dispositivos (online/ausente) | #22 | `34fee9f` | Sí (smoke ADMIN) | [`cierre`](specs/dispositivos-estado/cierre.md) |
 | feat | Calendario familiar (mes/semana, CRUD, recordatorio) | #24 | `94a4d40` | Sí (smoke ADMIN) | [`cierre`](specs/calendario/cierre.md) |
+| feat | Recordatorios Web Push (panel + scheduler) | #26, #27, #28 | `76f0683` / `bfb7477` | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (push real) | [`cierre`](specs/recordatorios/cierre.md) |
 
 ## Notas técnicas
 
@@ -355,7 +358,10 @@ gastos) según prioridad del usuario.
   cada 5 min (`CASA_OS_URL` + `CRON_SECRET`). El dispatch exige
   `Authorization: Bearer`; sin secreto configurado devuelve `503`. La UI de
   activación solo funciona en build de producción porque el SW no se registra
-  en desarrollo.
+  en desarrollo. En producción está configurado con VAPID/`CRON_SECRET`/
+  `HOUSE_TIMEZONE`, workflow activo y deployment
+  `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`; prueba real `sent:1` y deduplicación
+  `skipped:1`.
 - **Tests**: `npm run test` ejecuta una pasada (`vitest run`); para watch,
   `npm run test:watch`. La CI usa la misma pasada.
 
@@ -452,7 +458,17 @@ gastos) según prioridad del usuario.
   según la zona horaria.
 - **Recordatorio ≠ notificación**: guardar `reminderMinutes` no programa nada.
   La UI debe decirlo para no prometer avisos que aún no existen.
+- **Push real ≠ `sent:1`**: que FCM acepte el envío no demuestra que el
+  service worker lo reciba. Hay que comprobar la recepción en el navegador y,
+  si se usa CDP, mantener el permiso concedido y la sesión abierta durante la
+  prueba. Con el permiso revocado Chrome puede desregistrar la suscripción.
+- **Aislamiento de fallos en el dispatch**: una suscripción antigua que devuelve
+  `410`/`404` se desactiva sin impedir el envío a las demás. La respuesta debe
+  reflejar `sent`, `failed`, `skipped` y `deactivated` por separado.
+- **Deduplicación verificable**: ejecutar el workflow dos veces seguidas y
+  comprobar `sent:1` y luego `skipped:1` es la prueba mínima de que no se
+  duplican avisos. El estado vive en `ReminderDelivery`, no en memoria.
 
 ---
 
-*Última actualización: 2026-10-22*
+*Última actualización: 2026-10-26*

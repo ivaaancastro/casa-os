@@ -6,9 +6,10 @@
 **Depende de:** calendario (`feat/calendario`, cerrada), PWA (`feat/pwa-instalable`,
 cerrada) y auth (`feat/usuarios-roles`, cerrada).
 
-> **Estado de implementación (2026-10-26):** código, tests, build y UI local
-> completados. Queda configurar Vercel/GitHub, desplegar y verificar un aviso
-> real antes del cierre.
+> **Estado de implementación (2026-10-26):** código, tests, build, UI local y
+> producción verificados. VAPID/`CRON_SECRET`/`HOUSE_TIMEZONE` y GitHub Actions
+> configurados; aviso real recibido una sola vez. Cierre documental en
+> `docs/cierre-recordatorios`.
 
 ## Contexto
 
@@ -261,6 +262,12 @@ Se amplía `public/sw.js`:
   - Evento con recordatorio a 5–10 minutos recibido una sola vez.
   - Ejecución manual del workflow y comprobación de contadores.
   - Desactivar el dispositivo y verificar que no llega.
+
+**Resultado (2026-10-26):** producción verificada con deployment
+`dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`, health `200`, suscripción FCM real, aviso de
+prueba y recordatorio de evento (`sent:1`; segunda ejecución `skipped:1`). La
+baja del dispositivo se verificó en local; en producción las suscripciones de
+prueba se eliminaron por API al terminar. Detalle en [`cierre.md`](cierre.md).
 
 ## Aprobación necesaria
 

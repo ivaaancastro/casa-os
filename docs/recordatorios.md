@@ -8,6 +8,11 @@ consultar los próximos recordatorios que te corresponden.
 Esta fase cubre Web Push y el panel in-app. No hay email, SMS, Telegram ni
 historial de notificaciones leídas.
 
+> **Estado:** desplegado y verificado en producción el 2026-10-26. El workflow
+> de GitHub Actions está activo cada 5 minutos y la entrega real se comprobó con
+> una suscripción FCM, un aviso de prueba y un recordatorio de evento
+> deduplicado.
+
 ## Cómo se activa
 
 1. Entra en **Calendario** con tu cuenta.
@@ -275,3 +280,23 @@ Tests relevantes:
 
 La verificación real de push debe hacerse en un build de producción o en la app
 desplegada: en desarrollo el service worker no se registra.
+
+### Verificación en producción (2026-10-26)
+
+- Deployment `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready · Current*), health
+  `200`; workflow `Recordatorios` activo cada 5 minutos.
+- VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE=Europe/Madrid` y la variable/secreto de
+  GitHub configurados (valores solo en Vercel/GitHub y en el gestor de
+  contraseñas).
+- Suscripción FCM real en Chrome: `POST /api/push/test` →
+  `{"ok":true,"sent":1,"failed":0,"deactivated":0}` y recepción en el service
+  worker.
+- Evento temporal con recordatorio: primera ejecución `sent:1`; segunda
+  ejecución `skipped:1`. El mismo aviso no se duplicó.
+- Suscripciones y eventos de prueba eliminados; `GET /api/push/subscriptions`
+  quedó vacío y `upcoming` solo conserva el aviso real **Visitantes Casa**.
+
+Si el navegador no muestra el aviso, comprueba que el permiso de notificaciones
+sigue concedido para la app. Si el usuario lo revoca, Chrome puede desregistrar
+la suscripción; el servidor la desactiva en el siguiente envío (`404`/`410`) y
+el panel permite volver a activarla.

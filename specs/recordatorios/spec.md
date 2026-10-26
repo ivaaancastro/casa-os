@@ -1,7 +1,7 @@
 # Spec — Recordatorios
 
 **Feature:** `recordatorios`
-**Estado:** aprobado — implementado, pendiente de verificación en producción
+**Estado:** aprobado — implementado y verificado en producción (2026-10-26)
 **Fecha:** 2026-10-26
 **Hito:** 3 — Organización del hogar
 
@@ -490,30 +490,36 @@ HOUSE_TIMEZONE="Europe/Madrid"
 
 ## Criterios de aceptación
 
-- [ ] El panel **Avisos** aparece en el calendario y explica el estado del
+- [x] El panel **Avisos** aparece en el calendario y explica el estado del
       dispositivo.
-- [ ] Un usuario puede activar avisos, recibir una prueba y desactivarlos.
-- [ ] Un usuario puede tener varias suscripciones y solo gestiona la actual.
-- [ ] Un evento con hora y recordatorio envía un aviso en la ventana prevista.
-- [ ] Un evento de todo el día envía a las 09:00 de `HOUSE_TIMEZONE`.
-- [ ] El cambio de hora (DST) no desplaza el aviso una hora.
-- [ ] Si el evento tiene responsable, solo recibe ese miembro.
-- [ ] Si es «Toda la casa», reciben todos los miembros activos suscritos.
-- [ ] Un miembro inactivo no recibe avisos.
-- [ ] El cron es idempotente: dos ejecuciones no duplican el aviso.
-- [ ] Una suscripción con `410` se desactiva y no vuelve a usarse.
-- [ ] El clic en la notificación abre `/calendario?date=...` en el día correcto.
-- [ ] Una URL externa en el payload no se abre.
-- [ ] El service worker no cachea APIs, HTML autenticado ni payloads.
-- [ ] La API devuelve `401` sin sesión y `401` sin `CRON_SECRET`.
-- [ ] El panel funciona a 390 px, sin overflow y con consola limpia.
-- [ ] `npm run lint && npm run typecheck && npm run test && npm run build` pasa.
-- [ ] La migración `add_push_reminders` se aplica en producción.
-- [ ] El workflow de GitHub Actions ejecuta el dispatch cada 5 minutos y se
+- [x] Un usuario puede activar avisos, recibir una prueba y desactivarlos.
+- [x] Un usuario puede tener varias suscripciones y solo gestiona la actual.
+- [x] Un evento con hora y recordatorio envía un aviso en la ventana prevista.
+- [x] Un evento de todo el día envía a las 09:00 de `HOUSE_TIMEZONE`.
+- [x] El cambio de hora (DST) no desplaza el aviso una hora.
+- [x] Si el evento tiene responsable, solo recibe ese miembro.
+- [x] Si es «Toda la casa», reciben todos los miembros activos suscritos.
+- [x] Un miembro inactivo no recibe avisos.
+- [x] El cron es idempotente: dos ejecuciones no duplican el aviso.
+- [x] Una suscripción con `410` se desactiva y no vuelve a usarse.
+- [x] El clic en la notificación abre `/calendario?date=...` en el día correcto.
+- [x] Una URL externa en el payload no se abre.
+- [x] El service worker no cachea APIs, HTML autenticado ni payloads.
+- [x] La API devuelve `401` sin sesión y `401` sin `CRON_SECRET`.
+- [x] El panel funciona a 390 px, sin overflow y con consola limpia.
+- [x] `npm run lint && npm run typecheck && npm run test && npm run build` pasa.
+- [x] La migración `add_push_reminders` se aplica en producción.
+- [x] El workflow de GitHub Actions ejecuta el dispatch cada 5 minutos y se
       puede lanzar a mano.
-- [ ] La documentación (`README`, `docs/recordatorios.md`, `docs/calendario.md`,
+- [x] La documentación (`README`, `docs/recordatorios.md`, `docs/calendario.md`,
       `docs/pwa.md`, `CHANGELOG`, `MEMORY`, roadmap) refleja la realidad.
-- [ ] Producción verificada con un aviso real recibido una sola vez.
+- [x] Producción verificada con un aviso real recibido una sola vez.
+
+**Resultado:** los criterios funcionales están cubiertos por la suite de tests y
+la verificación local de UI/API. El flujo real de extremo a extremo (suscripción
+FCM, aviso de prueba, recordatorio de evento y segunda ejecución sin duplicado)
+se verificó en producción el 2026-10-26. Evidencia detallada:
+[`cierre.md`](cierre.md).
 
 ## Fuera de alcance
 
