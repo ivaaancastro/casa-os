@@ -91,7 +91,7 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   sesión → `401` JSON y smoke autenticado ADMIN con alta, edición, recordatorio
   y borrado. Evento temporal eliminado; la API quedó con 0 eventos.
 - **Recordatorios verificados en producción** (PR #26, commit `76f0683`; PR #27
-  de documentación, commit `bfb7477`; deployment final
+  de documentación, commit `bfb7477`; deployment de verificación
   `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`): health `200`, workflow `Recordatorios`
   activo cada 5 minutos y VAPID/`CRON_SECRET`/`HOUSE_TIMEZONE`/`CASA_OS_URL`
   configurados. Suscripción FCM real, aviso de prueba `sent:1`, recordatorio de

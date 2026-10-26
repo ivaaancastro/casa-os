@@ -198,9 +198,11 @@ El merge del código **no** cierra una feature. La definición completa está en
   `add_push_reminders`, rutas `/api/push/*` y `/api/reminders/*`, tests y guía
   `docs/recordatorios.md`.
 - **Producción**: PR #26 (commit `76f0683`) y PR #27 de documentación (commit
-  `bfb7477`). Deployment final `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`
-  (*Ready · Current*), health `200`. VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE` y
-  `CASA_OS_URL` configurados; workflow `Recordatorios` activo cada 5 minutos.
+  `bfb7477`). Deployment de verificación
+  `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready*), health `200`; el merge del
+  cierre generó después un deployment docs-only sin cambios funcionales. VAPID,
+  `CRON_SECRET`, `HOUSE_TIMEZONE` y `CASA_OS_URL` configurados; workflow
+  `Recordatorios` activo cada 5 minutos.
 - **Verificación real**: suscripción FCM en Chrome, aviso de prueba `sent:1` y
   recordatorio de un evento recibido en el service worker. El run
   `40325963795` envió `1` aviso; `40325997147` lo omitió por deduplicación

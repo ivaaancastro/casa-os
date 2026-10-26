@@ -78,7 +78,7 @@
   `HOUSE_TIMEZONE` en Vercel; `CASA_OS_URL`/`CRON_SECRET` en GitHub; verificar
   health, suscripción real, aviso de prueba y evento con recordatorio recibido
   una sola vez. Baja del dispositivo verificada en local; suscripciones de
-  producción eliminadas por API. Deployment final
+  producción eliminadas por API. Deployment de verificación
   `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`, health `200`; runs `40325963795`
   (`sent:1`) y `40325997147` (`skipped:1`); evento y suscripciones de prueba
   eliminados. `cierre.md` completado y PR `docs/cierre-recordatorios` abierto.
