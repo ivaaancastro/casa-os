@@ -276,7 +276,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
 
 **Última feature cerrada:** `feat/recordatorios` (Web Push, panel **Avisos**,
-prueba, deduplicación y scheduler cada 5 minutos), PR #26 y #27, commits
+prueba, deduplicación y scheduler cada 5 minutos), PR #26, #27 y #28, commits
 `76f0683` y `bfb7477`, deployment `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`. Cierre:
 [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
@@ -307,7 +307,7 @@ según prioridad del usuario.
 | feat | Escaneo de red (local + importación) | #18, #19, #20 | `5835fd2` | Sí (smoke ADMIN) | [`cierre`](specs/escaneo-red/cierre.md) |
 | feat | Estado de dispositivos (online/ausente) | #22 | `34fee9f` | Sí (smoke ADMIN) | [`cierre`](specs/dispositivos-estado/cierre.md) |
 | feat | Calendario familiar (mes/semana, CRUD, recordatorio) | #24 | `94a4d40` | Sí (smoke ADMIN) | [`cierre`](specs/calendario/cierre.md) |
-| feat | Recordatorios Web Push (panel + scheduler) | #26, #27 | `76f0683` / `bfb7477` | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (push real) | [`cierre`](specs/recordatorios/cierre.md) |
+| feat | Recordatorios Web Push (panel + scheduler) | #26, #27, #28 | `76f0683` / `bfb7477` | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (push real) | [`cierre`](specs/recordatorios/cierre.md) |
 
 ## Notas técnicas
 

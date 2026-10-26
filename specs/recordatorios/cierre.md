@@ -13,10 +13,10 @@ enlace profundo al día del evento. El envío lo comprueba un workflow de GitHub
 Actions cada 5 minutos y se deduplica en PostgreSQL.
 
 El código se mergeó en `main` con el PR #26 (commit `76f0683`) y la
-documentación de seguimiento con el PR #27 (commit `bfb7477`). La configuración
-de producción quedó completa (VAPID, `CRON_SECRET`, `HOUSE_TIMEZONE`, variable y
-secreto de GitHub) y el redeploy final es
-`dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready · Current*, health `200`).
+documentación de seguimiento con el PR #27 (commit `bfb7477`). Este cierre se
+publica en el PR #28. La configuración de producción quedó completa (VAPID,
+`CRON_SECRET`, `HOUSE_TIMEZONE`, variable y secreto de GitHub) y el redeploy
+final es `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready · Current*, health `200`).
 
 La verificación real se completó con un navegador Chrome y una suscripción FCM
 real: llegó el aviso de prueba, un evento con recordatorio recibió **un solo**
@@ -258,4 +258,5 @@ válida. Es el comportamiento esperado de aislamiento de fallos.
 - [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
 - [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
 - [x] `npm run docs:check -- recordatorios` pasa.
-- [ ] El PR de cierre tiene el CI verde.
+- [x] El [PR de cierre #28](https://github.com/ivaaancastro/casa-os/pull/28)
+      tiene el CI verde.
