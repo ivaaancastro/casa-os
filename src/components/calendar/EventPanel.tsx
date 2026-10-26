@@ -427,8 +427,8 @@ export function EventPanel({
             </div>
 
             <p className="text-[10px] tracking-wider2 text-ash">
-              El recordatorio se guarda, pero los avisos llegarán en una próxima
-              entrega.
+              El aviso se enviará a los dispositivos que tengan los avisos
+              activados. Puedes gestionarlos en «Avisos».
             </p>
 
             <div className="flex flex-wrap gap-3 border-t border-mist pt-5">

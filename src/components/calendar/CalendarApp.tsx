@@ -20,6 +20,7 @@ import {
 } from '@/lib/utils/calendar';
 import { EventPanel, type EventPanelState } from './EventPanel';
 import { MonthView } from './MonthView';
+import { ReminderPanel } from './ReminderPanel';
 import { WeekView } from './WeekView';
 
 interface CalendarMember {
@@ -58,13 +59,21 @@ export function CalendarApp({ members, currentUser }: CalendarAppProps) {
   const [error, setError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const [panel, setPanel] = useState<EventPanelState | null>(null);
+  const [remindersOpen, setRemindersOpen] = useState(false);
   const [selectedDayKey, setSelectedDayKey] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
     const now = new Date();
+    const requested = new URLSearchParams(window.location.search).get('date');
+    const requestedDate = requested ? dateFromKey(requested) : null;
+
     setToday(now);
-    setAnchor(now);
+    setAnchor(requestedDate ?? now);
+
+    if (requestedDate) {
+      setSelectedDayKey(dateKey(requestedDate));
+    }
   }, []);
 
   const range: CalendarRange | null = useMemo(() => {
@@ -282,6 +291,14 @@ export function CalendarApp({ members, currentUser }: CalendarAppProps) {
 
             <button
               type="button"
+              className="btn-secondary text-xs"
+              onClick={() => setRemindersOpen(true)}
+            >
+              Avisos
+            </button>
+
+            <button
+              type="button"
               className="btn-primary"
               onClick={() => openCreate(undefined, false)}
             >
@@ -416,6 +433,10 @@ export function CalendarApp({ members, currentUser }: CalendarAppProps) {
           onSaved={handleSaved}
           onDeleted={handleDeleted}
         />
+      )}
+
+      {remindersOpen && (
+        <ReminderPanel onClose={() => setRemindersOpen(false)} />
       )}
     </div>
   );
