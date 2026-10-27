@@ -9,6 +9,8 @@ export const config = {
      * - /api/health (estado publico, sin datos)
      * - /api/devices/import (la ruta devuelve 401/403 JSON en vez de redirigir)
      * - /api/events (la ruta devuelve 401 JSON en vez de redirigir)
+     * - /api/2fa (requireUser; 401/403 JSON)
+     * - /api/users (requireUser/requireAdmin; 401/403 JSON)
      * - /api/push (requireUser en cada handler; 401 JSON)
      * - /api/reminders (requireUser o CRON_SECRET; 401 JSON)
      * - /offline (aviso sin conexion, sin datos)
@@ -17,6 +19,6 @@ export const config = {
      * - /_next/* (recursos estaticos)
      * - /favicon.ico (icono)
      */
-    '/((?!auth/login|api/auth|api/health|api/devices/import(?:/|$)|api/events(?:/|$)|api/push(?:/|$)|api/reminders(?:/|$)|offline(?:/|$)|icons/|manifest.webmanifest|sw.js|_next|favicon.ico).*)',
+    '/((?!auth/login|api/auth|api/health|api/devices/import(?:/|$)|api/events(?:/|$)|api/2fa(?:/|$)|api/users(?:/|$)|api/push(?:/|$)|api/reminders(?:/|$)|offline(?:/|$)|icons/|manifest.webmanifest|sw.js|_next|favicon.ico).*)',
   ],
 };

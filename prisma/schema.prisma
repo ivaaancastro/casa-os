@@ -15,17 +15,24 @@ model User {
   emailVerified     DateTime?
   password          String?
   image             String?
-  role              String             @default("FAMILY")
-  active            Boolean            @default(true)
-  accounts          Account[]
-  sessions          Session[]
-  notes             Note[]
-  devices           Device[]
-  eventsOwned       Event[]            @relation("EventOwner")
-  eventsCreated     Event[]            @relation("EventCreator")
-  pushSubscriptions PushSubscription[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  role                 String             @default("FAMILY")
+  active               Boolean            @default(true)
+  twoFactorEnabled     Boolean            @default(false)
+  twoFactorSecret      String?
+  twoFactorConfirmedAt DateTime?
+  sessionVersion       Int                @default(0)
+  accounts             Account[]
+  sessions             Session[]
+  notes                Note[]
+  devices              Device[]
+  eventsOwned          Event[]            @relation("EventOwner")
+  eventsCreated        Event[]            @relation("EventCreator")
+  pushSubscriptions    PushSubscription[]
+  recoveryCodes        TwoFactorRecoveryCode[]
+  authEvents           AuthEvent[]        @relation("AuthEventSubject")
+  authEventsAsActor    AuthEvent[]        @relation("AuthEventActor")
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 }
 
 model Account {
@@ -144,4 +151,30 @@ model ReminderDelivery {
   @@unique([eventId, subscriptionId, scheduledFor])
   @@index([scheduledFor])
   @@index([createdAt])
+}
+
+model TwoFactorRecoveryCode {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash  String    @unique
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, usedAt])
+}
+
+model AuthEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation("AuthEventSubject", fields: [userId], references: [id], onDelete: SetNull)
+  actorId   String?
+  actor     User?    @relation("AuthEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  ipHash    String?  @db.VarChar(64)
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
 }

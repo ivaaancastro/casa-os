@@ -3,6 +3,7 @@ import { getSessionUser } from '@/lib/api-auth';
 import { prisma } from '@/lib/prisma';
 import { publicUserSelect } from '@/lib/users';
 import { ProfileForm } from '@/components/ProfileForm';
+import { SecuritySection } from '@/components/SecuritySection';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +27,7 @@ export default async function PerfilPage() {
             Perfil
           </h1>
           <p className="mt-4 max-w-xl text-sm text-ash">
-            Tus datos y tu contraseña.
+            Tus datos, tu contraseña y la seguridad de tu cuenta.
           </p>
         </header>
 
@@ -34,6 +35,10 @@ export default async function PerfilPage() {
           <ProfileForm
             user={{ name: user.name, email: user.email, role: user.role }}
           />
+        </section>
+
+        <section className="col-span-12 border-t border-mist pt-8">
+          <SecuritySection />
         </section>
       </div>
     </div>

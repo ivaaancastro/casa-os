@@ -10,5 +10,6 @@ export const publicUserSelect = {
   email: true,
   role: true,
   active: true,
+  twoFactorEnabled: true,
   createdAt: true,
 } satisfies Prisma.UserSelect;

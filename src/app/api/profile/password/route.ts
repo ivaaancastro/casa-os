@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { changePasswordSchema } from '@/lib/schemas/user';
 import { requireUser } from '@/lib/api-auth';
+import { getClientIp, logAuthEvent } from '@/lib/auth-events';
 
 export async function POST(request: NextRequest) {
   const auth = await requireUser();
@@ -24,7 +25,16 @@ export async function POST(request: NextRequest) {
     }
 
     const password = await bcrypt.hash(data.newPassword, 12);
-    await prisma.user.update({ where: { id: user.id }, data: { password } });
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password, sessionVersion: { increment: 1 } },
+    });
+
+    await logAuthEvent({
+      userId: user.id,
+      action: 'PASSWORD_CHANGED',
+      ip: getClientIp(request),
+    });
 
     return NextResponse.json({ ok: true });
   } catch (error) {

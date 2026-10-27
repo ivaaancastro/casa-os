@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 interface ProfileFormProps {
   user: {
@@ -81,10 +82,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         setPasswordError(data.error ?? 'No se pudo cambiar la contraseña');
       } else {
-        setPasswordMessage('Contraseña actualizada');
-        setCurrentPassword('');
-        setNewPassword('');
-        setRepeatPassword('');
+        // El cambio incrementa sessionVersion: el JWT actual deja de ser valido.
+        await signOut({ callbackUrl: '/auth/login?password=cambiada' });
       }
     } catch {
       setPasswordError('Error de red. Inténtalo de nuevo.');

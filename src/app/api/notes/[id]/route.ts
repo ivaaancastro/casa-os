@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { updateNoteSchema } from '@/lib/schemas/note';
-import { authOptions } from '@/lib/auth';
+import { requireUser } from '@/lib/api-auth';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
+  const auth = await requireUser();
+  if (auth.response) return auth.response;
 
+  try {
     const { id } = await params;
 
     const existing = await prisma.note.findUnique({
@@ -25,7 +22,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Nota no encontrada' }, { status: 404 });
     }
 
-    if (existing.authorId !== session.user.id && session.user.role !== 'ADMIN') {
+    if (existing.authorId !== auth.user.id && auth.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
     }
 
@@ -52,12 +49,10 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
+  const auth = await requireUser();
+  if (auth.response) return auth.response;
 
+  try {
     const { id } = await params;
 
     const existing = await prisma.note.findUnique({
@@ -68,7 +63,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Nota no encontrada' }, { status: 404 });
     }
 
-    if (existing.authorId !== session.user.id && session.user.role !== 'ADMIN') {
+    if (existing.authorId !== auth.user.id && auth.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
     }
 

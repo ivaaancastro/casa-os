@@ -10,6 +10,7 @@ export function LoginForm() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [totp, setTotp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -22,11 +23,12 @@ export function LoginForm() {
       const result = await signIn('credentials', {
         email,
         password,
+        totp: totp.trim() || undefined,
         redirect: false,
       });
 
       if (result?.error) {
-        setError('Credenciales incorrectas. Inténtalo de nuevo.');
+        setError('Credenciales o código incorrectos. Inténtalo de nuevo.');
         setLoading(false);
       } else {
         // Navegacion dura a proposito: `router.push` puede adelantarse al
@@ -78,6 +80,28 @@ export function LoginForm() {
           required
           autoComplete="current-password"
         />
+      </div>
+
+      <div>
+        <label htmlFor="totp" className="label">
+          Código 2FA o de recuperación <span className="text-ash">(opcional)</span>
+        </label>
+        <input
+          id="totp"
+          type="text"
+          value={totp}
+          onChange={(e) => setTotp(e.target.value)}
+          className="input"
+          placeholder="123456 o ABCD-EFGH"
+          autoComplete="one-time-code"
+          autoCapitalize="characters"
+          spellCheck={false}
+          maxLength={40}
+        />
+        <p className="mt-1 text-xs text-ash">
+          Si tienes 2FA activo, introduce el código de tu app o un código de
+          recuperación.
+        </p>
       </div>
 
       <button

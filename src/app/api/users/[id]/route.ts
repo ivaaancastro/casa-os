@@ -6,6 +6,7 @@ import { updateUserSchema } from '@/lib/schemas/user';
 import { requireAdmin } from '@/lib/api-auth';
 import { validateUserUpdate } from '@/lib/utils/user-rules';
 import { publicUserSelect } from '@/lib/users';
+import { getClientIp, logAuthEvent } from '@/lib/auth-events';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -43,17 +44,35 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: ruleError }, { status: 400 });
     }
 
-    const updateData: { name?: string; role?: string; active?: boolean; password?: string } = {};
+    const updateData: {
+      name?: string;
+      role?: string;
+      active?: boolean;
+      password?: string;
+      sessionVersion?: { increment: number };
+    } = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.role !== undefined) updateData.role = data.role;
     if (data.active !== undefined) updateData.active = data.active;
-    if (data.password !== undefined) updateData.password = await bcrypt.hash(data.password, 12);
+    if (data.password !== undefined) {
+      updateData.password = await bcrypt.hash(data.password, 12);
+      updateData.sessionVersion = { increment: 1 };
+    }
 
     const user = await prisma.user.update({
       where: { id },
       data: updateData,
       select: publicUserSelect,
     });
+
+    if (data.password !== undefined) {
+      await logAuthEvent({
+        userId: id,
+        actorId: admin.id,
+        action: 'PASSWORD_CHANGED',
+        ip: getClientIp(request),
+      });
+    }
 
     return NextResponse.json(user);
   } catch (error) {

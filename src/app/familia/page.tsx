@@ -21,6 +21,7 @@ export default async function FamiliaPage() {
     email: u.email,
     role: u.role,
     active: u.active,
+    twoFactorEnabled: u.twoFactorEnabled,
     createdAt: u.createdAt.toISOString(),
   }));
 
@@ -42,6 +43,10 @@ export default async function FamiliaPage() {
             members={members}
             currentUserId={user.id}
             currentUserRole={user.role}
+            currentUserTwoFactorEnabled={
+              users.find((member) => member.id === user.id)?.twoFactorEnabled ??
+              false
+            }
           />
         </section>
       </div>

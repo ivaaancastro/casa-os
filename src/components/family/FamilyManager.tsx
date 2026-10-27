@@ -9,6 +9,7 @@ export interface Member {
   email: string | null;
   role: string;
   active: boolean;
+  twoFactorEnabled: boolean;
   createdAt: string;
 }
 
@@ -16,6 +17,7 @@ interface FamilyManagerProps {
   members: Member[];
   currentUserId: string;
   currentUserRole: string;
+  currentUserTwoFactorEnabled: boolean;
 }
 
 const ROLE_OPTIONS = ['FAMILY', 'ADMIN'] as const;
@@ -32,7 +34,12 @@ interface MemberFormData {
   active?: boolean;
 }
 
-export function FamilyManager({ members, currentUserId, currentUserRole }: FamilyManagerProps) {
+export function FamilyManager({
+  members,
+  currentUserId,
+  currentUserRole,
+  currentUserTwoFactorEnabled,
+}: FamilyManagerProps) {
   const router = useRouter();
   const isAdmin = currentUserRole === 'ADMIN';
   const [error, setError] = useState('');
@@ -83,6 +90,21 @@ export function FamilyManager({ members, currentUserId, currentUserRole }: Famil
 
   async function handleToggleActive(member: Member): Promise<void> {
     await request(`/api/users/${member.id}`, 'PATCH', { active: !member.active });
+  }
+
+  async function handleResetTwoFactor(member: Member): Promise<void> {
+    if (!currentUserTwoFactorEnabled) {
+      setError('Activa 2FA en tu perfil antes de restablecer el de otros miembros.');
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `¿Restablecer 2FA de ${member.email ?? member.name ?? 'este miembro'}?\n\n` +
+        'Se borrarán su secreto y sus códigos de recuperación. Deberá configurarlo de nuevo.',
+    );
+    if (!confirmed) return;
+
+    await request(`/api/users/${member.id}/2fa/reset`, 'POST', { confirm: true });
   }
 
   return (
@@ -136,7 +158,7 @@ export function FamilyManager({ members, currentUserId, currentUserRole }: Famil
                   </span>
 
                   {isAdmin && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-3">
                       <button
                         type="button"
                         className="text-xs text-ash transition-colors hover:text-ink"
@@ -152,6 +174,16 @@ export function FamilyManager({ members, currentUserId, currentUserRole }: Famil
                       >
                         {member.active ? 'Desactivar' : 'Activar'}
                       </button>
+                      {member.twoFactorEnabled && member.id !== currentUserId && (
+                        <button
+                          type="button"
+                          disabled={pending}
+                          className="text-xs text-alarm transition-colors hover:opacity-70 disabled:opacity-40"
+                          onClick={() => handleResetTwoFactor(member)}
+                        >
+                          Restablecer 2FA
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
