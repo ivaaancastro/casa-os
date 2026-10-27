@@ -178,3 +178,18 @@ model AuthEvent {
   @@index([actorId, createdAt])
   @@index([action, createdAt])
 }
+
+model PasswordEntry {
+  id          String @id @default(cuid())
+  userId      String
+  title       String
+  url         String?
+  username   String?
+  passwordHash String
+  notes      String?
+  category   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
