@@ -255,7 +255,10 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 - `feat/gestor-contrasenas` — Gestor de contraseñas familiar (cifrado AES‑256‑GCM
   en campo del usuario, UI en perfil, import/export, sin tabla aparte).
-  *Hecho cuando*: CRUD, cifrado, import/export y smoke ADMIN.
+  ✅ **Backend completado (v0.11)**: modelo, migración, crypto, API GET/POST,
+  356 tests, deploy producción verificado. Cierre: [`specs/gestor-contrasenas/cierre.md`](specs/gestor-contrasenas/cierre.md).
+- `feat/gestor-contrasenas-ui` — UI en /perfil (pestaña Contraseñas, modal CRUD,
+  import/export). *Hecho cuando*: lista, crear, editar, borrar, copiar, smoke ADMIN.
 
 **Hito 5 — Automatización**
 
@@ -278,12 +281,17 @@ prueba, deduplicación y scheduler cada 5 minutos), PR #26, #27 y #28, commits
 `76f0683` y `bfb7477`, deployment `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`. Cierre:
 [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
-**En curso:** ninguna feature nueva. El cierre documental de `recordatorios` se
-publica en el PR `docs/cierre-recordatorios`; no se abre la siguiente feature
-hasta mergearlo y ver el CI de `main` verde.
+**En curso:** `feat/gestor-contrasenas` (backend completado v0.11 — modelo,
+migración, crypto, API GET/POST, 356 tests, deploy producción verificado).
+Cierre: [`specs/gestor-contrasenas/cierre.md`](specs/gestor-contrasenas/cierre.md).
 
-**Siguiente:** `feat/gestor-contrasenas` (gestor de contraseñas familiar,
-cifrado AES‑256‑GCM en campo del usuario, UI en perfil, import/export).
+**En curso:** `feat/gestor-contrasenas-ui` (UI en /contrasenas — CRUD, sin iconos nuevos,
+mobile-first 390px, estilo editorial Inditex).
+Cierre: [`specs/gestor-contrasenas-ui/cierre.md`](specs/gestor-contrasenas-ui/cierre.md).
+
+**Siguiente:** `feat/gestor-contrasenas-ui` (UI en /contrasenas — CRUD, sin iconos nuevos,
+mobile-first 390px, estilo editorial Inditex). Tras merge y CI verde, paso a
+`feat/gestor-contrasenas-import` (import/export mejorado).
 
 ## Registro de features
 
@@ -306,6 +314,7 @@ cifrado AES‑256‑GCM en campo del usuario, UI en perfil, import/export).
 | feat | Estado de dispositivos (online/ausente) | #22 | `34fee9f` | Sí (smoke ADMIN) | [`cierre`](specs/dispositivos-estado/cierre.md) |
 | feat | Calendario familiar (mes/semana, CRUD, recordatorio) | #24 | `94a4d40` | Sí (smoke ADMIN) | [`cierre`](specs/calendario/cierre.md) |
 | feat | Recordatorios Web Push (panel + scheduler) | #26, #27, #28 | `76f0683` / `bfb7477` | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (push real) | [`cierre`](specs/recordatorios/cierre.md) |
+| feat | Gestor contraseñas (backend: modelo, crypto, API) | #32 | `c5d2334` | Sí (health 200) | [`cierre`](specs/gestor-contrasenas/cierre.md) |
 
 ## Notas técnicas
 
@@ -469,4 +478,4 @@ cifrado AES‑256‑GCM en campo del usuario, UI en perfil, import/export).
 
 ---
 
-*Última actualización: 2026-10-26*
+*Última actualización: 2026-10-27*
