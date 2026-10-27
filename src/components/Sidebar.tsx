@@ -11,6 +11,7 @@ const navItems = [
   { href: '/notas', label: 'Notas' },
   { href: '/calendario', label: 'Calendario' },
   { href: '/familia', label: 'Familia' },
+  { href: '/contrasenas', label: 'Contraseñas' },
 ];
 
 export function Sidebar() {
