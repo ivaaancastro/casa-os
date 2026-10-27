@@ -251,15 +251,11 @@ El merge del código **no** cierra una feature. La definición completa está en
   producción. Cierre:
   [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
-**Hito 4 — Patrimonio del hogar**
+**Hito 4 — Seguridad**
 
-- `feat/inventario` — Objetos y enseres (categoría, ubicación, valor, garantía,
-  fotos). *Hecho cuando*: CRUD + búsqueda por ubicación/categoría.
-- `feat/documentos` — Archivos del hogar (facturas, contratos, garantías):
-  subida, etiquetado y relación con inventario/gastos. *Hecho cuando*: subir,
-  listar, descargar y borrar con permisos.
-- `feat/gastos` — Gastos recurrentes y puntuales, reparto por miembro y
-  presupuesto mensual. *Hecho cuando*: registrar gastos y ver resumen por mes.
+- `feat/gestor-contrasenas` — Gestor de contraseñas familiar (cifrado AES‑256‑GCM
+  en campo del usuario, UI en perfil, import/export, sin tabla aparte).
+  *Hecho cuando*: CRUD, cifrado, import/export y smoke ADMIN.
 
 **Hito 5 — Automatización**
 
@@ -286,8 +282,8 @@ prueba, deduplicación y scheduler cada 5 minutos), PR #26, #27 y #28, commits
 publica en el PR `docs/cierre-recordatorios`; no se abre la siguiente feature
 hasta mergearlo y ver el CI de `main` verde.
 
-**Siguiente:** el siguiente hito del roadmap (inventario/documentos/gastos)
-según prioridad del usuario.
+**Siguiente:** `feat/gestor-contrasenas` (gestor de contraseñas familiar,
+cifrado AES‑256‑GCM en campo del usuario, UI en perfil, import/export).
 
 ## Registro de features
 

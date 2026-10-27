@@ -18,7 +18,7 @@
 | 1 — Fundación | ✅ | Auth, layout, notas, usuarios/roles, PostgreSQL, Vercel y PWA |
 | 2 — Dispositivos | ✅ | CRUD manual · escaneo de red · estado de equipos, última vez visto y frescura |
 | 3 — Organización | ✅ | Calendario ✅ · recordatorios Web Push ✅ (verificados en producción) |
-| 4 — Patrimonio | 📋 | Inventario, documentos y gastos |
+| 4 — Seguridad | 📋 | Gestor de contraseñas (cifrado en usuario) |
 | 5 — Automatización | 💡 | Domótica |
 
 Detalle, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) → *Roadmap*.
