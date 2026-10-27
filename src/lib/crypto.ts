@@ -130,15 +130,3 @@ export function safeEqual(a: string, b: string): boolean {
   if (aBuffer.length !== bBuffer.length) return false;
   return timingSafeEqual(aBuffer, bBuffer);
 }
-
-/** Cifrado AES-256‑GCM para contraseñas (contexto propio para no colisionar con el TOTP). */
-export function encryptPassword(raw: string): string {
-  const key = getTotpEncryptionKey();
-  return encryptString(raw, key, 'casa-os:password-manager:v1');
-}
-
-/** Descifrado AES‑256‑GCM para contraseñas. */
-export function decryptPassword(payload: string): string {
-  const key = getTotpEncryptionKey();
-  return decryptString(payload, key, 'casa-os:password-manager:v1');
-}
