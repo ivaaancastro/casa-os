@@ -9,18 +9,19 @@ datasource db {
 }
 
 model User {
-  id                String             @id @default(cuid())
-  name              String?
-  email             String?            @unique
-  emailVerified     DateTime?
-  password          String?
-  image             String?
+  id                   String             @id @default(cuid())
+  name                 String?
+  email                String?            @unique
+  emailVerified        DateTime?
+  password             String?
+  image                String?
   role                 String             @default("FAMILY")
   active               Boolean            @default(true)
   twoFactorEnabled     Boolean            @default(false)
   twoFactorSecret      String?
   twoFactorConfirmedAt DateTime?
   sessionVersion       Int                @default(0)
+  encryptedPasswords   String?
   accounts             Account[]
   sessions             Session[]
   notes                Note[]
