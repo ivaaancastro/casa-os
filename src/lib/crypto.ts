@@ -130,3 +130,19 @@ export function safeEqual(a: string, b: string): boolean {
   if (aBuffer.length !== bBuffer.length) return false;
   return timingSafeEqual(aBuffer, bBuffer);
 }
+
+/** Cifrado AES-256‑GCM para JSON de contraseñas (contexto propio). */
+export function encryptPasswords(passwords: Record<string, string>): string {
+  const key = getTotpEncryptionKey();
+  const plain = JSON.stringify(passwords);
+  return encryptString(plain, key, 'casa-os:passwords:v1');
+}
+
+export function decryptPasswords(payload: string): Record<string, string> | null {
+  try {
+    const plain = decryptString(payload, getTotpEncryptionKey(), 'casa-os:passwords:v1');
+    return JSON.parse(plain);
+  } catch {
+    return null;
+  }
+}
