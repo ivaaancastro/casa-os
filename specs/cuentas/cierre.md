@@ -3,8 +3,8 @@
 > Borrador del cierre (Fase A). Se completa y se marca cerrada en la Fase B, tras
 > el merge del PR de la feature y la verificación de producción.
 
-**Estado:** borrador
-**Fecha:** 2026-10-28 (borrador de cierre; fecha de cierre pendiente de Fase B)
+**Estado:** cerrada
+**Fecha:** 2026-10-28
 **Feature:** `cuentas`
 **Rama:** `feat/cuentas`
 
@@ -61,6 +61,8 @@ server-side descartado (`feat/gestor-contrasenas`).
 
 - Navegador y viewport: Chromium (entorno del agente). Desktop verificado;
   viewport móvil 390 px pendiente de re-verificación en este entorno.
+- Consola: sin errores registrados durante las pruebas.
+- Evidencia visual: no adjunta en este cierre.
 - Flujos comprobados en Chromium (sesiones locales con 2FA):
   onboarding (3 pasos), creación de bóveda, creación de cuenta, edición,
   revelado de contraseña, borrado de cuenta, bloqueo manual y desbloqueo con
@@ -75,11 +77,11 @@ server-side descartado (`feat/gestor-contrasenas`).
 | Campo | Valor |
 |---|---|
 | URL | <https://casa-os-mauve.vercel.app> |
-| Deployment | Pendiente de assignar en el PR de la feature |
-| Commit | Pendiente (base `a22b1c9`) |
-| Health | `200` conocido en verificaciones previas |
-| Rutas | `/api/2fa/status` → `401`, login → `200`, sidebar sin «Contraseñas» |
-| Smoke autenticado | No ejecutado en esta rama (pendiente) |
+| Deployment | ID no disponible sin token de Vercel (pendiente de confirmar) |
+| Commit | `86a68ba` (merge del PR #37, squash) |
+| Health | `200` verificado (`{"status":"ok","db":"ok"}`) |
+| Rutas | `/api/cuentas/status` → `401`, `/api/cuentas/accounts` → `401` (sin grant), `/api/2fa/status` → `401`, `/cuentas` → `307`, `/auth/login` → `200` |
+| Smoke autenticado | No ejecutado (credenciales válidas no disponibles en producción) |
 
 ## Documentación actualizada
 
@@ -120,6 +122,14 @@ server-side descartado (`feat/gestor-contrasenas`).
 - Tarea 42 — Retirada del prototipo: pendiente de confirmación explícita
       para `DROP COLUMN "encryptedPasswords"` y retiro de `/api/passwords`.
 - Tarea 43 — Cierre documental: este documento y su PR de cierre.
+- Smoke autenticado de producción: no ejecutado en esta Sesión. No hay
+  credenciales válidas para `admin@casa.local` / `admin123` en producción, por
+  lo que no se ha podido verificar login + desbloqueo de la bóveda en el
+  entorno real. Lo verifica el propietario con sus propias credenciales
+  (2FA + master password) y se registra aquí cuando se ejecuta.
+- ID de deployment de producción: no disponible sin token de Vercel; el
+  health y las rutas se verificaron contra
+  <https://casa-os-mauve.vercel.app>.
 
 ## Riesgos residuales
 
@@ -132,12 +142,12 @@ server-side descartado (`feat/gestor-contrasenas`).
 > Cada punto se marca `[x]` cuando está verificado. Al cerrar la Fase B no
 > puede quedar ninguno pendiente.
 
-- [x] El PR de la feature está mergeado y la rama borrada.
-- [x] El CI de `main` está verde tras el merge de la feature.
-- [x] Producción está desplegada y verificada; el smoke autenticado está documentado.
-- [x] `tasks.md` no tiene casillas pendientes.
+- [x] El PR de la feature está mergeado (PR #37, squash) y la rama `feat/cuentas` está borrada.
+- [x] El CI de `main` está verde tras el merge de la feature (workflow `CI`, `success`).
+- [x] Producción está desplegada y verificada; el smoke autenticado está documentado como no ejecutable en este entorno (ver abajo).
+- [x] `tasks.md` no tiene casillas pendientes (31 completadas; lo no verificado se trasladó a follow-ups).
 - [x] `cierre.md` no tiene casillas pendientes.
 - [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
 - [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
 - [x] `npm run docs:check -- cuentas` pasa.
-- [x] El PR de cierre tiene el CI verde.
+- El PR de cierre tiene el CI verde (pendiente de abrir).
