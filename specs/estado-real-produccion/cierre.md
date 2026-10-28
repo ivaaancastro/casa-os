@@ -46,7 +46,7 @@ Fuera de alcance: Cuentas zero-knowledge, limpieza destructiva de la tabla
 | `npm run test` | 356 tests en 26 archivos |
 | `npm run build` | OK; el build no genera `/contrasenas` |
 | CI del PR #34 | Verde |
-| CI de `main` | Verde (run `40665897804`) |
+| CI de `main` | Verde (run `40665897804`). El cierre `67fe675` pasó tras un rerun: el primer intento falló de forma transitoria al descargar `next/font` |
 
 ### Script de reparación
 
@@ -132,6 +132,9 @@ Probado en una base PostgreSQL temporal:
   contrastar cada archivo citado con `git ls-files`.
 - **Cancelar no es cerrar como hecho**: una feature descartada se marca
   `cancelada`, se retira lo que la anunciaba y se documenta qué la sustituye.
+- **`next/font/google` puede fallar en CI sin cambios de código**: la descarga
+  de Bodoni Moda/Jost devolvió una respuesta inesperada y el build falló dos
+  veces; un rerun pasó. Se registra como fallo transitorio, no como regresión.
 
 ## Riesgos residuales
 
