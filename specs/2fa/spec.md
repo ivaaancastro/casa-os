@@ -1,7 +1,7 @@
 # Spec — Autenticación en dos pasos (2FA)
 
 **Feature:** `2fa`
-**Estado:** aprobado — pendiente de implementación
+**Estado:** implementado y cerrado (2026-10-28; verificación de producción parcial)
 **Fecha:** 2026-10-26
 **Depende de:** auth NextAuth, usuarios/roles y perfil (cerradas).
 **Bloquea:** `feat/cuentas` (la bóveda de cuentas exigirá 2FA).

@@ -88,9 +88,13 @@ for (const section of requiredSections) {
   check(cierre.includes(section), `cierre.md incluye "${section}"`);
 }
 
+const cancelled = /\*\*Estado:\*\*\s*cancelad/i.test(cierre);
+
 check(
-  /\*\*Estado:\*\*\s*cerrada/i.test(cierre),
-  'cierre.md marcado como "Estado: cerrada"'
+  cancelled || /\*\*Estado:\*\*\s*cerrada/i.test(cierre),
+  cancelled
+    ? 'cierre.md marcado como "Estado: cancelada"'
+    : 'cierre.md marcado como "Estado: cerrada"'
 );
 
 check(

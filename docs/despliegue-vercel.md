@@ -50,7 +50,8 @@ Elige **una** de estas dos vías. Ambas dan las dos URLs que necesitas.
    - **Framework Preset**: Next.js (se detecta solo).
    - **Root Directory**: `./`
    - **Build Command**: déjalo vacío. Vercel usará `npm run vercel-build`
-     (definido en `package.json`), que aplica migraciones y compila.
+     (definido en `package.json`), que repara la migración histórica conocida,
+     aplica migraciones y compila.
    - **Install Command**: `npm ci` (por defecto).
    - **Node.js Version**: 20.x.
 4. **No despliegues todavía**: primero añade las variables (paso 3).
@@ -68,6 +69,7 @@ Preview) añade:
 | `DIRECT_URL` | URL directa (sin pooler) | Migraciones |
 | `NEXTAUTH_URL` | `https://<tu-dominio>` | En el primer deploy usa la URL de Vercel |
 | `NEXTAUTH_SECRET` | secreto aleatorio | Genera con `openssl rand -base64 32` |
+| `TOTP_ENCRYPTION_KEY` | 32 bytes en base64 | Cifra los secretos TOTP de 2FA; `openssl rand -base64 32` |
 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | clave pública VAPID | Solo si se usan recordatorios |
 | `VAPID_PRIVATE_KEY` | clave privada VAPID | Solo servidor; nunca en el cliente |
 | `VAPID_SUBJECT` | `mailto:tu-correo@example.com` | Contacto VAPID |
@@ -81,8 +83,13 @@ openssl rand -base64 32                 # NEXTAUTH_SECRET y CRON_SECRET
 npx web-push generate-vapid-keys        # par VAPID
 ```
 
-Guarda las claves VAPID y `CRON_SECRET` en tu gestor de contraseñas. No las
-escribas en documentación, commits ni logs.
+Guarda las claves VAPID, `CRON_SECRET` y `TOTP_ENCRYPTION_KEY` en tu gestor de
+contraseñas. No las escribas en documentación, commits ni logs.
+
+> **`TOTP_ENCRYPTION_KEY` es irrecuperable**: si se pierde, los secretos TOTP
+> existentes no se pueden descifrar. Usa `npm run 2fa:reset -- <email>` para
+> desactivar 2FA y que el usuario lo configure de nuevo. No la rotes sin un plan
+> de reset.
 
 > **Primer despliegue sin dominio**: usa como `NEXTAUTH_URL` la URL que Vercel te
 > asigne (p. ej. `https://casa-os-xxxx.vercel.app`). Cuando conectes el dominio,
@@ -93,7 +100,12 @@ escribas en documentación, commits ni logs.
 ## 4. Desplegar
 
 1. Pulsa **Deploy**.
-2. El build ejecuta `prisma migrate deploy` (crea el esquema) y `next build`.
+2. El build ejecuta, en orden:
+   - `node scripts/repair-known-migrations.mjs` (solo repara la migración
+     histórica fallida `2026102820_add_password_entry`; si no está fallida, no
+     hace nada).
+   - `prisma migrate deploy` (aplica migraciones pendientes).
+   - `next build`.
 3. Espera a que termine y abre la URL.
 
 ### Crear el usuario administrador
@@ -155,10 +167,13 @@ Guía funcional y de seguridad: [`docs/recordatorios.md`](recordatorios.md).
 
 2. Entra en `/auth/login` con la credencial inicial del seed y cámbiala en
    `/perfil`.
-3. Comprueba notas (crear y guardar), familia y perfil.
-4. Entra en **Calendario → Avisos**: debe mostrar el botón para activar los
+3. En **Perfil → Seguridad**, activa 2FA con el QR o la clave manual, confirma
+   con un código y guarda los códigos de recuperación. Cierra sesión y vuelve a
+   entrar con el código.
+4. Comprueba notas (crear y guardar), familia y perfil.
+5. Entra en **Calendario → Avisos**: debe mostrar el botón para activar los
    avisos. Actívalos, envía una prueba y comprueba que llega.
-5. Lanza el workflow de GitHub Actions y verifica que responde `ok: true` sin
+6. Lanza el workflow de GitHub Actions y verifica que responde `ok: true` sin
    errores. Después crea un evento con recordatorio a unos minutos y confirma
    que se recibe una sola vez.
 
@@ -189,10 +204,21 @@ dig +short casa.tudominio.com
 Cada push a `main` dispara un despliegue:
 
 1. `npm ci` (con `postinstall: prisma generate`).
-2. `npm run vercel-build` → `prisma migrate deploy && next build`.
+2. `npm run vercel-build` →
+   `node scripts/repair-known-migrations.mjs && prisma migrate deploy && next build`.
 3. Publicación.
 
 Si añades una migración nueva, se aplica automáticamente en el deploy.
+
+El script de reparación **no resuelve fallos nuevos**: solo conoce la migración
+histórica `2026102820_add_password_entry`, que se revirtió en el repo pero quedó
+marcada como fallida en Neon. Si aparece otro `P3009`, el build falla a
+propósito y hay que investigar la causa antes de tocar la base de datos.
+
+```bash
+# Inspeccionar el historial de migraciones (con DIRECT_URL de producción)
+npx prisma migrate status
+```
 
 ---
 
@@ -201,11 +227,13 @@ Si añades una migración nueva, se aplica automáticamente en el deploy.
 | Síntoma | Causa probable | Solución |
 |---|---|---|
 | Build falla en `prisma migrate deploy` | `DIRECT_URL` mal o base inactiva | Revisa la URL directa y el estado de la BD |
+| `P3009: migrate found failed migrations` | Una migración quedó a medias en la base | Si es `2026102820_add_password_entry`, el script del build la repara; si es otra, investiga y usa `prisma migrate resolve --rolled-back <nombre>` con criterio |
 | `503` en `/api/health` | `DATABASE_URL` incorrecta | Usa la URL con pooler |
 | Login vuelve a la pantalla de login | `NEXTAUTH_URL` no coincide con el dominio | Ajústala y redeploy |
 | `Too many connections` | Falta el pooler | Usa la URL con `-pooler` |
 | Error de CSP en consola | Directiva demasiado estricta | Ajusta `next.config.js` y redeploy |
 | `P1001: Can't reach database` | Base pausada (plan free) | Reactívala en el panel del proveedor |
+| 2FA falla con `Falta TOTP_ENCRYPTION_KEY` | Variable no configurada | Añádela (32 bytes base64) y redeploy |
 
 ---
 

@@ -1,70 +1,148 @@
-# Cierre: Gestor de contraseñas familiar
+# Cierre — Gestor de contraseñas familiar (prototipo)
 
-**Estado:** cerrada
+**Estado:** cerrada como prototipo (no apta para uso real; sustituida por Cuentas zero-knowledge)
+**Fecha:** 2026-10-28
+**Feature:** `gestor-contrasenas`
+**PR:** #32, squash merge `c5d2334`
+
+> **Aviso:** este cierre sustituye al anterior, que afirmaba un despliegue en
+> producción que nunca ocurrió. El backend es un prototipo **server-side**: el
+> servidor puede descifrar las contraseñas y no cumple el modelo
+> zero-knowledge aprobado para `cuentas`. No hay UI y no debe usarse para
+> credenciales reales. La siguiente feature, `feat/cuentas`, lo sustituye.
 
 ## Resumen
-Implementado backend completo del gestor de contraseñas familiar con cifrado AES-256-GCM en campo `encryptedPasswords` del modelo `User`. Sin tabla separada.
 
-## Entregables
-| Artefacto | Estado |
-|-----------|--------|
-| Modelo Prisma + migración | ✅ |
-| Crypto helpers (`encryptPasswords`/`decryptPasswords`) | ✅ |
-| API `GET/POST /api/passwords` | ✅ |
-| Tests (356 pasando) | ✅ |
-| Lint + Typecheck limpios | ✅ |
-| PR #32 squash-merged a `main` | ✅ |
-| Deploy Vercel producción | ✅ (health 200) |
-| Documentación spec/plan/tasks/cierre | ✅ |
-| Guía usuario `docs/gestor-contrasenas.md` | ✅ |
+Se añadió un prototipo de gestor de contraseñas con cifrado AES-256-GCM en el
+campo `User.encryptedPasswords` y dos endpoints (`GET/POST /api/passwords`). El
+alcance real quedó muy por debajo del spec original: no hay UI, no hay
+import/export, no hay `PUT`/`DELETE`, no hay validación Zod y el cifrado usa
+directamente `TOTP_ENCRYPTION_KEY`, sin contraseña maestra ni PBKDF2.
 
-## Commits y Deploy
-- **PR**: #32
-- **Merge commit**: `c5d2334` (squash)
-- **Rama**: `feat/gestor-contrasenas` (eliminada)
-- **Producción**: https://casa-os-mauve.vercel.app
-- **Health check**: `GET /api/health` → `{"status":"ok","db":"ok"}`
+## Alcance entregado
 
-## Migración
-- **Archivo**: `prisma/migrations/20261028200000_add_encrypted_passwords_to_user/migration.sql`
-- **SQL**: `ALTER TABLE "User" ADD COLUMN "encryptedPasswords" TEXT;`
-- **Estado en BD**: Aplicada y marcada como deployed
+- Campo aditivo `User.encryptedPasswords` (`TEXT`) y migración
+  `20261028200000_add_encrypted_passwords_to_user`.
+- Helpers `encryptPasswords` / `decryptPasswords` en `src/lib/crypto.ts`, con
+  contexto `casa-os:passwords:v1` y la misma clave que 2FA.
+- `GET /api/passwords`: descifra el mapa `{ título: contraseña }` y devuelve solo
+  los valores.
+- `POST /api/passwords`: crea una entrada por título; ignora `username`,
+  `notes` y `category`; devuelve `409` si el título ya existe.
+- Sin UI, sin componentes, sin hook, sin import/export y sin tests de API.
+
+Fuera de alcance real: compartir entre miembros, autollenado, auditoría y
+cualquier garantía zero-knowledge.
+
+## Cambios principales
+
+| Área | Archivos | Qué cambió |
+|---|---|---|
+| Datos | `prisma/schema.prisma`, `prisma/migrations/20261028200000_add_encrypted_passwords_to_user` | Campo `encryptedPasswords` |
+| Crypto | `src/lib/crypto.ts`, `tests/crypto.test.ts` | Helpers de cifrado/descifrado con la clave TOTP |
+| API | `src/app/api/passwords/route.ts` | `GET` y `POST` básicos, sin Zod ni `no-store` |
+| UI | — | No se implementó |
+| Docs | `specs/gestor-contrasenas/*`, `docs/gestor-contrasenas.md` | Documentación corregida el 2026-10-28 |
 
 ## Verificación
-1. Login con `admin@casa.local` / `admin123`
-2. Ir a `/perfil` → pestaña "Contraseñas" (UI pendiente, API lista)
-3. `GET /api/passwords` → `[]` (vacío inicial)
-4. `POST /api/passwords` con `{title, password}` → `{success:true}`
-5. `GET /api/passwords` → lista con entrada creada
+
+### Código y tests
+
+| Comando | Resultado |
+|---|---|
+| `npm run lint` | OK |
+| `npm run typecheck` | OK |
+| `npm run test` | 356 tests en verde (los tests de crypto cubren ida/vuelta y payload manipulado) |
+| `npm run build` | OK |
+| CI del PR #32 | Verde |
+
+No hay tests de la API ni de la UI porque la UI no existe y la API es un
+prototipo sin contrato cerrado.
+
+### UI / Chrome
+
+- No aplica: no hay página `/contrasenas`, ni componentes `PasswordList`,
+  `PasswordModal`, `PasswordActions` ni hook `usePasswords`.
+- El enlace del sidebar que apuntaba a `/contrasenas` se retiró el 2026-10-28
+  para no ofrecer una ruta que devolvía 404 tras el login.
+
+### Producción
+
+| Campo | Valor |
+|---|---|
+| URL | <https://casa-os-mauve.vercel.app> |
+| Deployment del PR #32 | `casa-cqvqvnpm0-ivans-projects-884d2864.vercel.app` → **ERROR** |
+| Causa | `P3009`: migración histórica `2026102820_add_password_entry` fallida en Neon |
+| Último deployment *Ready* | `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`, sin el prototipo) |
+| Health actual | `200` (sirve el deployment antiguo, no el prototipo) |
+
+La reparación de la migración y el redeploy se hacen en la corrección
+`fix/estado-real-produccion`. Aunque el prototipo llegue a desplegarse, no se
+considera una funcionalidad terminada: no tiene UI y no cumple zero-knowledge.
 
 ## Documentación actualizada
-- `specs/gestor-contrasenas/spec.md`
-- `specs/gestor-contrasenas/plan.md`
-- `specs/gestor-contrasenas/tasks.md`
-- `specs/gestor-contrasenas/cierre.md`
-- `docs/gestor-contrasenas.md`
-- `MEMORY.md` (Hito 4, Foco actual, Registro de features)
-- `docs/roadmap.md` (Hito 4 actualizado)
+
+- [x] `MEMORY.md`: prototipo marcado como no apto y sustituido por Cuentas.
+- [x] `CHANGELOG.md`: entrada del prototipo y de la corrección.
+- [x] `README.md`: sin promesa de gestor de contraseñas usable.
+- [x] `docs/gestor-contrasenas.md`: reescrito con el alcance real.
+- [x] `spec.md`, `plan.md` y `tasks.md`: corregidos (sin PBKDF2 ni UI ficticia).
+- [x] `AGENTS.md`: no aplica.
+- [x] `npm run docs:check -- gestor-contrasenas` pasa.
 
 ## Tareas
-Todas las tareas de backend completadas (ver `tasks.md`). Frontend movido a feature separada `feat/gestor-contrasenas-ui`.
 
-## Producción
-- Deployment: https://casa-os-mauve.vercel.app
-- Health: `{"status":"ok","db":"ok"}`
-- PR #32 mergeado, CI de `main` verde (run 40540399649)
+### Completadas
+
+- Campo y migración aditiva.
+- Helpers de cifrado/descifrado.
+- Endpoints `GET`/`POST` básicos.
+- Verificación local de lint, typecheck, tests y build.
+- PR #32 mergeado.
+
+### Pendientes / follow-ups
+
+- **Sustitución completa por `feat/cuentas`** (zero-knowledge, master password,
+  passkey opcional, visibilidad por cuenta). Motivo: el prototipo no cumple el
+  modelo de seguridad acordado.
+- Retirar la API y el campo `encryptedPasswords` cuando Cuentas esté cerrada.
+  Motivo: evitar código muerto y superficie de ataque.
+- Si se quiere conservar el prototipo en producción, documentarlo como
+  "experimental" sin UI; no se recomienda.
+
+## Decisiones y lecciones
+
+- **Cifrado server-side ≠ zero-knowledge**: con la clave en el servidor, un
+  administrador comprometido puede descifrar todas las contraseñas. No sirve
+  para la bóveda familiar.
+- **La misma clave para 2FA y contraseñas** mezcla dominios; el AAD separa los
+  payloads, pero no la política de acceso ni la rotación.
+- **El spec prometía más de lo entregado**: UI, import/export, `PUT`/`DELETE` y
+  PBKDF2 nunca existieron. El cierre anterior lo daba por hecho.
+- **Lección**: un `docs:check` verde no demuestra que la implementación exista;
+  hay que contrastar los archivos citados con el repo.
+
+## Riesgos residuales
+
+- El campo `encryptedPasswords` sigue en el esquema y la migración se aplicará
+  en el próximo deploy. Es aditivo y no se usa sin la API.
+- La tabla `PasswordEntry` de la migración fallida pudo quedar creada a medias
+  en Neon. No forma parte del esquema, no se referencia y **no se borra
+  automáticamente**; limpiarla requiere copia de seguridad y confirmación.
+- La API, si se despliega, puede almacenar contraseñas con cifrado reversible
+  por el servidor. No usarla para credenciales reales.
+- El código quedará obsoleto cuando Cuentas introduzca su propio modelo; hay que
+  retirarlo entonces.
 
 ## Checklist de cierre
-- [x] Código en `main` (squash merge)
-- [x] CI verde en `main`
-- [x] Deploy producción verificado
-- [x] Documentación completa (spec, plan, tasks, cierre, docs/)
-- [x] `npm run docs:check -- gestor-contrasenas` pasa
-- [x] Rama de feature eliminada
-- [x] No tareas pendientes en `tasks.md` (UI es feature separada)
 
-## Follow-ups
-- **Próxima feature**: `feat/gestor-contrasenas-ui` (UI en `/perfil`)
-- **Mejora**: Endpoints `DELETE/PUT /api/passwords/:title`
-- **Mejora**: Validación fortaleza contraseña (zxcvbn)
-- **Mejora**: Auditoría de accesos (login, export, import)
+- [x] Código del prototipo en `main` (PR #32, `c5d2334`).
+- [x] CI del PR #32 verde.
+- [x] Documentación corregida para reflejar el alcance real.
+- [x] Enlace roto `/contrasenas` retirado del sidebar.
+- [x] `tasks.md` sin casillas pendientes.
+- [x] `cierre.md` sin casillas pendientes.
+- [x] `MEMORY.md` enlaza este cierre y registra el prototipo.
+- [x] `npm run docs:check -- gestor-contrasenas` pasa.
+- [x] Producción: no se marca como verificada; el deployment del PR #32 falló y
+      el prototipo no es una funcionalidad usable.

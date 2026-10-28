@@ -1,16 +1,35 @@
-# Tasks: UI Gestor de contraseñas (feat/gestor-contrasenas-ui)
+# Tasks — UI Gestor de contraseñas (cancelada)
 
-## Implementación (todas completadas ✅)
-- [x] 1. Añadir ítem "Contraseñas" al array `navItems` en `src/components/layout/sidebar.tsx` (solo texto, sin icono) — PR #33 mergeado
-- [x] 2. Crear `src/app/contrasenas/page.tsx` con estructura idéntica a `/calendario` y `/devices` (header, section, grid) — implementado
-- [x] 3. Implementar `src/components/passwords/PasswordList.tsx` — lista desktop (tabla simple, sin íconos columna) y móvil (cards apiladas, empty state sin iconos) — implementado
-- [x] 4. Implementar `src/components/passwords/PasswordModal.tsx` — modal crear/editar (centrado desktop, full-screen móvil, campos solo texto, validación Zod, focus trap, ESC cierra) — implementado
-- [x] 5. Implementar `src/components/passwords/PasswordActions.tsx` — botones Exportar/Importar (solo texto, file input, fetch API, FileReader) — implementado
-- [x] 6. Crear `src/hooks/usePasswords.ts` — hook SWR (`/api/passwords`, revalidateOnFocus, mutate después de mutations, onError toast) — implementado
-- [x] 7. Verificar mobile 390px: sin overflow, header/apilan, sidebar collapsed, lista cards apiladas (`npm run build` + devtools) — verificado
-- [x] 8. Probar flow completo: login → sidebar "Contraseñas" → `/contrasenas` → ver lista vacía → crear → editar → borrar → exportar → importar — verificado manualmente
-- [x] 8. `npm run lint` — 0 warnings/errors en todos los archivos nuevos — verificado
-- [x] 10. `npm run typecheck` — 0 errors en TypeScript estricto — verificado
-- [x] 11. `npm run test` — vitest passa (tests unitarios mocked del hook y componentes) — verificado (356 tests global)
-- [x] 12. `npm run build` — build de producción exitoso — verificado
-- [x] 13. `npm run docs:check -- gestor-contrasenas-ui` — pasa — verificado
+**Feature:** `gestor-contrasenas-ui`
+**Estado:** cancelada; sustituida por `feat/cuentas`
+**Spec:** [`spec.md`](spec.md)
+**Plan:** [`plan.md`](plan.md)
+
+> El PR #33 solo añadió el enlace del sidebar y documentación. **Ninguna de las
+> tareas de UI se implementó.** No se marcan como hechas: se conservan como
+> registro de lo que se planeó y se canceló.
+
+## Limpieza y corrección (completado)
+
+- [x] Retirar el enlace `/contrasenas` de `src/components/Sidebar.tsx`.
+- [x] Corregir `cierre.md` para no afirmar páginas, componentes, hooks ni tests
+  inexistentes.
+- [x] Corregir `tasks.md` y `plan.md`/`spec.md` con el estado real.
+- [x] Marcar la feature como cancelada y registrar la sustitución por Cuentas
+  zero-knowledge en `MEMORY.md`.
+- [x] `npm run docs:check -- gestor-contrasenas-ui` pasa.
+
+## Tareas de UI no ejecutadas (canceladas)
+
+- Página `src/app/contrasenas/page.tsx`.
+- `src/components/passwords/PasswordList.tsx`.
+- `src/components/passwords/PasswordModal.tsx`.
+- `src/components/passwords/PasswordActions.tsx`.
+- `src/hooks/usePasswords.ts`.
+- Export/import JSON y tests de UI.
+- Verificación móvil 390 px de una UI que no existe.
+
+## Follow-ups (sin checkbox)
+
+- `feat/cuentas`: bóveda zero-knowledge con su propia spec, UI, API y
+  verificación. No reutilizar esta estructura cancelada.

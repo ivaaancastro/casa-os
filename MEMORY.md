@@ -40,6 +40,11 @@ tener una app que toda la familia pueda usar desde sus móviles y ordenadores.
 | 2026-10-26 | **Web Push + GitHub Actions cada 5 min** | Vercel Hobby no permite cron sub-diario; el workflow usa `CRON_SECRET` |
 | 2026-10-26 | **Todo el día a las 09:00 de `HOUSE_TIMEZONE`** | Evita avisos a medianoche UTC y respeta el DST |
 | 2026-10-26 | **Deduplicación `[eventId, subscriptionId, scheduledFor]`** | Evita duplicados con reintentos o cron solapado |
+| 2026-10-27 | **2FA TOTP obligatorio para `cuentas`, opcional en el resto** | Protege la bóveda sin bloquear notas/calendario a quien no lo active |
+| 2026-10-27 | **`sessionVersion` en el JWT** | Un cambio de contraseña o 2FA invalida las sesiones anteriores sin tabla de sesiones |
+| 2026-10-28 | **Gestor de contraseñas server-side descartado** | El servidor podía descifrar todo: no es zero-knowledge y no sirve para credenciales reales |
+| 2026-10-28 | **Cuentas zero-knowledge en `/cuentas`** | Master password + passkey opcional (WebAuthn PRF); el servidor solo guarda ciphertext |
+| 2026-10-28 | **Reparación de migración histórica en `vercel-build`** | Desbloquea Neon (`P3009`) de forma idempotente y limitada a una lista cerrada |
 
 ## Preferencias del usuario
 
@@ -211,6 +216,53 @@ El merge del código **no** cierra una feature. La definición completa está en
   pero ya estaba inactiva en `/familia` (`INACTIVO`); no se modificó.
 - **Cierre:** [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
 
+### ✅ Hecho (v0.11 — 2FA)
+
+- **Autenticación en dos pasos** (`feat/2fa`): TOTP de 6 dígitos (30 s, ventana
+  ±1) compatible con apps estándar, 10 códigos de recuperación de un solo uso,
+  desactivación y regeneración con contraseña + segundo factor, reset por ADMIN
+  desde `/familia` y script de emergencia `npm run 2fa:reset -- <email>`.
+- **Seguridad**: secreto TOTP cifrado con AES-256-GCM; `sessionVersion` en el
+  JWT invalidado al cambiar contraseña o 2FA; rate limit de 5 fallos/15 min;
+  `AuthEvent` con hash de IP y sin secretos.
+- **UI**: tarjeta **Seguridad** en `/perfil` con QR, clave manual, códigos y
+  eventos; campo opcional en el login; acción de reset en `/familia`.
+- **Integración**: commits `8a6498b`, `307857c`, `c5ed603` y `e4e5730`; el PR
+  #30 (`562c9b0`) solo añadió el marcador `.close-2fa.txt`, ya retirado.
+- **Producción**: deployment `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit
+  `562c9b0`, *Ready · Current*), health `200` y `/api/2fa/status` sin sesión →
+  `401`. El smoke autenticado de producción no se repitió por falta de
+  credenciales del agente; se verificó completo en local (activación, TOTP,
+  códigos, login y desactivación).
+- **Cierre:** [`specs/2fa/cierre.md`](specs/2fa/cierre.md). Guía:
+  [`docs/2fa.md`](docs/2fa.md).
+
+### 🗑️ Descartado (v0.11b — gestor de contraseñas server-side)
+
+- `feat/gestor-contrasenas` (PR #32, `c5d2334`) dejó un **prototipo** con
+  `User.encryptedPasswords`, helpers AES-256-GCM y `GET/POST /api/passwords`.
+  No tiene UI, no valida con Zod, no tiene `PUT`/`DELETE` ni tests de API, y
+  usa `TOTP_ENCRYPTION_KEY` directamente: **el servidor puede descifrar**.
+- `feat/gestor-contrasenas-ui` (PR #33, `989ff54`) se **cancela**: solo añadió
+  el enlace `/contrasenas` al sidebar y documentación de una UI que nunca
+  existió. El enlace se retiró el 2026-10-28.
+- El código se conserva por historial, documentado como no apto para uso real.
+  Se retirará al cerrar **Cuentas**. Cierres:
+  [`specs/gestor-contrasenas/cierre.md`](specs/gestor-contrasenas/cierre.md),
+  [`specs/gestor-contrasenas-ui/cierre.md`](specs/gestor-contrasenas-ui/cierre.md).
+
+### 🚧 Bloqueo y reparación de producción (2026-10-28)
+
+- Los deployments posteriores a `562c9b0` fallaban con `P3009`: la migración
+  histórica `2026102820_add_password_entry` (PR #31, revertido en `90b3fbe`)
+  quedó marcada como fallida en Neon y su carpeta ya no existe en el repo.
+- `scripts/repair-known-migrations.mjs` la marca como `rolled-back` antes de
+  `prisma migrate deploy`, solo si sigue fallida y solo para esa migración
+  conocida. Se ejecuta desde `vercel-build`.
+- La reparación se valida en local sobre una base temporal antes de mergear.
+  Tras el merge se verifica que el deployment queda *Ready* y que se aplica
+  `20261028200000_add_encrypted_passwords_to_user`.
+
 ### 🎯 Roadmap por hitos (en orden)
 
 > Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
@@ -253,12 +305,19 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **Hito 4 — Seguridad**
 
-- `feat/gestor-contrasenas` — Gestor de contraseñas familiar (cifrado AES‑256‑GCM
-  en campo del usuario, UI en perfil, import/export, sin tabla aparte).
-  ✅ **Backend completado (v0.11)**: modelo, migración, crypto, API GET/POST,
-  356 tests, deploy producción verificado. Cierre: [`specs/gestor-contrasenas/cierre.md`](specs/gestor-contrasenas/cierre.md).
-- `feat/gestor-contrasenas-ui` — UI en /perfil (pestaña Contraseñas, modal CRUD,
-  import/export). *Hecho cuando*: lista, crear, editar, borrar, copiar, smoke ADMIN.
+- `feat/2fa` — Segundo factor TOTP, códigos de recuperación, reset por ADMIN y
+  script de emergencia. ✅ **Hecho (v0.11)**: desplegado en producción
+  (`562c9b0`); smoke autenticado de producción pendiente de confirmación del
+  usuario. Cierre: [`specs/2fa/cierre.md`](specs/2fa/cierre.md).
+- `feat/gestor-contrasenas` / `feat/gestor-contrasenas-ui` — ❌ **Descartado**:
+  prototipo server-side sin UI que no cumple zero-knowledge. Sustituido por
+  `feat/cuentas`.
+- `feat/cuentas` — **Bóveda zero-knowledge** en `/cuentas`: master password +
+  passkey opcional (WebAuthn PRF), 2FA obligatorio, visibilidad por cuenta
+  (`Solo yo`, `Toda la familia`, `Personas concretas`). *Hecho cuando*: crear,
+  desbloquear y compartir cuentas sin que el servidor pueda leer el contenido, y
+  el smoke autenticado en producción esté verificado. Requiere `plan.md` y
+  `spec.md` aprobados antes de implementar.
 
 **Hito 5 — Automatización**
 
@@ -274,24 +333,29 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 ### 👉 Foco actual
 
-**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon).
+**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). El
+deployment activo es `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`),
+*Ready · Current*. Los deployments posteriores fallan por `P3009` hasta que se
+mergee la reparación de `fix/estado-real-produccion`.
 
-**Última feature cerrada:** `feat/recordatorios` (Web Push, panel **Avisos**,
-prueba, deduplicación y scheduler cada 5 minutos), PR #26, #27 y #28, commits
-`76f0683` y `bfb7477`, deployment `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`. Cierre:
-[`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
+**Última feature cerrada:** `feat/2fa` (TOTP, códigos de recuperación, reset por
+ADMIN y script de emergencia), commits `8a6498b`, `307857c`, `c5ed603` y
+`e4e5730`, PR de cierre #30 (`562c9b0`). Cierre:
+[`specs/2fa/cierre.md`](specs/2fa/cierre.md).
 
-**En curso:** `feat/gestor-contrasenas` (backend completado v0.11 — modelo,
-migración, crypto, API GET/POST, 356 tests, deploy producción verificado).
-Cierre: [`specs/gestor-contrasenas/cierre.md`](specs/gestor-contrasenas/cierre.md).
+**En curso:** `fix/estado-real-produccion` — corrección del estado del repo y de
+la documentación, retirada del enlace roto `/contrasenas` y reparación
+idempotente de la migración fallida de Neon. Incluye el cierre documental
+corregido de 2FA, del prototipo de contraseñas y de la UI cancelada.
 
-**En curso:** `feat/gestor-contrasenas-ui` (UI en /contrasenas — CRUD, sin iconos nuevos,
-mobile-first 390px, estilo editorial Inditex).
-Cierre: [`specs/gestor-contrasenas-ui/cierre.md`](specs/gestor-contrasenas-ui/cierre.md).
+**Descartado:** `feat/gestor-contrasenas` (prototipo server-side, PR #32) y
+`feat/gestor-contrasenas-ui` (solo enlace de sidebar, PR #33). No se marcan como
+hechos: no cumplen zero-knowledge y la UI nunca existió.
 
-**Siguiente:** `feat/gestor-contrasenas-ui` (UI en /contrasenas — CRUD, sin iconos nuevos,
-mobile-first 390px, estilo editorial Inditex). Tras merge y CI verde, paso a
-`feat/gestor-contrasenas-import` (import/export mejorado).
+**Siguiente:** `feat/cuentas` — bóveda zero-knowledge en `/cuentas`. Requiere
+escribir `specs/cuentas/plan.md` y `spec.md`, y esperar la aprobación del
+usuario. No se abre hasta que el cierre de la corrección esté mergeado y el CI
+de `main` esté verde.
 
 ## Registro de features
 
@@ -314,7 +378,10 @@ mobile-first 390px, estilo editorial Inditex). Tras merge y CI verde, paso a
 | feat | Estado de dispositivos (online/ausente) | #22 | `34fee9f` | Sí (smoke ADMIN) | [`cierre`](specs/dispositivos-estado/cierre.md) |
 | feat | Calendario familiar (mes/semana, CRUD, recordatorio) | #24 | `94a4d40` | Sí (smoke ADMIN) | [`cierre`](specs/calendario/cierre.md) |
 | feat | Recordatorios Web Push (panel + scheduler) | #26, #27, #28 | `76f0683` / `bfb7477` | `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (push real) | [`cierre`](specs/recordatorios/cierre.md) |
-| feat | Gestor contraseñas (backend: modelo, crypto, API) | #32 | `c5d2334` | Sí (health 200) | [`cierre`](specs/gestor-contrasenas/cierre.md) |
+| feat | 2FA TOTP (recuperación, reset ADMIN, emergencia) | #30 (cierre) | `8a6498b`…`e4e5730` | `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (parcial) | [`cierre`](specs/2fa/cierre.md) |
+| feat | Gestor contraseñas (prototipo server-side, sin UI) | #32 | `c5d2334` | No (P3009); descartado | [`cierre`](specs/gestor-contrasenas/cierre.md) |
+| feat | Gestor contraseñas UI (solo enlace sidebar) | #33 | `989ff54` | No (P3009); cancelada | [`cierre`](specs/gestor-contrasenas-ui/cierre.md) |
+| fix | Estado real, docs y reparación de migración | — | — | Pendiente de merge | — |
 
 ## Notas técnicas
 
@@ -369,6 +436,23 @@ mobile-first 390px, estilo editorial Inditex). Tras merge y CI verde, paso a
   `HOUSE_TIMEZONE`, workflow activo y deployment
   `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr`; prueba real `sent:1` y deduplicación
   `skipped:1`.
+- **2FA**: TOTP con `otplib` y ventana ±1; secreto cifrado con AES-256-GCM
+  usando `TOTP_ENCRYPTION_KEY` (32 bytes base64). `sessionVersion` viaja en el
+  JWT y se comprueba en `requireUser`; se incrementa al cambiar contraseña o
+  2FA. Rate limit 5/15 min por email o usuario. Los códigos de recuperación se
+  guardan hasheados y se consumen una sola vez. Reset por ADMIN solo si el
+  admin tiene 2FA y nunca sobre sí mismo. `npm run 2fa:reset -- <email>` para
+  emergencias con acceso a la base de datos. Guía: `docs/2fa.md`.
+- **Migraciones fallidas en producción**: `prisma migrate deploy` aborta con
+  `P3009` si una migración quedó a medias. Si la carpeta ya no existe, se
+  resuelve con `prisma migrate resolve --rolled-back <nombre>`. En casa-os lo
+  hace `scripts/repair-known-migrations.mjs` desde `vercel-build`, limitado a
+  la migración histórica `2026102820_add_password_entry`; cualquier fallo nuevo
+  detiene el build. No añadir migraciones a esa lista sin investigar la causa.
+- **`docs:check` no valida implementación**: solo comprueba que existan
+  `plan/spec/tasks/cierre`, que no haya casillas pendientes y que el cierre esté
+  enlazado desde `MEMORY.md`. Un cierre puede pasar y describir archivos que no
+  existen; hay que contrastarlos con `git ls-files`.
 - **Tests**: `npm run test` ejecuta una pasada (`vitest run`); para watch,
   `npm run test:watch`. La CI usa la misma pasada.
 
@@ -476,6 +560,26 @@ mobile-first 390px, estilo editorial Inditex). Tras merge y CI verde, paso a
   comprobar `sent:1` y luego `skipped:1` es la prueba mínima de que no se
   duplican avisos. El estado vive en `ReminderDelivery`, no en memoria.
 
+- **Servidor con la clave ≠ zero-knowledge**: cifrar con AES-256-GCM en el
+  servidor usando `TOTP_ENCRYPTION_KEY` protege la base de datos ante una fuga
+  de backup, pero no ante el propio servidor. Para credenciales reales el
+  cifrado debe ocurrir en el cliente con una master password que el servidor
+  nunca vea (Cuentas).
+- **Un enlace sin página es peor que no tener enlace**: el PR #33 añadió
+  «Contraseñas» al sidebar y el build no generaba `/contrasenas`. Antes de
+  cerrar una UI, comprobar que la ruta existe en `src/app` y que el build la
+  lista.
+- **Marcador de cierre ≠ feature cerrada**: `.close-2fa.txt` fue un PR vacío que
+  no aportó verificación. El cierre real exige `cierre.md`, `tasks.md`,
+  `MEMORY.md`, `CHANGELOG.md`, docs y producción comprobada.
+- **Commits directos a una feature**: 2FA se integró en `main` con cuatro
+  commits sin PR de implementación. El historial queda menos trazable; el
+  cierre debe identificar los commits exactos y no inventar un PR.
+- **Migración revertida en el repo pero viva en la base de datos**: revertir el
+  código (`90b3fbe`) eliminó la carpeta de migración, pero Neon conservó el
+  registro fallido. Producción quedó atascada cinco deployments. Hay que
+  comprobar `_prisma_migrations` en la base real, no solo el repo.
+
 ---
 
-*Última actualización: 2026-10-27*
+*Última actualización: 2026-10-28*

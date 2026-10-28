@@ -1,5 +1,10 @@
 # Spec: UI Gestor de contraseñas (feat/gestor-contrasenas-ui)
 
+> **Estado: cancelada.** Esta UI nunca se implementó. El PR #33 solo añadió un
+> enlace en el sidebar, retirado el 2026-10-28. El documento se conserva como
+> registro histórico del diseño descartado. La sección definitiva será
+> **Cuentas** (`/cuentas`) con cifrado zero-knowledge.
+
 ## Resumen
 Sección independiente en el menú lateral izquierdo (igual que "Calendario", "Notas", "Dispositivos") con ruta `/contrasenas`. Permite CRUD completo de contraseñas familiares, integrada con el estilo editorial Inditex del proyecto (tipografías Bodoni/Jost, mobile-first, sin over-engineering, sin iconos nuevos — solo texto como el sidebar existente).
 

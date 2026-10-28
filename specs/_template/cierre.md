@@ -8,6 +8,11 @@
 **Fecha:** YYYY-MM-DD
 **Feature:** `<nombre>`
 
+> **Estados válidos:** `borrador` → `cerrada` o `cancelada`. Usa `cancelada`
+> solo si la feature se descarta sin entregar su alcance; en ese caso explica el
+> motivo, enumera lo no ejecutado **sin checkboxes** y retira de la app cualquier
+> enlace o promesa de la funcionalidad.
+
 ## Resumen
 
 [Qué se ha entregado y por qué. Dos o tres frases.]
@@ -107,4 +112,6 @@
 - [ ] `npm run docs:check -- <nombre>` pasa.
 - [ ] El PR de cierre tiene el CI verde.
 
-> Al terminar, cambia `**Estado:** borrador` por `**Estado:** cerrada`.
+> Al terminar, cambia `**Estado:** borrador` por `**Estado:** cerrada`
+> (o `**Estado:** cancelada` si se descartó; entonces ajusta la verificación de
+> producción a lo que realmente ocurrió y no marques como hecho lo no entregado).
