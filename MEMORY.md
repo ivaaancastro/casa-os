@@ -335,9 +335,11 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 ### 👉 Foco actual
 
-**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). Deployment
-activo `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`, *Ready*). El `P3009`
-está reparado: los deployments vuelven a completarse.
+**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). El
+deployment del fix es `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`,
+*Ready*) y el cierre documental se desplegó después como
+`dpl_5GFG2iRFRjVzZGXKnfVDK4rRG2Wd` (`67fe675`). El `P3009` está reparado: los
+deployments vuelven a completarse.
 
 **Última feature cerrada:** `fix/estado-real-produccion` (PR #34, `0e8803e`):
 reparación de `P3009`, retirada del enlace roto y corrección de cierres. Cierre:
@@ -382,7 +384,7 @@ de `main` esté verde.
 | feat | 2FA TOTP (recuperación, reset ADMIN, emergencia) | #30 (cierre) | `8a6498b`…`e4e5730` | `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (parcial) | [`cierre`](specs/2fa/cierre.md) |
 | feat | Gestor contraseñas (prototipo server-side, sin UI) | #32 | `c5d2334` | No (P3009); descartado | [`cierre`](specs/gestor-contrasenas/cierre.md) |
 | feat | Gestor contraseñas UI (solo enlace sidebar) | #33 | `989ff54` | No (P3009); cancelada | [`cierre`](specs/gestor-contrasenas-ui/cierre.md) |
-| fix | Estado real, docs y reparación de migración | #34 | `0e8803e` | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` | [`cierre`](specs/estado-real-produccion/cierre.md) |
+| fix | Estado real, docs y reparación de migración | #34, #35 | `0e8803e` / `67fe675` | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` / `dpl_5GFG2iRFRjVzZGXKnfVDK4rRG2Wd` | [`cierre`](specs/estado-real-produccion/cierre.md) |
 
 ## Notas técnicas
 
