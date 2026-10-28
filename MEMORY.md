@@ -316,12 +316,11 @@ El merge del código **no** cierra una feature. La definición completa está en
   `feat/cuentas`.
 - `feat/cuentas` — **Bóveda zero-knowledge** en `/cuentas`: master password +
   passkey opcional (WebAuthn PRF), 2FA obligatorio, visibilidad por cuenta
-  (`Solo yo`, `Toda la familia`, `Personas concretas`). *Hecho cuando*: crear,
-  desbloquear y compartir cuentas sin que el servidor pueda leer el contenido, y
-  el smoke autenticado en producción esté verificado. Spec aprobada
-  (2026-10-28, contacto de confianza en v1, master password 12+, familia por
-  defecto). Estado: implementación en `feat/cuentas` con PR pendiente; cierre
-  documental pendiente. Cierre: [`specs/cuentas/cierre.md`](specs/cuentas/cierre.md).
+  (`Solo yo`, `Toda la familia`, `Personas concretas`). ✅ **Hecho (v0.12)**:
+  PR #37 mergeado (`86a68ba`), CI de `main` verde, producción health `200`,
+  `/api/cuentas/status` → `401` sin grant. Spec aprobada (2026-10-28,
+  contacto de confianza en v1, master password 12+, familia por defecto).
+  Cierre: [`specs/cuentas/cierre.md`](specs/cuentas/cierre.md).
 
 **Hito 5 — Automatización**
 
@@ -343,24 +342,23 @@ deployment del fix es `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`,
 `dpl_5GFG2iRFRjVzZGXKnfVDK4rRG2Wd` (`67fe675`). El `P3009` está reparado: los
 deployments vuelven a completarse.
 
-**Última feature cerrada:** `fix/estado-real-produccion` (PR #34, `0e8803e`):
-reparación de `P3009`, retirada del enlace roto y corrección de cierres. Cierre:
+**Última feature cerrada:** `feat/cuentas` (PR #37, `86a68ba`): bóveda
+zero-knowledge en `/cuentas` con master password, passkey opcional (WebAuthn
+PRF), kit de recuperación, contacto de confianza, sharing y auditoría.
+Producción health `200`, CI de `main` verde. Cierre:
+[`specs/cuentas/cierre.md`](specs/cuentas/cierre.md).
+Antes se cerró `fix/estado-real-produccion` (PR #34, `0e8803e`): reparación de
+`P3009`, retirada del enlace roto y corrección de cierres. Cierre:
 [`specs/estado-real-produccion/cierre.md`](specs/estado-real-produccion/cierre.md).
-Antes se cerró `feat/2fa` (TOTP, códigos de recuperación, reset por ADMIN y
-script de emergencia), commits `8a6498b`, `307857c`, `c5ed603` y `e4e5730`, PR
-de cierre #30. Cierre: [`specs/2fa/cierre.md`](specs/2fa/cierre.md).
 
-**En curso:** `feat/cuentas` — bóveda zero-knowledge en `/cuentas`: master
-password + passkey opcional (WebAuthn PRF), 2FA obligatorio, kit de recuperación,
-contacto de confianza, visibilidad por cuenta y auditoría. Requiere PR de
-feature con CI verde, deploy y cierre documental antes de abrir la siguiente.
+**En curso:** ninguna. El cierre de `feat/cuentas` está mergeado y el CI de
+`main` está verde.
 
 **Descartado:** `feat/gestor-contrasenas` (prototipo server-side, PR #32) y
 `feat/gestor-contrasenas-ui` (solo enlace de sidebar, PR #33). No se marcan como
 hechos: no cumplen zero-knowledge y la UI nunca existió.
 
-**Siguiente:** ninguna mientras `feat/cuentas` esté en curso. Tras el cierre
-documental (`docs/cierre-cuentas`) se retomará el backlog conocido.
+**Siguiente:** backlog personal (gastos, mantenimiento, documentos) u optimizaciones.
 
 ## Registro de features
 
@@ -387,6 +385,7 @@ documental (`docs/cierre-cuentas`) se retomará el backlog conocido.
 | feat | Gestor contraseñas (prototipo server-side, sin UI) | #32 | `c5d2334` | No (P3009); descartado | [`cierre`](specs/gestor-contrasenas/cierre.md) |
 | feat | Gestor contraseñas UI (solo enlace sidebar) | #33 | `989ff54` | No (P3009); cancelada | [`cierre`](specs/gestor-contrasenas-ui/cierre.md) |
 | fix | Estado real, docs y reparación de migración | #34, #35 | `0e8803e` / `67fe675` | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` / `dpl_5GFG2iRFRjVzZGXKnfVDK4rRG2Wd` | [`cierre`](specs/estado-real-produccion/cierre.md) |
+| feat | Cuentas zero-knowledge (bóveda, master password, passkey PRF, kit, contactos, sharing, auditoría) | #37 | `86a68ba` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas/cierre.md) |
 
 ## Notas técnicas
 
