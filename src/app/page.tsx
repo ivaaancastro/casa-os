@@ -5,7 +5,7 @@ export default function Home() {
     { title: 'Notas', status: 'Disponible', href: '/notas' },
     { title: 'Calendario', status: 'Disponible', href: '/calendario' },
     { title: 'Familia', status: 'Disponible', href: '/familia' },
-    { title: 'Cuentas', status: 'Planificado', href: '#' },
+    { title: 'Cuentas', status: 'Disponible', href: '/cuentas' },
   ];
 
   return (
