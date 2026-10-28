@@ -126,6 +126,21 @@ en el propio seed; guárdala en el gestor de contraseñas y **cámbiala** en
 
 ---
 
+## 4b. Cuentas (bóveda zero-knowledge)
+
+La sección **Cuentas** (`/cuentas`) añade la migración
+`20261028210000_cuentas_zero_knowledge` (7 tablas) y la CSP con
+`'wasm-unsafe-eval'` (el cliente carga `libsodium-wrappers-sumo`).
+
+- En **Settings → Environment Variables** (Production y Preview) añade:
+  - **`NEXT_PUBLIC_CASA_OS_URL`** (opcional, para URLs absolutas).
+- El middleware de NextAuth **no** redirige `/api/cuentas/*`: la sección
+  devolverá `401` JSON sin grant en lugar de redirigir a login.
+- Al desplegar, `prisma migrate deploy` crea las tablas nuevas. Verifica que la
+  migración no falle con `P3009` en preview (ver [`docs/cuentas.md`](cuentas.md)).
+- La sección no añade secretos server-side: la criptografía es 100% cliente.
+- Guía de uso: [`docs/cuentas.md`](cuentas.md).
+
 ## 5. Scheduler de recordatorios (GitHub Actions)
 
 Vercel Hobby solo permite cron una vez al día, así que los avisos se procesan

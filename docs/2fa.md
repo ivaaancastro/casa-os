@@ -66,10 +66,11 @@ se pueden descifrar: usa el script de emergencia.
 
 ## Límites y decisiones
 
-- 2FA es opcional para notas, calendario y el resto de la app; será
-  **obligatorio** para entrar en la futura sección **Cuentas**.
-- No hay passkeys todavía. La bóveda zero-knowledge de Cuentas las usará para
-  desbloquear, no como sustituto del login en v1.
+- 2FA es opcional para notas, calendario y el resto de la app; es **obligatorio**
+  para entrar en la sección **Cuentas** (bóveda zero-knowledge).
+- La bóveda de Cuentas usa passkeys con WebAuthn PRF opcionales para desbloquear;
+  no son un sustituto del login en v1. Sin PRF en el dispositivo se usa la master
+  password.
 - No se recuerdan dispositivos ni hay step-up por acción.
 - Rate limit: 5 fallos de login/TOTP en 15 minutos por email o usuario.
 - Los eventos de seguridad no guardan contraseñas, códigos TOTP, códigos de

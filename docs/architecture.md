@@ -92,18 +92,18 @@ una plataforma. El secreto se guarda cifrado con AES-256-GCM
 autenticada: al cambiar la contraseña o el 2FA se incrementa y los JWT
 anteriores dejan de valer, sin necesidad de una tabla de sesiones.
 
-### 7. Cuentas zero-knowledge (siguiente)
+### 7. Cuentas zero-knowledge
 
-**Decisión**: la sección `/cuentas` cifrará en el cliente; el servidor solo
+**Decisión**: la sección `/cuentas` cifra en el cliente; el servidor solo
 almacenará ciphertext.
 
 **Razón**: un gestor de contraseñas server-side (prototipo de PR #32) permite
 que el servidor descifre las credenciales, así que no sirve para una bóveda
 familiar. La master password y las claves derivadas nunca saldrán del
 navegador; el servidor no podrá leer nombres, usuarios, contraseñas, URLs ni
-notas. La passkey (WebAuthn PRF) será un desbloqueo opcional, no un sustituto
-del login en la v1. Requiere 2FA activo y una spec aprobada antes de
-implementarse.
+notas. La passkey (WebAuthn PRF) es un desbloqueo opcional, no un sustituto
+del login en la v1. Requirió 2FA activo y una spec aprobada antes de
+implementarse. Implementada en `feat/cuentas` (ver [`docs/cuentas.md`](cuentas.md)).
 
 ## Flujo de datos
 

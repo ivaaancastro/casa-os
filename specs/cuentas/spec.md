@@ -1,14 +1,16 @@
 # Spec — Cuentas zero-knowledge
 
 **Feature:** `cuentas`
-**Estado:** propuesta — pendiente de aprobación del usuario
+**Estado:** aprobado (2026-10-28) — en implementación
 **Fecha:** 2026-10-28
 **Rama:** `feat/cuentas`
 **Depende de:** auth, usuarios/roles, perfil y 2FA (cerradas)
 **Sustituye a:** `gestor-contrasenas` y `gestor-contrasenas-ui` (descartados)
 
-> **No implementado.** Este documento describe lo que se va a construir. No hay
-> tablas, rutas, componentes ni tests de Cuentas en el repositorio todavía.
+> **Aprobado por el usuario el 2026-10-28** con estas decisiones: contacto de
+> confianza incluido en v1, master password de 12 caracteres como mínimo y
+> visibilidad `Toda la familia` por defecto. El código se implementa en la rama
+> `feat/cuentas`; todavía no está desplegado.
 
 ## Objetivo
 
@@ -43,7 +45,7 @@ guarda datos bancarios ni tarjetas.
    confianza opcional. Sin ninguno de los dos, perder la master password es
    irreversible.
 9. **Nombre y ruta**: **Cuentas** en `/cuentas`, entrada en el sidebar.
-10. **Dependencias**: `libsodium-wrappers`, `@simplewebauthn/server` y
+10. **Dependencias**: `libsodium-wrappers-sumo`, `@simplewebauthn/server` y
     `@simplewebauthn/browser`. Nada más.
 
 ## Requisitos funcionales
@@ -176,16 +178,20 @@ guarda datos bancarios ni tarjetas.
   `keyringVersion`.
 - Se invalidan los grants anteriores. Las cuentas y sus DEKs **no** cambian.
 - Rate limit: 3 intentos por hora.
-- El kit sigue siendo válido después del reset (envuelve el keyring nuevo con la
-  misma `recoveryKey`) salvo que el usuario lo rote.
+- El reset emite un **nuevo kit**: se genera una nueva `recoveryKey` y un nuevo
+  `recoveryKek`; el keyring se re-cifra con la nueva `kek` y el nuevo kit es el
+  único válido. El anterior queda invalidado y la UI entrega el nuevo código.
+- Las copias que los contactos tenían de la `recoveryKey` antigua pasan a estado
+  `STALE` y la UI les indica renovar. Las cuentas y sus DEKs **no** cambian.
 
 ### RF-11 — Contacto de confianza
 
 - Opcional. El dueño invita a otro miembro activo con bóveda.
 - El contacto debe **aceptar** desde `/cuentas` → Ajustes.
-- Al aceptar, el dueño envuelve la `recoveryKey` actual con la `pk` del contacto
-  (`crypto_box_seal`) y se guarda `VaultRecoveryShare` en `ACCEPTED`. El
-  servidor no puede abrir esa copia.
+- Al invitar, el dueño envuelve la `recoveryKey` actual con la `pk` del contacto
+  (`crypto_box_seal`); el cliente envía el blob sellado y la invitación queda en
+  `PENDING`. Al **aceptar**, la copia pasa a `ACCEPTED` (sin re-sellar).
+- El servidor no puede abrir esa copia.
 - **Ayudar a recuperar**: el contacto, con su bóveda desbloqueada y grant,
   descifra la copia y obtiene el código de recuperación del dueño. Se lo
   entrega en persona. Cada consulta se audita.
@@ -225,11 +231,12 @@ guarda datos bancarios ni tarjetas.
 
 ### RF-14 — Auditoría
 
-- Eventos: `VAULT_CREATED`, `UNLOCK_OK`, `UNLOCK_FAILED`, `RATE_LIMITED`,
-  `ACCOUNT_CREATED`, `ACCOUNT_UPDATED`, `ACCOUNT_DELETED`, `SHARE_GRANTED`,
-  `SHARE_REVOKED`, `KEY_ROTATED`, `RECOVERY_SET`, `RECOVERY_ROTATED`,
-  `RECOVERY_USED`, `PASSKEY_ADDED`, `PASSKEY_REMOVED`, `CONTACT_INVITED`,
-  `CONTACT_ACCEPTED`, `CONTACT_REVOKED`, `CONTACT_REVEALED`.
+- Eventos: `VAULT_CREATED`, `VAULT_DELETED`, `UNLOCK_OK`, `UNLOCK_FAILED`,
+  `RATE_LIMITED`, `ACCOUNT_CREATED`, `ACCOUNT_UPDATED`, `ACCOUNT_DELETED`,
+  `SHARE_GRANTED`, `SHARE_REVOKED`, `KEY_ROTATED`, `MASTER_PASSWORD_CHANGED`,
+  `RECOVERY_SET`, `RECOVERY_ROTATED`, `RECOVERY_USED`, `RECOVERY_FAILED`,
+  `PASSKEY_ADDED`, `PASSKEY_REMOVED`, `CONTACT_INVITED`, `CONTACT_ACCEPTED`,
+  `CONTACT_REVOKED`, `CONTACT_REVEALED`.
 - Guardan `userId`, `actorId`, `action`, `targetId` (cuenta o miembro), `ipHash`
   y fecha. **Nunca** contenido, títulos, usuarios, URLs, DEKs ni códigos.
 - El usuario ve sus últimos eventos en Ajustes.
@@ -238,10 +245,11 @@ guarda datos bancarios ni tarjetas.
 
 - Solo el dueño, con master password + TOTP y confirmación escribiendo
   `BORRAR`.
-- Borra `Vault`, cuentas, claves, kit, passkeys, contactos y eventos.
-- Las cuentas compartidas dejan de estar disponibles para el dueño; los demás
-  destinatarios conservan su copia (no se puede revocar lo ya compartido).
-- Se avisa de que la operación es irreversible.
+- Borra la bóveda (`Vault`), el kit, las passkeys, los contactos salientes y los
+  eventos. **No** borra las `VaultAccount` ya compartidas: los destinatarios
+  conservan su copia cifrada y no se puede revocar lo ya entregado.
+- Para el dueño, las cuentas compartidas dejan de estar disponibles. Se avisa de
+  que la operación es irreversible.
 
 ## Requisitos no funcionales
 
@@ -324,6 +332,10 @@ Las rutas y contratos están en el [plan](plan.md#api). Reglas transversales:
 - `GET /api/cuentas/accounts` devuelve `ciphertext`, `nonce`, `revision`,
   `visibility`, `ownerId`, `canEdit` y la DEK envuelta **del solicitante**,
   más la lista de destinatarios (ids y `canEdit`), sin sus DEKs.
+- `GET /api/cuentas/recovery` devuelve el keyring cifrado con `recoveryKek` y sus
+  parámetros para el flujo de recuperación (sin grant).
+- `DELETE /api/cuentas/vault` borra bóveda, kit, passkeys, contactos y eventos;
+  no borra las `VaultAccount` compartidas (los destinatarios conservan su copia).
 - Las mutaciones de destinatarios son transaccionales.
 - Los handlers usan runtime Node.js (bcrypt, WebAuthn).
 
@@ -341,8 +353,9 @@ Las rutas y contratos están en el [plan](plan.md#api). Reglas transversales:
 
 ### Pantallas
 
-1. **Onboarding** (4 pasos): requisito, master password, kit obligatorio,
-   passkey opcional.
+1. **Onboarding** (3 pasos): requisito, master password, kit obligatorio,
+   passkey opcional. El paso de kit exige la confirmación explícita de haber
+   guardado el código.
 2. **Desbloqueo**: formulario claro, errores genéricos, contador de intentos
    restantes solo si el servidor lo expone.
 3. **Lista**: cabecera con búsqueda y botón **Nueva cuenta**; tarjetas con

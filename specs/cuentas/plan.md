@@ -4,11 +4,13 @@
 **Rama:** `feat/cuentas`
 **Depende de:** auth NextAuth, usuarios/roles, perfil y 2FA (cerradas).
 **Sustituye a:** `gestor-contrasenas` / `gestor-contrasenas-ui` (descartados).
-**Estado:** plan y spec pendientes de aprobación del usuario.
+**Estado:** aprobado (2026-10-28) — en implementación
+**Fecha:** 2026-10-28
 
-> **Nada de este documento está implementado todavía.** No hay tablas, rutas ni
-> componentes de Cuentas en el repositorio. La UI antigua de contraseñas nunca
-> existió y no se reutiliza.
+> **Aprobado por el usuario el 2026-10-28** con estas decisiones: contacto de
+> confianza incluido en v1, master password de 12 caracteres como mínimo y
+> visibilidad `Toda la familia` por defecto. Implementado en la rama
+> `feat/cuentas`.
 
 ## Contexto
 
@@ -40,7 +42,7 @@ Que un miembro de la familia pueda:
 
 | # | Decisión | Motivo |
 |---|---|---|
-| 1 | Cifrado en cliente con **libsodium-wrappers** | XChaCha20-Poly1305, X25519 y Argon2id en un solo paquete auditado, sin criptografía casera |
+| 1 | Cifrado en cliente con **libsodium-wrappers-sumo** | XChaCha20-Poly1305, X25519 y Argon2id en un solo paquete auditado, sin criptografía casera |
 | 2 | **Argon2id** (ops 3, 64 MiB, sal 16 B) para la master password | Resistente a GPU; parámetros guardados por bóveda para poder subirlos después |
 | 3 | **Doble derivación** con `crypto_kdf`: `kek` y `authKey` | El servidor recibe `authKey` (verificador) y nunca puede derivar `kek` |
 | 4 | **Keyring X25519** ({`sk`, `pk`}) cifrado con `kek` | Cambiar la master password solo re-cifra el keyring, no las cuentas |
@@ -195,7 +197,7 @@ Prisma/PostgreSQL: blobs, sal, params, pk, metadatos
 - Toda la criptografía de usuario vive en `src/lib/vault/crypto.ts`, marcado
   `'use client'` en los puntos de uso. En el servidor solo se usa Node
   `crypto` para HMAC del grant y bcrypt del verificador.
-- `libsodium-wrappers` carga WASM: la CSP debe añadir `'wasm-unsafe-eval'` a
+- `libsodium-wrappers-sumo` carga WASM: la CSP debe añadir `'wasm-unsafe-eval'` a
   `script-src`. Sin eso, el navegador bloquea la librería. Se valida en el
   build de producción.
 - Las respuestas de `/api/cuentas/*` llevan `Cache-Control: no-store`.
@@ -391,7 +393,7 @@ La cookie `casaos_vault` se emite en la misma respuesta:
 
 Ya aprobadas por el usuario:
 
-- `libsodium-wrappers` (+ `@types/libsodium-wrappers` si el paquete no trae
+- `libsodium-wrappers-sumo` (+ `@types/libsodium-wrappers-sumo` si el paquete no trae
   tipos; verificar al instalar).
 - `@simplewebauthn/server` y `@simplewebauthn/browser`.
 
