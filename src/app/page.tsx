@@ -4,8 +4,8 @@ export default function Home() {
     { title: 'Dispositivos', status: 'Disponible', href: '/devices' },
     { title: 'Notas', status: 'Disponible', href: '/notas' },
     { title: 'Calendario', status: 'Disponible', href: '/calendario' },
-    { title: 'Inventario', status: 'Planificado', href: '#' },
-    { title: 'Gastos', status: 'Idea', href: '#' },
+    { title: 'Familia', status: 'Disponible', href: '/familia' },
+    { title: 'Cuentas', status: 'Planificado', href: '#' },
   ];
 
   return (
@@ -48,7 +48,7 @@ export default function Home() {
               <span className="text-ink">1</span> Configura `.env` con `cp .env.example .env`.
             </li>
             <li className="flex gap-4 border-b border-mist pb-2">
-              <span className="text-ink">2</span> Inicializa la base de datos con `npm run db:push && npm run db:seed`.
+              <span className="text-ink">2</span> Prepara la base de datos con `docker compose up -d db &amp;&amp; npm run db:migrate:deploy &amp;&amp; npm run db:seed`.
             </li>
             <li className="flex gap-4 border-b border-mist pb-2">
               <span className="text-ink">3</span> Instala dependencias y arranca con `npm run dev`.
