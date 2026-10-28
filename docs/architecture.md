@@ -82,6 +82,29 @@ Los avisos de todo el día se calculan a las 09:00 de `HOUSE_TIMEZONE`; los
 eventos con hora usan `start - reminderMinutes`. El service worker solo recibe
 el payload mínimo y no cachea datos privados.
 
+### 6. 2FA TOTP con sesiones revocables
+
+**Decisión**: segundo factor TOTP y `sessionVersion` dentro del JWT.
+
+**Razón**: cualquier app autenticadora estándar sirve, sin depender de SMS ni de
+una plataforma. El secreto se guarda cifrado con AES-256-GCM
+(`TOTP_ENCRYPTION_KEY`). `sessionVersion` se comprueba en cada request
+autenticada: al cambiar la contraseña o el 2FA se incrementa y los JWT
+anteriores dejan de valer, sin necesidad de una tabla de sesiones.
+
+### 7. Cuentas zero-knowledge (siguiente)
+
+**Decisión**: la sección `/cuentas` cifrará en el cliente; el servidor solo
+almacenará ciphertext.
+
+**Razón**: un gestor de contraseñas server-side (prototipo de PR #32) permite
+que el servidor descifre las credenciales, así que no sirve para una bóveda
+familiar. La master password y las claves derivadas nunca saldrán del
+navegador; el servidor no podrá leer nombres, usuarios, contraseñas, URLs ni
+notas. La passkey (WebAuthn PRF) será un desbloqueo opcional, no un sustituto
+del login en la v1. Requiere 2FA activo y una spec aprobada antes de
+implementarse.
+
 ## Flujo de datos
 
 ```

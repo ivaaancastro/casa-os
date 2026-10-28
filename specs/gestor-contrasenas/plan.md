@@ -1,42 +1,66 @@
-# Plan: Gestor de contraseñas familiar
+# Plan — Gestor de contraseñas familiar (prototipo)
 
-## Fases
+**Feature:** `gestor-contrasenas`
+**Estado:** prototipo entregado y descartado; sustituido por `feat/cuentas`
+**PR:** #32 (`c5d2334`)
 
-### 1. Modelo y Migración ✅
-- [x] Añadir campo `encryptedPasswords String?` a `User` en `prisma/schema.prisma`
-- [x] Crear migración `20261028200000_add_encrypted_passwords_to_user`
-- [x] Aplicar en local (`prisma migrate deploy`) y marcar como aplicada
-- [x] `prisma generate`
+> Este plan se corrigió el 2026-10-28. El plan original daba por hecha una UI,
+> un import/export y un PBKDF2 que nunca se implementaron.
 
-### 2. Crypto Helpers ✅
-- [x] Añadir `encryptPasswords` / `decryptPasswords` en `src/lib/crypto.ts`
-- [x] Tests unitarios en `tests/crypto.test.ts` (ya existentes, 9 tests pasan)
+## Contexto
 
-### 3. API Endpoints ✅
-- [x] `GET /api/passwords` — lista descifrada
-- [x] `POST /api/passwords` — crea/actualiza
-- [x] Validación Zod (título requerido, único por usuario)
-- [x] Manejo de errores (400, 409, 500)
+La idea inicial era un gestor de contraseñas familiar cifrado en el campo
+`User.encryptedPasswords`, con UI en `/perfil` y cifrado AES-256-GCM. Durante la
+implementación se comprobó que el modelo no servía para el objetivo real: el
+servidor conserva la clave y puede descifrar todas las contraseñas. Se decidió
+no invertir más en él y diseñar **Cuentas** con cifrado zero-knowledge en el
+cliente.
 
-### 4. UI (pendiente - próxima iteración)
-- [ ] Pestaña "Contraseñas" en `/perfil`
-- [ ] Lista con acciones (ver/ocultar, copiar, editar, borrar)
-- [ ] Modal crear/editar
-- [ ] Import/Export botones
+## Fases reales
 
-### 5. Verificación y Deploy ✅
-- [x] `npm run test` (356 tests pass)
-- [x] `npm run lint` (clean)
-- [x] `npm run typecheck` (clean)
-- [x] PR #32 creado, revisado, squash-merged a main
-- [x] Vercel deploy en producción verificado (health OK)
+### 1. Modelo y migración — completado
 
-## Riesgos mitigados
-- **Migración fallida anterior**: Se revirtió PR #31, se limpió BD, se creó migración limpia
-- **Cifrado**: Usa misma infraestructura que 2FA (TOTP_ENCRYPTION_KEY), probada en producción
-- **Sin tabla extra**: Evita joins, simplifica RLS/permisos, una sola migración
+- Campo `encryptedPasswords String?` en `User`.
+- Migración aditiva `20261028200000_add_encrypted_passwords_to_user`.
+- El campo sigue en el esquema, pero no se usa desde la UI.
+
+### 2. Crypto — completado (con limitaciones)
+
+- `encryptPasswords` / `decryptPasswords` en `src/lib/crypto.ts`.
+- AES-256-GCM con AAD `casa-os:passwords:v1`.
+- Clave: `TOTP_ENCRYPTION_KEY` directamente. **No hay PBKDF2, no hay
+  contraseña maestra y no es zero-knowledge.**
+
+### 3. API — parcial
+
+- `GET /api/passwords`: devuelve los valores del mapa `{ título: contraseña }`.
+- `POST /api/passwords`: crea por título; ignora `username`, `notes` y
+  `category`; sin Zod y sin `Cache-Control: no-store`.
+- No hay `PUT` ni `DELETE`.
+- No hay tests de la API.
+
+### 4. UI — no implementada (cancelada)
+
+- No hay página `/contrasenas`, componentes ni hook.
+- El enlace del sidebar se retiró el 2026-10-28.
+
+### 5. Verificación y despliegue — parcial
+
+- Lint, typecheck, tests y build locales en verde.
+- PR #32 mergeado y CI verde.
+- **Producción nunca recibió este código**: el deployment falló con `P3009` por
+  una migración histórica. El último deployment *Ready* es `562c9b0`, anterior
+  al prototipo.
+
+## Riesgos
+
+- **Cifrado reversible por el servidor**: no apto para contraseñas reales.
+- **Clave compartida con 2FA**: mezcla dominios y complica la rotación.
+- **Código muerto**: la API y el campo se retirarán cuando Cuentas esté cerrada.
 
 ## Follow-ups
-- UI en `/perfil` (feature separada `feat/gestor-contrasenas-ui`)
-- Compartir contraseñas entre miembros familia
-- Extensión navegador para autollenado
+
+- `feat/cuentas`: bóveda zero-knowledge (master password + passkey opcional,
+  visibilidad por cuenta, 2FA obligatorio).
+- Retirar `/api/passwords` y `encryptedPasswords` al cerrar Cuentas.
+- No documentar este prototipo como funcionalidad de usuario.

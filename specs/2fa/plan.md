@@ -5,7 +5,8 @@
 **Depende de:** auth NextAuth, usuarios/roles y perfil (cerradas).
 **Bloquea:** `feat/cuentas` (la bóveda de cuentas exigirá 2FA).
 
-> **Estado:** plan y spec aprobados (2026-10-26). Pendiente de implementación.
+> **Estado:** plan y spec aprobados (2026-10-26) e implementados. Cierre:
+> [`cierre.md`](cierre.md) (2026-10-28).
 
 ## Contexto
 

@@ -1,5 +1,9 @@
 # Plan: UI Gestor de contraseñas (feat/gestor-contrasenas-ui)
 
+> **Estado: cancelada.** No se implementó ninguna página, componente ni hook.
+> El único cambio del PR #33 fue el enlace del sidebar, retirado el 2026-10-28.
+> Sustituida por `feat/cuentas` (zero-knowledge).
+
 ## Contexto
 Backend completado en `feat/gestor-contrasenas` (PR #32, mergeado a main):
 - Modelo: `User.encryptedPasswords` (JSON cifrado AES-256-GCM)

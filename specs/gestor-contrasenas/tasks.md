@@ -1,32 +1,45 @@
-# Tasks: Gestor de contraseñas familiar
+# Tasks — Gestor de contraseñas familiar (prototipo)
+
+**Feature:** `gestor-contrasenas`
+**Estado:** cerrada como prototipo; sustituida por `feat/cuentas`
+**Spec:** [`spec.md`](spec.md)
+**Plan:** [`plan.md`](plan.md)
+
+> Las tareas de UI e import/export **nunca se implementaron**. No se marcan como
+> hechas: se retiraron del alcance y se sustituyen por Cuentas zero-knowledge.
+> Los follow-ups van con viñetas normales, no con checkboxes.
 
 ## Backend (completado)
-- [x] Modelo: campo `encryptedPasswords` en `User`
-- [x] Migración: `20261028200000_add_encrypted_passwords_to_user`
-- [x] Crypto: `encryptPasswords` / `decryptPasswords` en `src/lib/crypto.ts`
-- [x] API: `GET /api/passwords`
-- [x] API: `POST /api/passwords`
-- [x] Tests: 356 pasando (vitest)
-- [x] Lint: 0 warnings/errors
-- [x] Typecheck: 0 errors
 
-## Frontend (movido a feature separada: `feat/gestor-contrasenas-ui`)
-- [x] Pestaña "Contraseñas" en layout de `/perfil` → follow-up
-- [x] Componente `PasswordList` (tabla/responsive) → follow-up
-- [x] Componente `PasswordModal` (crear/editar) → follow-up
-- [x] Hook `usePasswords` (SWR/React Query) → follow-up
-- [x] Botón exportar (descarga JSON cifrado) → follow-up
-- [x] Botón importar (file input + merge) → follow-up
-- [x] Tests UI (playwright/vitest) → follow-up
+- [x] Campo `encryptedPasswords` en `User`.
+- [x] Migración aditiva `20261028200000_add_encrypted_passwords_to_user`.
+- [x] Helpers `encryptPasswords` / `decryptPasswords` en `src/lib/crypto.ts`.
+- [x] `GET /api/passwords` (lista los valores del mapa cifrado).
+- [x] `POST /api/passwords` (crea por título; ignora usuario, notas y categoría).
+- [x] Tests de crypto (ida/vuelta, clave incorrecta, payload manipulado).
+- [x] `npm run lint`, `npm run typecheck`, `npm run test` y `npm run build` en
+  verde (356 tests en la última ejecución registrada).
+- [x] PR #32 mergeado (`c5d2334`).
 
-## Documentación (completado)
-- [x] `specs/gestor-contrasenas/spec.md`
-- [x] `specs/gestor-contrasenas/plan.md`
-- [x] `specs/gestor-contrasenas/tasks.md`
-- [x] `docs/gestor-contrasenas.md` (guía usuario)
+## UI (no implementada; feature cancelada)
 
-## Deploy y verificación (completado)
-- [x] PR #32 squash-merged a main
-- [x] CI verde (test, quality, build)
-- [x] Vercel deploy producción: health 200, DB ok
-- [x] Verificación manual en producción con `admin@casa.local`
+- No se creó `src/app/contrasenas/page.tsx`.
+- No se crearon `PasswordList`, `PasswordModal` ni `PasswordActions`.
+- No se creó `src/hooks/usePasswords.ts`.
+- No hay import/export ni tests de UI.
+- El enlace `/contrasenas` se retiró del sidebar el 2026-10-28.
+
+## Verificación y documentación
+
+- [x] `docs/gestor-contrasenas.md` reescrito con el alcance real.
+- [x] `spec.md`, `plan.md`, `tasks.md` y `cierre.md` corregidos.
+- [x] `MEMORY.md` y `CHANGELOG.md` actualizados.
+- [x] `npm run docs:check -- gestor-contrasenas` pasa.
+
+## Follow-ups (sin checkbox)
+
+- **Sustituir por `feat/cuentas`**: bóveda zero-knowledge con master password,
+  passkey opcional y visibilidad por cuenta.
+- **Retirar el prototipo**: borrar `/api/passwords` y el campo
+  `encryptedPasswords` cuando Cuentas esté cerrada.
+- **No usar** este prototipo para credenciales reales.

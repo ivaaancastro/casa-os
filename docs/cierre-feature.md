@@ -54,6 +54,25 @@ El merge del PR de cierre es el último acto; no se puede incluir su propio
 merge en el checklist de `cierre.md`. Se verifica en GitHub y se reporta al
 usuario. El PR queda como registro público.
 
+### Cancelación — cuando la feature no se entrega
+
+Una feature puede cerrarse como **cancelada** si se descarta antes de completar
+su alcance (decisión de producto, cambio de enfoque, prototipo no válido). No es
+una vía para maquillar una feature a medias:
+
+- [ ] `cierre.md` con `**Estado:** cancelada`, el motivo y qué se descartó.
+- [ ] `tasks.md`: las tareas no ejecutadas se enumeran como canceladas, **sin
+      checkboxes**; las de limpieza/corrección sí se marcan `[x]`.
+- [ ] `plan.md` y `spec.md` con un aviso de cancelación al principio; no se
+      presentan como implementados.
+- [ ] Retirar cualquier resto en la app (enlaces, rutas, flags) que prometa la
+      funcionalidad cancelada.
+- [ ] `MEMORY.md` y `CHANGELOG.md` registran la cancelación y qué la sustituye.
+- [ ] `npm run docs:check -- <nombre>` acepta `Estado: cancelada`.
+
+`docs:check` solo valida estructura: un cierre cancelado sigue obligando a
+contrastar con `git ls-files` que no se citan archivos inexistentes.
+
 ## Qué actualizar
 
 | Archivo | Qué debe reflejar | Fase |
@@ -134,7 +153,7 @@ El script comprueba:
 3. Que `cierre.md` no tiene casillas pendientes y contiene las secciones
    `Verificación`, `Documentación actualizada`, `Tareas`, `Producción` y
    `Checklist de cierre`.
-4. Que `cierre.md` está marcado como `Estado: cerrada`.
+4. Que `cierre.md` está marcado como `Estado: cerrada` o `Estado: cancelada`.
 5. Que `MEMORY.md` enlaza `specs/<nombre>/cierre.md`.
 
 No sustituye a la revisión humana ni a la verificación de producción; solo
@@ -154,3 +173,5 @@ complétala en la Fase B.
 - Verificar en local y llamarlo "producción".
 - Pedir al usuario que compruebe lo que el agente podría haber comprobado.
 - Documentar una contraseña "temporal" en el repo.
+- Cerrar como Hecho una feature cuyo código nunca existió o que no se desplegó.
+  Si se descarta, se cierra como **cancelada** y se retira lo que la anunciaba.

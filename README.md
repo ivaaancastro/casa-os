@@ -14,9 +14,10 @@
 | 🖥️ Dispositivos | ✅ Terminado | Inventario (IP, MAC, tipo, propietario, notas), escaneo e importación, estado en línea/ausente y última vez visto |
 | 🛒 Notas / Compra | ✅ Terminado | Notas compartidas y editor enriquecido |
 | 👥 Familia | ✅ Terminado | Miembros, roles ADMIN/FAMILY y perfil |
+| 🔐 2FA | ✅ Terminado | TOTP, códigos de recuperación, reset por ADMIN y script de emergencia |
 | 📅 Calendario | ✅ Terminado | Calendario compartido con vistas de mes/semana, eventos, todo el día y recordatorio |
 | 🔔 Recordatorios | ✅ Terminado | Avisos Web Push de eventos, prueba, panel in-app y scheduler cada 5 minutos; verificado en producción |
-| 📦 Inventario | 📋 Planificado | Control de objetos, caducidades y garantías |
+| 🔑 Cuentas | 📋 Planificado | Bóveda zero-knowledge con master password, passkey opcional y visibilidad por cuenta |
 | 💰 Gastos | 💡 Idea | Registro y reparto de gastos del hogar |
 | 🔧 Mantenimiento | 💡 Idea | Tareas recurrentes y historial |
 | 📄 Documentos | 💡 Idea | Facturas, seguros y manuales |
@@ -141,7 +142,8 @@ Resumen:
 1. Crear un Postgres gestionado (Vercel Postgres o Neon) → `DATABASE_URL` (con
    pooler) y `DIRECT_URL` (directa).
 2. Importar el repo en Vercel y definir `DATABASE_URL`, `DIRECT_URL`,
-   `NEXTAUTH_URL` y `NEXTAUTH_SECRET`.
+   `NEXTAUTH_URL`, `NEXTAUTH_SECRET` y `TOTP_ENCRYPTION_KEY` (32 bytes en
+   base64: `openssl rand -base64 32`).
 3. Para los recordatorios, añadir `NEXT_PUBLIC_VAPID_PUBLIC_KEY`,
    `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`, `CRON_SECRET` y, si aplica,
    `HOUSE_TIMEZONE`. Configurar el workflow de GitHub Actions con
@@ -155,6 +157,14 @@ Resumen:
 - `GET /api/health` → `200` si la BD responde, `503` si no.
 - Cabeceras de seguridad (CSP, HSTS en producción, nosniff, frame-options) en
   `next.config.js`.
+- **2FA TOTP** opcional para toda la app y obligatorio para la futura sección
+  **Cuentas**. Secreto cifrado con AES-256-GCM (`TOTP_ENCRYPTION_KEY`), códigos
+  de recuperación hasheados y `sessionVersion` para invalidar sesiones.
+  Guía: [`docs/2fa.md`](docs/2fa.md).
+- **Migraciones en producción**: `vercel-build` aplica
+  `scripts/repair-known-migrations.mjs` antes de `prisma migrate deploy`. El
+  script solo repara la migración histórica conocida
+  `2026102820_add_password_entry`; cualquier fallo nuevo detiene el build.
 
 ## Instalar como app (PWA)
 
@@ -203,8 +213,8 @@ La CI de GitHub ejecuta lint, typecheck, tests y build en cada PR y en `main`.
 - [`docs/cierre-feature.md`](docs/cierre-feature.md) — protocolo obligatorio de
   cierre (código → producción → PR de documentación).
 - [`specs/`](specs/) — `plan.md`, `spec.md`, `tasks.md` y `cierre.md` por feature.
-- [`docs/`](docs/) — arquitectura, despliegue, PWA, calendario, recordatorios,
-  escaneo de red y guías.
+- [`docs/`](docs/) — arquitectura, despliegue, PWA, 2FA, calendario,
+  recordatorios, escaneo de red y guías.
 
 Cada feature se cierra con un PR `docs/cierre-<nombre>` después de verificar
 producción. El registro queda en `specs/<nombre>/cierre.md` y se valida con:

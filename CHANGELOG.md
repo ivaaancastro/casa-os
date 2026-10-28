@@ -11,6 +11,13 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Autenticación en dos pasos (2FA)**: TOTP de 6 dígitos compatible con apps
+  estándar, 10 códigos de recuperación de un solo uso, activación con QR o clave
+  manual desde **Perfil → Seguridad**, desactivación y regeneración con
+  contraseña + segundo factor, reset por ADMIN desde **Familia** y script de
+  emergencia `npm run 2fa:reset -- <email>`. El secreto se cifra con
+  AES-256-GCM, `sessionVersion` invalida los JWT anteriores, hay rate limit de
+  5 fallos/15 min y auditoría sin secretos. Guía: `docs/2fa.md`.
 - **Recordatorios Web Push**: avisos de eventos del calendario en navegador o
   PWA, activación por dispositivo, envío de prueba, panel **Avisos** con
   próximos recordatorios y enlace profundo al día del evento. Incluye VAPID,
@@ -105,9 +112,27 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   futura.
 - **API de push y reminders** excluida del middleware de redirección para
   devolver `401` JSON; el dispatch queda protegido por `CRON_SECRET`.
+- **`vercel-build` repara la migración histórica fallida** antes de
+  `prisma migrate deploy` mediante `scripts/repair-known-migrations.mjs`,
+  limitado a `2026102820_add_password_entry`. Desbloquea los deployments que
+  fallaban con `P3009` sin tocar migraciones nuevas.
+- **Gestor de contraseñas descartado**: el prototipo server-side (PR #32) y su
+  UI inexistente (PR #33) se documentan como no aptos para uso real y se
+  sustituyen por **Cuentas** zero-knowledge. Se retiró el enlace
+  `/contrasenas` del sidebar, que apuntaba a una ruta inexistente.
+- **Lockfile único**: se eliminan `pnpm-lock.yaml` y `pnpm-workspace.yaml`; el
+  proyecto y la CI usan npm (`package-lock.json`).
 
 ### Fixed
 
+- **Producción atascada (`P3009`)**: reparación de la migración histórica
+  `2026102820_add_password_entry`, revertida en el repo pero aún fallida en
+  Neon. El build aplica ahora `20261028200000_add_encrypted_passwords_to_user`
+  y vuelve a desplegar.
+- **Cierres documentales falsos**: se corrigieron `specs/2fa`,
+  `specs/gestor-contrasenas` y `specs/gestor-contrasenas-ui`, que afirmaban UI,
+  import/export, PBKDF2 y despliegues inexistentes. `docs:check` acepta ahora
+  el estado `cancelada`.
 - Panel **Avisos**: el contador de dispositivos se actualiza al sincronizar una
   suscripción que ya existía en el navegador pero no en el servidor.
 - Login: usar navegación dura tras `signIn` para no adelantarse al `Set-Cookie`
