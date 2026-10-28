@@ -10,11 +10,13 @@ const isProd = process.env.NODE_ENV === 'production';
  *   inline (bootstrap/`__NEXT_DATA__`) sin nonce. Restringimos el resto
  *   (`frame-ancestors`, `object-src`, `base-uri`, `form-action`, orígenes).
  * - `'unsafe-eval'` solo en desarrollo (HMR de Next.js); no en producción.
+ * - `'wasm-unsafe-eval'` es necesario para libsodium (bóveda de Cuentas). Solo
+ *   permite compilar WebAssembly, no evalúa JavaScript arbitrario.
  * - `upgrade-insecure-requests` solo en producción (en local usa HTTP).
  */
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"}`,
+  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${isProd ? '' : " 'unsafe-eval'"}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
