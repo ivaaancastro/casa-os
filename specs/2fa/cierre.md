@@ -80,16 +80,17 @@ y 2FA obligatorio para toda la app. `feat/cuentas` exigirá 2FA con el helper
 | Campo | Valor |
 |---|---|
 | URL | <https://casa-os-mauve.vercel.app> |
-| Deployment | `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (*Ready · Current*, alias de producción) |
-| Commit | `562c9b0` (incluye el código de 2FA de `e4e5730`) |
+| Deployment | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (*Ready*, commit `0e8803e`; deployment anterior de 2FA: `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD`, `562c9b0`) |
+| Commit | `0e8803e` (incluye el código de 2FA de `e4e5730` y la reparación de `P3009`) |
 | Health | `GET /api/health` → `200` (`db: ok`) |
 | Rutas | `/api/2fa/status` sin sesión → `401`; `/auth/login` → `200` |
 | Smoke autenticado | No ejecutado en producción: el agente no tiene credenciales y la credencial de seed ya no es válida. El flujo completo se verificó en local. |
 
 > El 2026-10-28 se detectó que los deployments posteriores a `562c9b0` fallaban
 > por la migración histórica `2026102820_add_password_entry` (P3009). La
-> reparación y el redeploy se registran en el cierre de la corrección
-> `fix/estado-real-produccion`; no afectan al código de 2FA ya desplegado.
+> reparación (`fix/estado-real-produccion`, PR #34) desbloqueó Neon y el
+> deployment `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` volvió a quedar *Ready* sin
+> cambios en el código de 2FA.
 
 ## Documentación actualizada
 

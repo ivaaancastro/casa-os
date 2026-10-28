@@ -89,8 +89,9 @@
   `8a6498b`, `307857c`, `c5ed603` y `e4e5730`; el PR #30 solo añadió el
   marcador de cierre. El CI de `main` quedó verde.
 - [x] **23. Producción** — `TOTP_ENCRYPTION_KEY` configurada en Vercel;
-  deployment `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`) *Ready ·
-  Current*; health `200` y `/api/2fa/status` sin sesión → `401`. El login real
+  deployment `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`) *Ready*, y
+  posteriormente `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (`0e8803e`) tras reparar
+  `P3009`; health `200` y `/api/2fa/status` sin sesión → `401`. El login real
   con TOTP en producción no se repitió por falta de credenciales del agente; se
   verificó en local.
 - [x] **24. Cierre documental** — `cierre.md` completo, `tasks.md` sin

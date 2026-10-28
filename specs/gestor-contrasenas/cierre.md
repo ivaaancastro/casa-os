@@ -73,12 +73,13 @@ prototipo sin contrato cerrado.
 | URL | <https://casa-os-mauve.vercel.app> |
 | Deployment del PR #32 | `casa-cqvqvnpm0-ivans-projects-884d2864.vercel.app` → **ERROR** |
 | Causa | `P3009`: migración histórica `2026102820_add_password_entry` fallida en Neon |
-| Último deployment *Ready* | `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`, sin el prototipo) |
-| Health actual | `200` (sirve el deployment antiguo, no el prototipo) |
+| Deployment actual | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`, PR #34) → **READY** |
+| Migraciones | 7 aplicadas, incluida `20261028200000_add_encrypted_passwords_to_user` |
+| Health | `200` (`db: ok`) |
 
-La reparación de la migración y el redeploy se hacen en la corrección
-`fix/estado-real-produccion`. Aunque el prototipo llegue a desplegarse, no se
-considera una funcionalidad terminada: no tiene UI y no cumple zero-knowledge.
+La reparación de la migración se hizo en `fix/estado-real-produccion` (PR #34).
+El prototipo ya está desplegado, pero **no se considera una funcionalidad
+terminada**: no tiene UI y el servidor puede descifrar las contraseñas.
 
 ## Documentación actualizada
 
@@ -144,5 +145,6 @@ considera una funcionalidad terminada: no tiene UI y no cumple zero-knowledge.
 - [x] `cierre.md` sin casillas pendientes.
 - [x] `MEMORY.md` enlaza este cierre y registra el prototipo.
 - [x] `npm run docs:check -- gestor-contrasenas` pasa.
-- [x] Producción: no se marca como verificada; el deployment del PR #32 falló y
-      el prototipo no es una funcionalidad usable.
+- [x] Producción: el prototipo se desplegó tras reparar `P3009`
+      (`dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg`), pero no se marca como funcionalidad
+      usable: no tiene UI ni cumple zero-knowledge.

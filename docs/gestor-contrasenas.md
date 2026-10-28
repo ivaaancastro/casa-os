@@ -51,11 +51,13 @@ No hay endpoints de edición ni borrado. La API no valida con Zod ni envía
 
 ## Estado en producción
 
-El prototipo **no llegó a producción** por el fallo `P3009` de la migración
-histórica `2026102820_add_password_entry`. El último deployment *Ready* es
-`dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`), anterior a este código.
-La reparación se hace en `fix/estado-real-produccion`; si el prototipo llega a
-desplegarse, seguirá sin UI y sin garantías.
+El deployment del PR #32 falló con `P3009` por la migración histórica
+`2026102820_add_password_entry`. Tras la reparación de
+`fix/estado-real-produccion` (PR #34), el deployment
+`dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`) quedó *Ready* con las 7
+migraciones aplicadas, incluida `20261028200000_add_encrypted_passwords_to_user`.
+La API existe, pero **no hay UI y no es zero-knowledge**: no debe usarse para
+credenciales reales.
 
 > **Resto posible en la base de datos**: la migración fallida podía dejar la
 > tabla `PasswordEntry` creada a medias. El esquema actual no la usa y no se

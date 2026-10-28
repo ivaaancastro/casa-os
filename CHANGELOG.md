@@ -127,8 +127,10 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 - **Producción atascada (`P3009`)**: reparación de la migración histórica
   `2026102820_add_password_entry`, revertida en el repo pero aún fallida en
-  Neon. El build aplica ahora `20261028200000_add_encrypted_passwords_to_user`
-  y vuelve a desplegar.
+  Neon. El build aplica ahora `20261028200000_add_encrypted_passwords_to_user` y
+  vuelve a desplegar. Verificado en el PR #34 (merge `0e8803e`): deployment
+  `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` *Ready*, `/api/health` `200` y sidebar sin
+  «Contraseñas».
 - **Cierres documentales falsos**: se corrigieron `specs/2fa`,
   `specs/gestor-contrasenas` y `specs/gestor-contrasenas-ui`, que afirmaban UI,
   import/export, PBKDF2 y despliegues inexistentes. `docs:check` acepta ahora
