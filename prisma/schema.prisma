@@ -9,31 +9,40 @@ datasource db {
 }
 
 model User {
-  id                   String             @id @default(cuid())
-  name                 String?
-  email                String?            @unique
-  emailVerified        DateTime?
-  password             String?
-  image                String?
-  role                 String             @default("FAMILY")
-  active               Boolean            @default(true)
-  twoFactorEnabled     Boolean            @default(false)
-  twoFactorSecret      String?
-  twoFactorConfirmedAt DateTime?
-  sessionVersion       Int                @default(0)
-  encryptedPasswords   String?
-  accounts             Account[]
-  sessions             Session[]
-  notes                Note[]
-  devices              Device[]
-  eventsOwned          Event[]            @relation("EventOwner")
-  eventsCreated        Event[]            @relation("EventCreator")
-  pushSubscriptions    PushSubscription[]
-  recoveryCodes        TwoFactorRecoveryCode[]
-  authEvents           AuthEvent[]        @relation("AuthEventSubject")
-  authEventsAsActor    AuthEvent[]        @relation("AuthEventActor")
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
+  id                     String                  @id @default(cuid())
+  name                   String?
+  email                  String?                 @unique
+  emailVerified          DateTime?
+  password               String?
+  image                  String?
+  role                   String                  @default("FAMILY")
+  active                 Boolean                 @default(true)
+  twoFactorEnabled       Boolean                 @default(false)
+  twoFactorSecret        String?
+  twoFactorConfirmedAt   DateTime?
+  sessionVersion         Int                     @default(0)
+  encryptedPasswords     String?
+  accounts               Account[]
+  sessions               Session[]
+  notes                  Note[]
+  devices                Device[]
+  eventsOwned            Event[]                 @relation("EventOwner")
+  eventsCreated          Event[]                 @relation("EventCreator")
+  pushSubscriptions      PushSubscription[]
+  recoveryCodes          TwoFactorRecoveryCode[]
+  authEvents             AuthEvent[]             @relation("AuthEventSubject")
+  authEventsAsActor      AuthEvent[]             @relation("AuthEventActor")
+  vault                  Vault?
+  vaultAccountsOwned     VaultAccount[]          @relation("VaultAccountOwner")
+  vaultAccountKeys       VaultAccountKey[]       @relation("VaultAccountRecipient")
+  vaultRecoveryShares    VaultRecoveryShare[]    @relation("VaultRecoveryOwner")
+  vaultRecoveryAsContact VaultRecoveryShare[]    @relation("VaultRecoveryContact")
+  vaultEvents            VaultEvent[]            @relation("VaultEventSubject")
+  vaultEventsAsActor     VaultEvent[]            @relation("VaultEventActor")
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  VaultRecovery          VaultRecovery?
+  VaultPasskey           VaultPasskey[]
 }
 
 model Account {
@@ -178,4 +187,116 @@ model AuthEvent {
   @@index([userId, createdAt])
   @@index([actorId, createdAt])
   @@index([action, createdAt])
+}
+
+// --- Cuentas zero-knowledge -------------------------------------------------
+// El servidor solo guarda blobs cifrados y metadatos mínimos. Ningún campo de
+// estos modelos contiene títulos, usuarios, contraseñas, URLs ni notas en claro.
+
+model Vault {
+  id              String         @id @default(cuid())
+  userId          String         @unique
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kdfSalt         String
+  kdfOpsLimit     Int
+  kdfMemLimit     Int
+  kdfAlgorithm    String         @default("argon2id13")
+  authHash        String
+  publicKey       String
+  wrappedKeyring  String
+  keyringNonce    String
+  keyringVersion  Int            @default(1)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model VaultAccount {
+  id         String            @id @default(cuid())
+  ownerId    String
+  owner      User              @relation("VaultAccountOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  visibility String            @default("FAMILY")
+  ciphertext String
+  nonce      String
+  revision   Int               @default(1)
+  keys       VaultAccountKey[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@index([ownerId])
+  @@index([updatedAt])
+}
+
+model VaultAccountKey {
+  id         String       @id @default(cuid())
+  accountId  String
+  account    VaultAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User         @relation("VaultAccountRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  wrappedDek String
+  canEdit    Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@unique([accountId, userId])
+  @@index([userId])
+}
+
+model VaultRecovery {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kdfSalt        String
+  kdfOpsLimit    Int
+  kdfMemLimit    Int
+  wrappedKeyring String
+  nonce          String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model VaultPasskey {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialId   String    @unique
+  publicKey      String
+  counter        Int       @default(0)
+  transports     String?
+  prfSalt        String
+  wrappedKeyring String
+  nonce          String
+  createdAt      DateTime  @default(now())
+  lastUsedAt     DateTime?
+
+  @@index([userId])
+}
+
+model VaultRecoveryShare {
+  id                 String    @id @default(cuid())
+  ownerId            String
+  owner              User      @relation("VaultRecoveryOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  contactId          String
+  contact            User      @relation("VaultRecoveryContact", fields: [contactId], references: [id], onDelete: Cascade)
+  wrappedRecoveryKey String
+  status             String    @default("PENDING")
+  createdAt          DateTime  @default(now())
+  acceptedAt         DateTime?
+
+  @@unique([ownerId, contactId])
+  @@index([contactId])
+}
+
+model VaultEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation("VaultEventSubject", fields: [userId], references: [id], onDelete: Cascade)
+  actorId   String?
+  actor     User?    @relation("VaultEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  targetId  String?
+  ipHash    String?  @db.VarChar(64)
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, action, createdAt])
 }

@@ -318,8 +318,10 @@ El merge del código **no** cierra una feature. La definición completa está en
   passkey opcional (WebAuthn PRF), 2FA obligatorio, visibilidad por cuenta
   (`Solo yo`, `Toda la familia`, `Personas concretas`). *Hecho cuando*: crear,
   desbloquear y compartir cuentas sin que el servidor pueda leer el contenido, y
-  el smoke autenticado en producción esté verificado. Requiere `plan.md` y
-  `spec.md` aprobados antes de implementar.
+  el smoke autenticado en producción esté verificado. Spec aprobada
+  (2026-10-28, contacto de confianza en v1, master password 12+, familia por
+  defecto). Estado: implementación en `feat/cuentas` con PR pendiente; cierre
+  documental pendiente. Cierre: [`specs/cuentas/cierre.md`](specs/cuentas/cierre.md).
 
 **Hito 5 — Automatización**
 
@@ -348,17 +350,17 @@ Antes se cerró `feat/2fa` (TOTP, códigos de recuperación, reset por ADMIN y
 script de emergencia), commits `8a6498b`, `307857c`, `c5ed603` y `e4e5730`, PR
 de cierre #30. Cierre: [`specs/2fa/cierre.md`](specs/2fa/cierre.md).
 
-**En curso:** — ninguna feature nueva. El cierre de la corrección está mergeado
-y el CI de `main` está verde.
+**En curso:** `feat/cuentas` — bóveda zero-knowledge en `/cuentas`: master
+password + passkey opcional (WebAuthn PRF), 2FA obligatorio, kit de recuperación,
+contacto de confianza, visibilidad por cuenta y auditoría. Requiere PR de
+feature con CI verde, deploy y cierre documental antes de abrir la siguiente.
 
 **Descartado:** `feat/gestor-contrasenas` (prototipo server-side, PR #32) y
 `feat/gestor-contrasenas-ui` (solo enlace de sidebar, PR #33). No se marcan como
 hechos: no cumplen zero-knowledge y la UI nunca existió.
 
-**Siguiente:** `feat/cuentas` — bóveda zero-knowledge en `/cuentas`. Requiere
-escribir `specs/cuentas/plan.md` y `spec.md`, y esperar la aprobación del
-usuario. No se abre hasta que el cierre de la corrección esté mergeado y el CI
-de `main` esté verde.
+**Siguiente:** ninguna mientras `feat/cuentas` esté en curso. Tras el cierre
+documental (`docs/cierre-cuentas`) se retomará el backlog conocido.
 
 ## Registro de features
 

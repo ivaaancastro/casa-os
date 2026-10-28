@@ -33,6 +33,11 @@ function isProtectedPath(pathname: string): boolean {
     return false;
   }
 
+  // Cuentas aplica requireVaultUser y devuelve 401/403 JSON (nunca redirect)
+  if (pathname === '/api/cuentas' || pathname.startsWith('/api/cuentas/')) {
+    return false;
+  }
+
   // Push y recordatorios aplican requireUser o CRON_SECRET y devuelven JSON
   if (pathname === '/api/push' || pathname.startsWith('/api/push/')) {
     return false;
@@ -108,6 +113,12 @@ describe('proteccion de rutas', () => {
     expect(isProtectedPath('/api/events')).toBe(false);
     expect(isProtectedPath('/api/events/evt_1')).toBe(false);
     expect(isProtectedPath('/api/events-extra')).toBe(true);
+  });
+
+  it('deja Cuentas a su guard para devolver 401/403 JSON', () => {
+    expect(isProtectedPath('/api/cuentas/status')).toBe(false);
+    expect(isProtectedPath('/api/cuentas/accounts/acc_1')).toBe(false);
+    expect(isProtectedPath('/api/cuentas-extra')).toBe(true);
   });
 
   it('deja push y recordatorios a sus guards', () => {

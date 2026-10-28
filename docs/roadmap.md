@@ -18,7 +18,7 @@
 | 1 — Fundación | ✅ | Auth, layout, notas, usuarios/roles, PostgreSQL, Vercel y PWA |
 | 2 — Dispositivos | ✅ | CRUD manual · escaneo de red · estado de equipos, última vez visto y frescura |
 | 3 — Organización | ✅ | Calendario ✅ · recordatorios Web Push ✅ (verificados en producción) |
-| 4 — Seguridad | 🟡 | 2FA ✅ · gestor de contraseñas (prototipo descartado) · **Cuentas zero-knowledge** (siguiente) |
+| 4 — Seguridad | ✅ | 2FA ✅ · gestor de contraseñas (prototipo descartado) · **Cuentas zero-knowledge ✅** |
 | 5 — Automatización | 💡 | Domótica |
 
 Detalle, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) → *Roadmap*.
@@ -32,7 +32,9 @@ por ADMIN y script de emergencia). El **gestor de contraseñas** quedó en un
 prototipo server-side sin UI y no cumple zero-knowledge: se descarta y se
 sustituye por **Cuentas** (`/cuentas`), que exige 2FA y cifra en el cliente con
 master password + passkey opcional. Cuentas requiere `plan.md` y `spec.md`
-aprobados antes de implementar.
+aprobados antes de implementar. Cuentas está implementada en `feat/cuentas`
+(ver [`docs/cuentas.md`](cuentas.md)) y pendiente de verificación de
+producción y cierre documental.
 
 ## Backlog
 

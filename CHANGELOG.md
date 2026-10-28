@@ -11,6 +11,17 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Cuentas zero-knowledge** (`/cuentas`): bóveda familiar con master password
+  (mínimo 12 caracteres) y derivación Argon2id + `crypto_kdf`, cifrado
+  XChaCha20-Poly1305 del keyring y de cada cuenta, envoltorio X25519 +
+  `crypto_box_seal` de DEKs por destinatario. Kit de recuperación offline
+  obligatorio al crear la bóveda y contacto de confianza opcional; el reset
+  emite un nuevo kit. Passkey opcional con WebAuthn PRF para desbloqueo.
+  Visibilidad por cuenta (`Solo yo`, `Toda la familia`, `Personas
+  concretas`); compartir rota la DEK y el nuevo miembro no ve cuentas `FAMILY`
+  antiguas hasta re-compartir. Auditoría de eventos sin secretos.
+  Migración aditiva `20261028210000_cuentas_zero_knowledge` (7 tablas nuevas).
+  Guía: `docs/cuentas.md`. Spec: `specs/cuentas/spec.md`.
 - **Autenticación en dos pasos (2FA)**: TOTP de 6 dígitos compatible con apps
   estándar, 10 códigos de recuperación de un solo uso, activación con QR o clave
   manual desde **Perfil → Seguridad**, desactivación y regeneración con

@@ -17,7 +17,7 @@
 | 🔐 2FA | ✅ Terminado | TOTP, códigos de recuperación, reset por ADMIN y script de emergencia |
 | 📅 Calendario | ✅ Terminado | Calendario compartido con vistas de mes/semana, eventos, todo el día y recordatorio |
 | 🔔 Recordatorios | ✅ Terminado | Avisos Web Push de eventos, prueba, panel in-app y scheduler cada 5 minutos; verificado en producción |
-| 🔑 Cuentas | 📋 Planificado | Bóveda zero-knowledge con master password, passkey opcional y visibilidad por cuenta |
+| 🔑 Cuentas | ✅ Terminado | Bóveda zero-knowledge con master password, passkey opcional (WebAuthn PRF) y visibilidad por cuenta (`/cuentas`) |
 | 💰 Gastos | 💡 Idea | Registro y reparto de gastos del hogar |
 | 🔧 Mantenimiento | 💡 Idea | Tareas recurrentes y historial |
 | 📄 Documentos | 💡 Idea | Facturas, seguros y manuales |
@@ -157,10 +157,15 @@ Resumen:
 - `GET /api/health` → `200` si la BD responde, `503` si no.
 - Cabeceras de seguridad (CSP, HSTS en producción, nosniff, frame-options) en
   `next.config.js`.
-- **2FA TOTP** opcional para toda la app y obligatorio para la futura sección
+- **2FA TOTP** opcional para toda la app y obligatorio para la sección
   **Cuentas**. Secreto cifrado con AES-256-GCM (`TOTP_ENCRYPTION_KEY`), códigos
   de recuperación hasheados y `sessionVersion` para invalidar sesiones.
   Guía: [`docs/2fa.md`](docs/2fa.md).
+- **Cuentas zero-knowledge** (`/cuentas`): master password en el cliente con
+  Argon2id, XChaCha20-Poly1305 y X25519/`crypto_box_seal`; kit de recuperación
+  offline, contacto de confianza, passkey con PRF y visibilidad por cuenta.
+  Guía: [`docs/cuentas.md`](docs/cuentas.md). El prototipo server-side fue
+  descartado.
 - **Migraciones en producción**: `vercel-build` aplica
   `scripts/repair-known-migrations.mjs` antes de `prisma migrate deploy`. El
   script solo repara la migración histórica conocida
