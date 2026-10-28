@@ -259,9 +259,11 @@ El merge del código **no** cierra una feature. La definición completa está en
 - `scripts/repair-known-migrations.mjs` la marca como `rolled-back` antes de
   `prisma migrate deploy`, solo si sigue fallida y solo para esa migración
   conocida. Se ejecuta desde `vercel-build`.
-- La reparación se valida en local sobre una base temporal antes de mergear.
-  Tras el merge se verifica que el deployment queda *Ready* y que se aplica
-  `20261028200000_add_encrypted_passwords_to_user`.
+- La reparación se validó en local sobre una base temporal antes del merge. El
+  preview deployment del PR #34 la aplicó en Neon; el deployment de producción
+  `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`) quedó *Ready* con las 7
+  migraciones aplicadas. Cierre:
+  [`specs/estado-real-produccion/cierre.md`](specs/estado-real-produccion/cierre.md).
 
 ### 🎯 Roadmap por hitos (en orden)
 
@@ -333,20 +335,19 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 ### 👉 Foco actual
 
-**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). El
-deployment activo es `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`),
-*Ready · Current*. Los deployments posteriores fallan por `P3009` hasta que se
-mergee la reparación de `fix/estado-real-produccion`.
+**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). Deployment
+activo `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`, *Ready*). El `P3009`
+está reparado: los deployments vuelven a completarse.
 
-**Última feature cerrada:** `feat/2fa` (TOTP, códigos de recuperación, reset por
-ADMIN y script de emergencia), commits `8a6498b`, `307857c`, `c5ed603` y
-`e4e5730`, PR de cierre #30 (`562c9b0`). Cierre:
-[`specs/2fa/cierre.md`](specs/2fa/cierre.md).
+**Última feature cerrada:** `fix/estado-real-produccion` (PR #34, `0e8803e`):
+reparación de `P3009`, retirada del enlace roto y corrección de cierres. Cierre:
+[`specs/estado-real-produccion/cierre.md`](specs/estado-real-produccion/cierre.md).
+Antes se cerró `feat/2fa` (TOTP, códigos de recuperación, reset por ADMIN y
+script de emergencia), commits `8a6498b`, `307857c`, `c5ed603` y `e4e5730`, PR
+de cierre #30. Cierre: [`specs/2fa/cierre.md`](specs/2fa/cierre.md).
 
-**En curso:** `fix/estado-real-produccion` — corrección del estado del repo y de
-la documentación, retirada del enlace roto `/contrasenas` y reparación
-idempotente de la migración fallida de Neon. Incluye el cierre documental
-corregido de 2FA, del prototipo de contraseñas y de la UI cancelada.
+**En curso:** — ninguna feature nueva. El cierre de la corrección está mergeado
+y el CI de `main` está verde.
 
 **Descartado:** `feat/gestor-contrasenas` (prototipo server-side, PR #32) y
 `feat/gestor-contrasenas-ui` (solo enlace de sidebar, PR #33). No se marcan como
@@ -381,7 +382,7 @@ de `main` esté verde.
 | feat | 2FA TOTP (recuperación, reset ADMIN, emergencia) | #30 (cierre) | `8a6498b`…`e4e5730` | `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (parcial) | [`cierre`](specs/2fa/cierre.md) |
 | feat | Gestor contraseñas (prototipo server-side, sin UI) | #32 | `c5d2334` | No (P3009); descartado | [`cierre`](specs/gestor-contrasenas/cierre.md) |
 | feat | Gestor contraseñas UI (solo enlace sidebar) | #33 | `989ff54` | No (P3009); cancelada | [`cierre`](specs/gestor-contrasenas-ui/cierre.md) |
-| fix | Estado real, docs y reparación de migración | — | — | Pendiente de merge | — |
+| fix | Estado real, docs y reparación de migración | #34 | `0e8803e` | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` | [`cierre`](specs/estado-real-produccion/cierre.md) |
 
 ## Notas técnicas
 

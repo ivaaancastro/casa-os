@@ -59,11 +59,11 @@ una ruta que devolvía 404 tras el login.
 |---|---|
 | URL | <https://casa-os-mauve.vercel.app> |
 | Deployment del PR #33 | `casa-i7t17gsbj-ivans-projects-884d2864.vercel.app` → **ERROR** (P3009) |
-| Último deployment *Ready* | `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit `562c9b0`, sin esta UI) |
-| Rutas | `/contrasenas` no existe en el build actual; el middleware redirige al login y después daría 404 |
+| Deployment actual | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`, PR #34) → **READY** |
+| Rutas | `/contrasenas` no existe; el enlace se retiró del sidebar antes del deploy |
 
-El PR #33 nunca llegó a producción. No hay nada que verificar como funcionalidad
-de usuario.
+El PR #33 nunca llegó a producción con su enlace. El deployment actual ya no
+incluye «Contraseñas» en el sidebar y no hay ninguna UI que verificar.
 
 ## Documentación actualizada
 
@@ -118,4 +118,5 @@ de usuario.
 - [x] `cierre.md` sin casillas pendientes.
 - [x] `MEMORY.md` enlaza este cierre y marca la feature como cancelada.
 - [x] `npm run docs:check -- gestor-contrasenas-ui` pasa.
-- [x] Producción: no aplica; el PR #33 nunca se desplegó y no hay funcionalidad.
+- [x] Producción: el deployment actual ya no muestra «Contraseñas»; `/contrasenas`
+      no existe y no hay funcionalidad que verificar.
