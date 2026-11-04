@@ -21,7 +21,6 @@ model User {
   twoFactorSecret        String?
   twoFactorConfirmedAt   DateTime?
   sessionVersion         Int                     @default(0)
-  encryptedPasswords     String?
   accounts               Account[]
   sessions               Session[]
   notes                  Note[]

@@ -76,9 +76,9 @@ La clave se guarda en Vercel y en el gestor de contraseñas. Nunca en el repo.
 ## Roadmap
 
 - [x] Prototipo backend (descartado).
-- [ ] **Cuentas zero-knowledge** (`feat/cuentas`): master password + passkey
+- [x] **Cuentas zero-knowledge** (`feat/cuentas`): master password + passkey
   opcional, visibilidad por cuenta, 2FA obligatorio.
-- [ ] Retirar `/api/passwords` y `encryptedPasswords` al cerrar Cuentas.
+- [x] Retirar `/api/passwords` y `encryptedPasswords` al cerrar Cuentas.
 
 ## Troubleshooting
 
