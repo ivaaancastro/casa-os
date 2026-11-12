@@ -131,6 +131,49 @@ test(devices): añadir tests del escáner
 - Cobertura objetivo: lógica de negocio y utilidades, no UI
 - Mock de Prisma con `vitest-mock-extended`
 
+## Flujo de trabajo opcional: Project Manager multi-agente
+
+Como alternativa al trabajo directo del agente principal, se puede delegar la ejecución
+de tareas a subagentes en sesiones independientes, con el agente actual actuando como
+**project manager (PM)** que orquesta, revisa e integra los resultados.
+
+### Cuándo usarlo
+
+- Cuando el objetivo se pueda descomponer en varias tareas atómicas e independientes.
+- Cuando quieras optimizar el consumo de tokens usando el modelo más adecuado para
+  cada tarea (modelos ligeros para docs/repasos, modelos más capaces para código).
+- Cuando quieras paralelizar trabajo independiente.
+
+### Reglas que se mantienen (innegociables)
+
+- **Nunca commit ni push directo a `main`**: todo pasa por ramas con PR.
+- **Una feature activa a la vez**: no se abre nada nuevo hasta que el cierre documental
+  esté mergeado y el CI de `main` esté verde.
+- **SDD respetado**: spec aprobada → tasks → implementación → verificación → cierre.
+- **No inventar evidencias**: si un subagente no puede verificar algo en producción,
+  se registra como tal.
+- **El PM revisa todo antes de presentar el resultado al usuario**: ningún subagente
+  commitea ni pushea directamente sin pasar por la revisión del PM.
+
+### Flujo operativo
+
+1. **Descomposición**: el PM divide el objetivo en tareas pequeñas (30 min - 2 h),
+   con archivos concretos a crear/modificar.
+2. **Selección de modelo**: el PM asigna el modelo más adecuado a cada tarea según
+   su complejidad (ligero para docs/resúmenes, capaz para código/verificación).
+3. **Ejecución paralela**: las tareas independientes se lanzan a subagentes en sesiones
+   separadas, cada uno con el contexto mínimo necesario para su tarea.
+4. **Integración**: el PM recoge los resultados, los revisa, resuelve conflictos y
+   los integra en la rama correspondiente.
+5. **Validación del usuario**: el PM presenta el resultado final para tu aprobación
+   antes de cualquier push o merge.
+
+### Limitaciones
+
+- Los subagentes no tienen acceso al historial completo de la conversación ni al
+  estado de trabajo previo salvo lo que el PM les pase explícitamente.
+- Cualquier cambio en `main`, merges o pushes sigue requiriendo tu aprobación previa.
+
 ## Spec-Driven Development (SDD) — flujo de trabajo para features/fix
 
 > **Resumen SDD operativo:**
