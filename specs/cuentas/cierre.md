@@ -55,7 +55,7 @@ server-side descartado (`feat/gestor-contrasenas`).
 | `npm run typecheck` | OK |
 | `npm run test` | OK — 408 tests en 32 ficheros |
 | `npm run build` | OK — `/cuentas` generada (Dynamic, 208 kB) |
-| CI del PR | Pendiente (PR no abierto todavía) |
+| CI del PR | OK — PR #37 mergeado con squash, CI de `main` verde |
 
 ### UI / Chrome
 
@@ -94,7 +94,7 @@ server-side descartado (`feat/gestor-contrasenas`).
 - [x] `tasks.md`: casillas marcadas por verificación local; lo no verificado
       se trasladó a *Pendientes / follow-ups*.
 - `AGENTS.md`: no aplica (no cambian las reglas del arnés).
-- `npm run docs:check -- cuentas` pasa: pendiente de cierre (Fase B).
+- `npm run docs:check -- cuentas` pasa: verificado localmente en esta sesión.
 
 ## Tareas
 
@@ -119,8 +119,7 @@ server-side descartado (`feat/gestor-contrasenas`).
 - Tarea 40 — Producción: smoke autenticado con datos ficticios, borrar
       cuenta de prueba, health `200`.
 - Tarea 41 — Documentación: `docs/cuentas.md` creado; cierre completo.
-- Tarea 42 — Retirada del prototipo: PR #39 abierto (`fix/retirar-prototipo-contrasenas`);
-  migración creada, API eliminada, docs actualizadas. Pendiente merge.
+- Tarea 42 — Retirada del prototipo: PR #39 mergeado (`fix/retirar-prototipo-contrasenas`, commit `94b2810`); migración creada, API eliminada, docs actualizadas.
 - Tarea 43 — Cierre documental: este documento y su PR de cierre.
 - Smoke autenticado de producción: no ejecutado en esta Sesión. No hay
   credenciales válidas para `admin@casa.local` / `admin123` en producción, por
