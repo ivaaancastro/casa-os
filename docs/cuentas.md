@@ -1,8 +1,8 @@
 # Cuentas zero-knowledge
 
-> Estado: **activo en desarrollo local** (rama `feat/cuentas`). La sección
-> cifra las credenciales del hogar en el cliente; el servidor solo guarda blobs
-> cifrados y metadatos.
+> Estado: **disponible en producción** (mergeado en `main` vía PR #37).
+> La sección cifra las credenciales del hogar en el cliente; el servidor solo
+> guarda blobs cifrados y metadatos.
 
 ## Qué protege
 
