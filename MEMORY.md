@@ -95,271 +95,91 @@ El merge del código **no** cierra una feature. La definición completa está en
 - **Bloqueo:** si producción falla o falta una verificación, la feature no se
   marca como Hecho; se registra el fallo y se abre un `fix/*`.
 
-## Roadmap
+## Roadmap — casa-os móvil (PWA, iOS + Android)
 
-### ✅ Hecho (v0.1 — fundación)
+> **Enfoque:** app móvil para uso personal/familiar en casa. Tres pilares:
+> notas, gestor de contraseñas y calendario. Navegación con una mano,
+> FaceID/huella como entrada principal, notificaciones push de recordatorios.
+> No se publica en tiendas; se instala como PWA desde "Añadir a pantalla de
+> inicio".
 
-- Stack, estructura, ESLint/TypeScript/Tailwind, esquema inicial Prisma.
-- Auth con NextAuth (login, roles ADMIN/FAMILY, middleware).
-- Layout con sidebar + dashboard editorial (rediseño Inditex).
-- **Notas**: CRUD completo + editor enriquecido tipo Apple Notas (título como
-  primera línea, estilos de párrafo, checklist, listas, tablas, enlaces,
-  indentación, atajos).
+### Estado actual de la base (ya construido y en producción)
 
-### ✅ Hecho (v0.2 — base familiar)
+- Auth con NextAuth (credenciales email/contraseña, roles ADMIN/FAMILY, middleware, JWT).
+- PostgreSQL (Neon) en Vercel, despliegue en <https://casa-os-mauve.vercel.app>.
+- PWA instalable: manifest, iconos, service worker, página offline.
+- Notas con editor enriquecido tipo Apple Notas.
+- Calendario familiar (mes/semana, CRUD, recordatorio almacenado).
+- Recordatorios Web Push (panel Avisos, deduplicación, scheduler GitHub Actions).
+- 2FA TOTP, códigos de recuperación, reset por ADMIN.
+- Cuentas zero-knowledge en `/cuentas` (master password, passkey WebAuthn, kit de recuperación, sharing).
+- Dispositivos y escaneo de red (CRUD, importación JSON, estado online/ausente).
+- Usuarios y roles, baja lógica, perfil propio.
 
-- **Usuarios y roles** (`feat/usuarios-roles`): crear/editar miembros, roles
-  ADMIN/FAMILY aplicados en API y UI, activar/desactivar (baja lógica), perfil
-  propio con cambio de contraseña y protecciones (último admin, auto-baja).
-  Secciones `/familia` y `/perfil`.
+### 🎯 Roadmap por fases (en orden)
 
-### ✅ Hecho (v0.3 — preparado para la nube)
+> Cada fase = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
+> El cierre documental es obligatorio antes de pasar a la siguiente.
 
-- **PostgreSQL** (`feat/postgres`): migración de SQLite a PostgreSQL (requisito
-  para alojar en Vercel). Migración base (`prisma/migrations/0000_init`), dev
-  local con Docker Compose, script de volcado de datos y backup con `pg_dump`.
+**Fase 0 — Cierre y limpieza** (inmediato)
 
-### ✅ Hecho (v0.4 — desplegado en producción)
+- Cerrar documentalmente `feat/cuentas`: PR de cierre `docs/cierre-cuentas`, smoke autenticado en producción (credenciales de Iván), `npm run docs:check -- cuentas`.
+- Borrar ramas antiguas ya mergeadas.
+- Dejar `main` limpio con CI verde.
 
-- **Despliegue en Vercel** (`feat/despliegue-vercel`): `vercel-build` (migraciones
-  + build), `GET /api/health` (200/503, público), cabeceras de seguridad (CSP,
-  HSTS en prod, nosniff, frame-options) y guía paso a paso
-  `docs/despliegue-vercel.md`.
-- **Producción**: <https://casa-os-mauve.vercel.app> (Vercel + Neon). Verificado:
-  health `200`, cabeceras, login real, notas, familia y escritura en Neon.
-  Sin dominio propio por ahora (decisión del usuario).
+**Fase 1 — Fundación móvil + navegación nativa-sentido**
 
-### ✅ Hecho (v0.5 — PWA instalable)
+- Rediseño completo: tab bar inferior con 4 pestañas (Notas, Cuentas, Calendario, Perfil).
+- Menú móvil, sin sidebar de escritorio.
+- Pantalla de bienvenida e instalación ("Añadir a pantalla de inicio").
+- Diseño tokens: paleta Índitex (rojo acento `#C41E3A`), Bodoni Moda para títulos, Jost para cuerpo, optimizado para pulgar.
+- Pantallas `/notas`, `/cuentas`, `/calendario`, `/perfil` rediseñadas para móvil.
+- Verificación en iOS Safari y Android Chrome.
 
-- **PWA** (`feat/pwa-instalable`): manifest (`/manifest.webmanifest`), iconos
-  32/192/512 + maskable + Apple, service worker (`/sw.js`) y página sin
-  conexión (`/offline`). Instalable en Android/iOS; offline básica **sin
-  cachear datos privados** (solo se precachea `/offline`). Guía en
-  `docs/pwa.md` y generador de iconos en `npm run icons`.
+**Fase 2 — Gestor de contraseñas (Cuentas) móvil**
 
-### ✅ Hecho (v0.6 — dispositivos)
+- UI de `/cuentas` rediseñada para móvil (lista swipeable, no tabla de escritorio).
+- **FaceID / huella (WebAuthn)** como desbloqueo principal de la bóveda.
+- Contraseña master como fallback obligatorio cuando la biometría no funciona.
+- Auto-bloqueo, bloqueo manual y recuperación con kit accesibles desde móvil.
+- Compartir cuentas con familia (visibilidad: solo yo / toda la familia / personas concretas).
 
-- **Dispositivos** (`feat/dispositivos-crud`): inventario manual con CRUD,
-  IP/MAC únicas (índices en Postgres), tipo, propietario, notas y estado
-  online/lastSeen de solo lectura. API con Zod y `409` para duplicados; ADMIN
-  escribe y FAMILY solo lee. UI editorial responsive con borrado en dos pasos.
-- **Producción**: deployment `AN59fx6pKkakZqNB5qeQ3v1h1Q4U` (commit `3e38e80`)
-  *Ready · Current*; health `200`, cabeceras, rutas protegidas y smoke
-  autenticado confirmado por Iván.
-- **Cierre:** [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
+**Fase 3 — Notas (móvil)**
 
-### ✅ Hecho (v0.7 — escaneo de red)
+- Editor enriquecido adaptado a pantalla táctil (toolbar compacta, acciones con el pulgar).
+- Creación rápida de notas (botón flotante o desde tab bar).
+- Listado optimizado para desplazamiento con una mano.
+- Carpetas, búsqueda, checklist.
 
-- **Escaneo de red** (`feat/escaneo-red`): escáner local con nmap, JSON
-  versionado y panel en `/devices` para previsualizar e importar solo equipos
-  nuevos. Deduplicación por IP/MAC, estados `new`/`existing`/`conflict`/
-  `duplicate`/`invalid`, `dryRun` por defecto y `createMany` con
-  `skipDuplicates`. No hay cambios de esquema ni se toca `online`/`lastSeen`.
-- **Producción**: PRs #18 (feature), #19 y #20 (pulido); commit final
-  `5835fd2`; health `200`, cabeceras correctas y `POST /api/devices/import` sin
-  sesión → `401` JSON, lo que confirma el código nuevo. Smoke autenticado ADMIN
-  confirmado por el agente con la cuenta temporal: panel, preview de fixture y
-  móvil 390 px sin overflow. FAMILY se verificó en local; no hubo credencial
-  FAMILY de producción.
-- **Documentación**: `docs/escaneo-red.md`; API `POST /api/devices/import`;
-  tarea 14 completada y cuenta temporal desactivada.
-- **Cierre:** [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
+**Fase 4 — Calendario familiar + recordatorios push**
 
-### ✅ Hecho (v0.8 — estado de dispositivos)
+- Vista mes y semana rediseñadas para móvil (eventos como chips táctiles, no rejilla pequeña).
+- Creación/edición de eventos con formulario táctil.
+- **Web Push real**: notificaciones de recordatorios que llegan al móvil incluso con la app cerrada.
+- Panel de avisos móvil.
 
-- **Estado de dispositivos** (`feat/dispositivos-estado`): al aplicar un
-  escaneo se actualizan `online` y `lastSeen`; los equipos de la red que ya se
-  habían visto y no aparecen se marcan ausentes. Guardia contra escaneos
-  anteriores a `lastSeen`, previsualización de altas/bajas y frescura en la
-  lista. Sin migración ni historial.
-- **Producción**: PR #22 (squash merge `34fee9f`), CI de `main` verde (run
-  `39818616853`), health `200` y alias actualizado. Smoke autenticado ADMIN:
-  lista con estado y aviso de frescura, preview de fixture y descarte sin
-  escritura. Verificado a 390 px sin overflow.
-- **Cierre:** [`specs/dispositivos-estado/cierre.md`](specs/dispositivos-estado/cierre.md).
+**Fase 5 — Dispositivos y red (mantenimiento opcional)**
 
-### ✅ Hecho (v0.9 — calendario)
+- `/devices` en móvil (lista, no tabla de escritorio).
+- Escaneo de red e importación JSON (ajuste UI móvil).
 
-- **Calendario familiar** (`feat/calendario`): vistas de mes (rejilla de 42
-  celdas, lunes primero) y semana, CRUD de eventos con hora o de todo el día,
-  responsable opcional, recordatorio almacenado y agenda móvil. API autenticada
-  con permisos creador/ADMIN y migración aditiva `add_calendar_events`. Los
-  avisos de recordatorio se desarrollan en `feat/recordatorios` (v0.10, en
-  cierre).
-- **Producción**: PR #24 (squash merge `94a4d40`), CI de `main` verde (run
-  `39828836139`) y Vercel commit status success (deployment
-  `CYckvdS6Bf8bMXKz1HkRH223bdEn`). Health `200` (`db: ok`). Smoke autenticado
-  ADMIN en `/calendario`: alta de evento de todo el día, edición de título y
-  recordatorio, detalle y borrado; `GET /api/events` final con 0 eventos. Sin
-  sesión, `/calendario` → 307 y `/api/events` → 401 JSON.
-- **Cierre:** [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
+**Fase 6 — Cierre y documentación**
 
-### ✅ Hecho (v0.10 — recordatorios)
+- `cierre.md` de cada fase, `MEMORY.md` y `docs/roadmap.md` actualizados.
+- Verificación en móvil real (iOS + Android).
 
-- **Recordatorios Web Push** (`feat/recordatorios`): avisos de eventos con hora
-  y de todo el día, suscripciones por dispositivo, prueba, panel **Avisos**,
-  enlace profundo al calendario y cron de GitHub Actions cada 5 minutos. Modelos
-  `PushSubscription` y `ReminderDelivery`, migración aditiva
-  `add_push_reminders`, rutas `/api/push/*` y `/api/reminders/*`, tests y guía
-  `docs/recordatorios.md`.
-- **Producción**: PR #26 (commit `76f0683`) y PR #27 de documentación (commit
-  `bfb7477`). Deployment de verificación
-  `dpl_GLUPgBsHBLV6k7MXAP11mikGiVKr` (*Ready*), health `200`; el merge del
-  cierre generó después un deployment docs-only sin cambios funcionales. VAPID,
-  `CRON_SECRET`, `HOUSE_TIMEZONE` y `CASA_OS_URL` configurados; workflow
-  `Recordatorios` activo cada 5 minutos.
-- **Verificación real**: suscripción FCM en Chrome, aviso de prueba `sent:1` y
-  recordatorio de un evento recibido en el service worker. El run
-  `40325963795` envió `1` aviso; `40325997147` lo omitió por deduplicación
-  (`skipped:1`). Suscripciones y eventos de prueba eliminados.
-- **Cuenta temporal**: `admin-temporal` (`agente.pruebas@casa.local`) existe,
-  pero ya estaba inactiva en `/familia` (`INACTIVO`); no se modificó.
-- **Cierre:** [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
+### 📋 Backlog (sin fecha)
 
-### ✅ Hecho (v0.11 — 2FA)
-
-- **Autenticación en dos pasos** (`feat/2fa`): TOTP de 6 dígitos (30 s, ventana
-  ±1) compatible con apps estándar, 10 códigos de recuperación de un solo uso,
-  desactivación y regeneración con contraseña + segundo factor, reset por ADMIN
-  desde `/familia` y script de emergencia `npm run 2fa:reset -- <email>`.
-- **Seguridad**: secreto TOTP cifrado con AES-256-GCM; `sessionVersion` en el
-  JWT invalidado al cambiar contraseña o 2FA; rate limit de 5 fallos/15 min;
-  `AuthEvent` con hash de IP y sin secretos.
-- **UI**: tarjeta **Seguridad** en `/perfil` con QR, clave manual, códigos y
-  eventos; campo opcional en el login; acción de reset en `/familia`.
-- **Integración**: commits `8a6498b`, `307857c`, `c5ed603` y `e4e5730`; el PR
-  #30 (`562c9b0`) solo añadió el marcador `.close-2fa.txt`, ya retirado.
-- **Producción**: deployment `dpl_HJXPZgEHzYZeXAQuk2R1CKqR6MfD` (commit
-  `562c9b0`, *Ready · Current*), health `200` y `/api/2fa/status` sin sesión →
-  `401`. El smoke autenticado de producción no se repitió por falta de
-  credenciales del agente; se verificó completo en local (activación, TOTP,
-  códigos, login y desactivación).
-- **Cierre:** [`specs/2fa/cierre.md`](specs/2fa/cierre.md). Guía:
-  [`docs/2fa.md`](docs/2fa.md).
-
-### 🗑️ Descartado (v0.11b — gestor de contraseñas server-side)
-
-- `feat/gestor-contrasenas` (PR #32, `c5d2334`) dejó un **prototipo** con
-  `User.encryptedPasswords`, helpers AES-256-GCM y `GET/POST /api/passwords`.
-  No tiene UI, no valida con Zod, no tiene `PUT`/`DELETE` ni tests de API, y
-  usa `TOTP_ENCRYPTION_KEY` directamente: **el servidor puede descifrar**.
-- `feat/gestor-contrasenas-ui` (PR #33, `989ff54`) se **cancela**: solo añadió
-  el enlace `/contrasenas` al sidebar y documentación de una UI que nunca
-  existió. El enlace se retiró el 2026-10-28.
-- El código se conserva por historial, documentado como no apto para uso real.
-  Se retirará al cerrar **Cuentas**. Cierres:
-  [`specs/gestor-contrasenas/cierre.md`](specs/gestor-contrasenas/cierre.md),
-  [`specs/gestor-contrasenas-ui/cierre.md`](specs/gestor-contrasenas-ui/cierre.md).
-
-### 🚧 Bloqueo y reparación de producción (2026-10-28)
-
-- Los deployments posteriores a `562c9b0` fallaban con `P3009`: la migración
-  histórica `2026102820_add_password_entry` (PR #31, revertido en `90b3fbe`)
-  quedó marcada como fallida en Neon y su carpeta ya no existe en el repo.
-- `scripts/repair-known-migrations.mjs` la marca como `rolled-back` antes de
-  `prisma migrate deploy`, solo si sigue fallida y solo para esa migración
-  conocida. Se ejecuta desde `vercel-build`.
-- La reparación se validó en local sobre una base temporal antes del merge. El
-  preview deployment del PR #34 la aplicó en Neon; el deployment de producción
-  `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`) quedó *Ready* con las 7
-  migraciones aplicadas. Cierre:
-  [`specs/estado-real-produccion/cierre.md`](specs/estado-real-produccion/cierre.md).
-
-### 🎯 Roadmap por hitos (en orden)
-
-> Cada feature = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
-
-**Hito 1 — Base familiar (habilitadores)**
-
-- `feat/despliegue-vercel` — Despliegue en Vercel + PostgreSQL gestionado
-  (Neon), cabeceras de seguridad y guía del dominio. **Hecho**: producción en
-  <https://casa-os-mauve.vercel.app> (sin dominio propio por ahora).
-- `feat/pwa-instalable` — Manifest, iconos, service worker básico, navegación
-  mobile-first. **Hecho**: instalable y con página offline; sin datos offline.
-
-**Hito 2 — Dispositivos de la red**
-
-- `feat/dispositivos-crud` — Inventario manual (nombre, IP, MAC, tipo,
-  propietario, notas, online/lastSeen). **Hecho y verificado en producción**:
-  CRUD completo, IP/MAC únicas, permisos ADMIN/FAMILY, tests y verificación
-  móvil. Cierre: [`specs/dispositivos-crud/cierre.md`](specs/dispositivos-crud/cierre.md).
-- `feat/escaneo-red` — Ejecutar el escáner, mostrar descubiertos e importarlos al
-  inventario (deduplicar por MAC/IP). **Hecho y verificado en producción**:
-  escaneo local + JSON, preview e importación de nuevos; smoke ADMIN con fixture
-  y móvil 390 px. Guía: [`docs/escaneo-red.md`](docs/escaneo-red.md). Cierre:
-  [`specs/escaneo-red/cierre.md`](specs/escaneo-red/cierre.md).
-- `feat/dispositivos-estado` — Estado online/offline, "última vez visto" y
-  alertas básicas de altas/bajas. ✅ **Hecho (v0.8)**: estado aplicado al
-  importar el escaneo, guardia de fechas, proyección y frescura en la lista.
-  *Cumplido*: la lista refleja el estado real del último escaneo.
-
-**Hito 3 — Organización del hogar**
-
-- `feat/calendario` — Eventos familiares (título, fecha, hora, quién, todo el
-  día, recordatorio). ✅ **Hecho (v0.9)**: vista mes/semana, CRUD, permisos,
-  recordatorio almacenado y tests; verificado en producción con smoke ADMIN.
-  Cierre: [`specs/calendario/cierre.md`](specs/calendario/cierre.md).
-- `feat/recordatorios` — Notificaciones/tareas programadas ligadas al calendario
-  y a las notas TODO. ✅ **Hecho (v0.10)**: Web Push, panel **Avisos**, prueba,
-  deduplicación y scheduler de GitHub Actions; aviso real verificado en
-  producción. Cierre:
-  [`specs/recordatorios/cierre.md`](specs/recordatorios/cierre.md).
-
-**Hito 4 — Seguridad**
-
-- `feat/2fa` — Segundo factor TOTP, códigos de recuperación, reset por ADMIN y
-  script de emergencia. ✅ **Hecho (v0.11)**: desplegado en producción
-  (`562c9b0`); smoke autenticado de producción pendiente de confirmación del
-  usuario. Cierre: [`specs/2fa/cierre.md`](specs/2fa/cierre.md).
-- `feat/gestor-contrasenas` / `feat/gestor-contrasenas-ui` — ❌ **Descartado**:
-  prototipo server-side sin UI que no cumple zero-knowledge. Sustituido por
-  `feat/cuentas`.
-- `feat/cuentas` — **Bóveda zero-knowledge** en `/cuentas`: master password +
-  passkey opcional (WebAuthn PRF), 2FA obligatorio, visibilidad por cuenta
-  (`Solo yo`, `Toda la familia`, `Personas concretas`). ✅ **Hecho (v0.12)**:
-  PR #37 mergeado (`86a68ba`), CI de `main` verde, producción health `200`,
-  `/api/cuentas/status` → `401` sin grant. Spec aprobada (2026-10-28,
-  contacto de confianza en v1, master password 12+, familia por defecto).
-  Cierre: [`specs/cuentas/cierre.md`](specs/cuentas/cierre.md).
-
-**Hito 5 — Automatización**
-
-- `feat/domotica` — Integración (p. ej. Home Assistant) para luces/enchufes.
-  *Hecho cuando*: listar y accionar dispositivos desde casa-os.
-
-### 📋 Backlog / ideas (sin fecha)
-
-- Buscador global (notas, dispositivos, inventario, documentos).
-- Papelera/archivo y exportación de datos (backup/restore ya existe por script).
+- Buscador global (notas, dispositivos, documentos).
+- Papelera/archivo y exportación de datos.
 - Roles granulares y auditoría de cambios.
-- App móvil nativa (React Native) si la PWA se queda corta.
+- OAuth (Google/Apple) como método de login adicional (opcional, posterior a credenciales).
 
 ### 👉 Foco actual
 
-**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). El
-deployment del fix es `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` (commit `0e8803e`,
-*Ready*) y el cierre documental se desplegó después como
-`dpl_5GFG2iRFRjVzZGXKnfVDK4rRG2Wd` (`67fe675`). El `P3009` está reparado: los
-deployments vuelven a completarse.
-
-**Última feature cerrada:** `feat/cuentas` (PR #37, `86a68ba`): bóveda
-zero-knowledge en `/cuentas` con master password, passkey opcional (WebAuthn
-PRF), kit de recuperación, contacto de confianza, sharing y auditoría.
-Producción health `200`, CI de `main` verde. Cierre:
-[`specs/cuentas/cierre.md`](specs/cuentas/cierre.md).
-Antes se cerró `fix/estado-real-produccion` (PR #34, `0e8803e`): reparación de
-`P3009`, retirada del enlace roto y corrección de cierres. Cierre:
-[`specs/estado-real-produccion/cierre.md`](specs/estado-real-produccion/cierre.md).
-
-**En curso:** ninguna. El cierre de `feat/cuentas` está mergeado y el CI de
-`main` está verde.
-
-**Descartado:** `feat/gestor-contrasenas` (prototipo server-side, PR #32) y
-`feat/gestor-contrasenas-ui` (solo enlace de sidebar, PR #33). No se marcan como
-hechos: no cumplen zero-knowledge y la UI nunca existió. Retirada del prototipo en curso
-(PR #39).
-
-**Siguiente:** backlog personal (gastos, mantenimiento, documentos) u optimizaciones.
+**En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
+**En curso:** ninguna.
+**Siguiente:** Fase 0 — cierre documental de `feat/cuentas`.
 
 ## Registro de features
 
