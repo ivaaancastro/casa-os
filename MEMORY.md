@@ -356,7 +356,8 @@ Antes se cerró `fix/estado-real-produccion` (PR #34, `0e8803e`): reparación de
 
 **Descartado:** `feat/gestor-contrasenas` (prototipo server-side, PR #32) y
 `feat/gestor-contrasenas-ui` (solo enlace de sidebar, PR #33). No se marcan como
-hechos: no cumplen zero-knowledge y la UI nunca existió.
+hechos: no cumplen zero-knowledge y la UI nunca existió. Retirada del prototipo en curso
+(PR #39).
 
 **Siguiente:** backlog personal (gastos, mantenimiento, documentos) u optimizaciones.
 

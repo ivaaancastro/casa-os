@@ -119,8 +119,8 @@ server-side descartado (`feat/gestor-contrasenas`).
 - Tarea 40 — Producción: smoke autenticado con datos ficticios, borrar
       cuenta de prueba, health `200`.
 - Tarea 41 — Documentación: `docs/cuentas.md` creado; cierre completo.
-- Tarea 42 — Retirada del prototipo: pendiente de confirmación explícita
-      para `DROP COLUMN "encryptedPasswords"` y retiro de `/api/passwords`.
+- Tarea 42 — Retirada del prototipo: PR #39 abierto (`fix/retirar-prototipo-contrasenas`);
+  migración creada, API eliminada, docs actualizadas. Pendiente merge.
 - Tarea 43 — Cierre documental: este documento y su PR de cierre.
 - Smoke autenticado de producción: no ejecutado en esta Sesión. No hay
   credenciales válidas para `admin@casa.local` / `admin123` en producción, por
