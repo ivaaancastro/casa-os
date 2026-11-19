@@ -308,7 +308,7 @@ export function CalendarApp({ members, currentUser }: CalendarAppProps) {
         </div>
 
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
-          <h2 className="font-display text-4xl leading-none tracking-editorial md:text-5xl">
+          <h2 className="font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-5xl md:leading-none md:tracking-editorial">
             {title}
           </h2>
           <p className="text-[10px] tracking-wider2 text-ash" aria-live="polite">

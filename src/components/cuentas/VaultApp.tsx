@@ -143,7 +143,7 @@ export function VaultApp({
     return (
       <div className="mx-auto w-full max-w-2xl px-5 py-16 md:px-10">
         <p className="text-xs tracking-wider2 text-ash">Cuentas</p>
-        <h1 className="mt-3 font-display text-4xl leading-[0.95] tracking-editorial md:text-5xl">
+        <h1 className="mt-3 font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-5xl md:leading-[0.95] md:tracking-editorial">
           Activa el 2FA primero.
         </h1>
         <p className="mt-4 text-sm text-ash">

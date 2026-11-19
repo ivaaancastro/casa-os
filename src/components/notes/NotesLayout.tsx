@@ -130,7 +130,7 @@ export function NotesLayout({ notes, currentUserId, currentUserRole }: NotesLayo
         `}
       >
         <div className="flex items-center justify-between border-b border-mist px-4 py-3">
-          <span className="font-display text-2xl leading-none tracking-editorial">Notas</span>
+          <span className="text-xl font-medium leading-none text-ink md:font-display md:tracking-editorial">Notas</span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="text-ash hover:text-ink lg:hidden"
