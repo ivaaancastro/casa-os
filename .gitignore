@@ -57,3 +57,7 @@ yarn-error.log*
 # agent skill installs (local only)
 .agents/
 skills-lock.json
+
+# Playwright (E2E)
+test-results/
+playwright-report/
