@@ -11,6 +11,13 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Fase 1 — Fundación móvil**: tab bar inferior de cuatro pestañas (Notas,
+  Cuentas, Calendario, Perfil) con menú «Más» en Perfil, sidebar solo en
+  escritorio, aviso de instalación PWA compacto y cabeceras Jost 21 px en móvil
+  (Bodoni reservado al wordmark y a `md:`). Sin cambios en BD, APIs ni auth.
+  Incluye tests E2E de navegación con Playwright y auditoría visual con
+  capturas a 390 px. Spec: `specs/fundacion-movil/spec.md`.
+
 - **Cuentas zero-knowledge** (`/cuentas`): bóveda familiar con master password
   (mínimo 12 caracteres) y derivación Argon2id + `crypto_kdf`, cifrado
   XChaCha20-Poly1305 del keyring y de cada cuenta, envoltorio X25519 +

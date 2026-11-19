@@ -104,19 +104,25 @@ RootLayout
 
 ## Criterios de aceptación
 
-- [ ] La tab bar aparece solo en móvil/tablet con las cuatro pestañas y el
-      activo marcado; no aparece en `lg:`.
-- [ ] El sidebar desaparece en móvil y sigue igual en escritorio.
-- [ ] El menú «Más» da acceso a Dashboard, Dispositivos, Familia y Cerrar sesión.
-- [ ] El wordmark Bodoni aparece una sola vez por pantalla en móvil.
-- [ ] El prompt de instalación aparece una vez en móvil y respeta el rechazo.
-- [ ] A 390×844 no hay overflow horizontal y la tab bar no tapa contenido.
-- [ ] `aria-current`, foco visible y objetivos ≥ 44 px verificados con Chrome MCP.
-- [ ] Sin cambios en API, BD, auth ni dependencias (excepto la ya presente
-      `@playwright/test` si se decide usarla para E2E en esta fase).
-- [ ] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
-- [ ] Auditoría con la skill `design-audit` documentada en `specs/fundacion-movil/`.
-- [ ] CI del PR en verde y cierre documental completado.
+- [x] La tab bar aparece solo en móvil/tablet con las cuatro pestañas y el
+      activo marcado; no aparece en `lg:` (E2E + capturas 3–6).
+- [x] El sidebar desaparece en móvil y sigue igual en escritorio (CSS `lg:` y
+      comprobación de estilos computados).
+- [x] El menú «Más» da acceso a Dashboard, Dispositivos, Familia y Cerrar sesión
+      (E2E y captura 7).
+- [x] El wordmark Bodoni aparece una sola vez por pantalla en móvil (capturas 1 y 7).
+- [x] El prompt de instalación aparece una vez en móvil y respeta el rechazo
+      (`localStorage`; verificado en local, ver límites en `auditoria.md`).
+- [x] A 390×844 no hay overflow horizontal y la tab bar no tapa contenido
+      (E2E en las cuatro rutas).
+- [x] `aria-current` y objetivos ≥ 44 px verificados con Chrome MCP y E2E; el
+      foco visible se comprueba por CSS global (prueba con teclado queda como
+      follow-up).
+- [x] Sin cambios en API, BD, auth ni middleware. Única dependencia nueva:
+      `@playwright/test` para E2E, aprobada en la spec.
+- [x] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
+- [x] Auditoría con la skill `design-audit` en `specs/fundacion-movil/auditoria.md`.
+- [x] CI del PR #45 en verde y cierre documental completado.
 
 ## Decisiones aprobadas (2026-11-19)
 

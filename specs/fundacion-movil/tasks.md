@@ -58,8 +58,8 @@ solo con verificación real; lo no verificado se mueve a `cierre.md` → follow-
 
 ## Fase 5 — Cierre documental (no en este PR de código)
 
-- [ ] 15. Push y PR referencing la spec; CI en verde; squash merge y borrar rama.
-- [ ] 16. Cierre documental (PR `docs/cierre-fundacion-movil`): `cierre.md`,
+- [x] 15. PR #45 mergeado por squash, rama borrada y CI de `main` verde.
+- [x] 16. Cierre documental (PR `docs/cierre-fundacion-movil`): `cierre.md`,
       `MEMORY.md`, `CHANGELOG.md`, `README.md`, `docs/roadmap.md` y
       `npm run docs:check -- fundacion-movil`. La verificación en dispositivo real
-      (iOS/Android) queda como follow-up; no se inventa evidencia.
+      (iOS/Android) queda como follow-up en `cierre.md`; no se inventa evidencia.
