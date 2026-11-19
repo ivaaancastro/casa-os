@@ -21,8 +21,8 @@ Detalle completo, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) 
 
 | Fase | Estado | Contenido |
 |---|---|---|
-| 0 — Cierre y limpieza | 🔲 | Cierre documental de `feat/cuentas`, limpiar ramas, `main` con CI verde |
-| 1 — Fundación móvil | 🔲 | Tab bar inferior (Notas, Cuentas, Calendario, Perfil), menú móvil, diseño tokens (Índitex, Bodoni Moda + Jost), pantalla de instalación |
+| 0 — Cierre y limpieza | ✅ | Cierre documental de `feat/cuentas` (PR #42), `main` con CI verde |
+| 1 — Fundación móvil | 👉 siguiente | Tab bar inferior (Notas, Cuentas, Calendario, Perfil), menú móvil, diseño tokens (Índitex, Bodoni Moda + Jost), pantalla de instalación |
 | 2 — Gestor de contraseñas (móvil) | 🔲 | `/cuentas` swipeable, WebAuthn FaceID/huella, contraseña master fallback, auto-bloqueo, compartir con familia |
 | 3 — Notas (móvil) | 🔲 | Editor táctil, creación rápida, listado para una mano, carpetas, búsqueda, checklist |
 | 4 — Calendario + push | 🔲 | Mes/semana táctiles, formulario de eventos, Web Push real, panel de avisos móvil |
@@ -41,7 +41,7 @@ Detalle completo, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) 
 
 Detalle: [`MEMORY.md`](../MEMORY.md) → *Roadmap*. El calendario familiar y los recordatorios Web Push están terminados y verificados en producción. La entrega incluye panel **Avisos**, prueba, deduplicación y scheduler de GitHub Actions cada 5 minutos.
 
-**2FA** está implementado y desplegado (TOTP, códigos de recuperación, reset por ADMIN y script de emergencia). El gestor de contraseñas quedó en un prototipo server-side sin UI y no cumple zero-knowledge: se descarta y se sustituye por **Cuentas** (`/cuentas`), que exige 2FA y cifra en el cliente con master password + passkey opcional. Cuentas requiere `plan.md` y `spec.md` aprobados antes de implementar. Cuentas está implementada en `feat/cuentas` (ver [`docs/cuentas.md`](cuentas.md)) y pendiente de verificación de producción y cierre documental.
+**2FA** está implementado y desplegado (TOTP, códigos de recuperación, reset por ADMIN y script de emergencia). El gestor de contraseñas quedó en un prototipo server-side sin UI y no cumple zero-knowledge: se descarta y se sustituye por **Cuentas** (`/cuentas`), que exige 2FA y cifra en el cliente con master password + passkey opcional. Cuentas requirió `plan.md` y `spec.md` aprobados antes de implementar. Cuentas está implementada y cerrada (PR #37, cierre documental PR #42; ver [`docs/cuentas.md`](cuentas.md) y [`specs/cuentas/cierre.md`](../specs/cuentas/cierre.md)); el smoke autenticado en producción queda registrado como pendiente del propietario.
 
 ## Backlog
 

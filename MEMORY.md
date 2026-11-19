@@ -121,11 +121,11 @@ El merge del código **no** cierra una feature. La definición completa está en
 > Cada fase = una rama + su carpeta en `specs/`. Se trabaja **una a una**.
 > El cierre documental es obligatorio antes de pasar a la siguiente.
 
-**Fase 0 — Cierre y limpieza** (inmediato)
+**Fase 0 — Cierre y limpieza** ✅ (completada 2026-11-19)
 
-- Cerrar documentalmente `feat/cuentas`: PR de cierre `docs/cierre-cuentas`, smoke autenticado en producción (credenciales de Iván), `npm run docs:check -- cuentas`.
-- Borrar ramas antiguas ya mergeadas.
-- Dejar `main` limpio con CI verde.
+- Cierre documental de `feat/cuentas`: PR #42 (`docs/cierre-cuentas`) mergeado por squash, `npm run docs:check -- cuentas` en verde y CI de `main` verde.
+- `main` al día y sin PRs abiertos. El smoke autenticado en producción sigue registrado como pendiente del propietario en `specs/cuentas/cierre.md` (no se inventó evidencia).
+- Queda como mantenimiento mecánico borrar las ramas locales/remotas de PRs ya mergeados; no bloquea el inicio de la Fase 1.
 
 **Fase 1 — Fundación móvil + navegación nativa-sentido**
 
@@ -179,7 +179,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
-**Siguiente:** Fase 0 — cierre documental de `feat/cuentas`.
+**Siguiente:** Fase 1 — Fundación móvil (tab bar inferior, menú móvil, pantalla de instalación y tokens visuales).
 
 ## Registro de features
 
@@ -207,6 +207,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 | feat | Gestor contraseñas UI (solo enlace sidebar) | #33 | `989ff54` | No (P3009); cancelada | [`cierre`](specs/gestor-contrasenas-ui/cierre.md) |
 | fix | Estado real, docs y reparación de migración | #34, #35 | `0e8803e` / `67fe675` | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` / `dpl_5GFG2iRFRjVzZGXKnfVDK4rRG2Wd` | [`cierre`](specs/estado-real-produccion/cierre.md) |
 | feat | Cuentas zero-knowledge (bóveda, master password, passkey PRF, kit, contactos, sharing, auditoría) | #37 | `86a68ba` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas/cierre.md) |
+| docs | Cierre documental de Cuentas (Fase 0) | #42 | `0051f3a` | — | [`cierre`](specs/cuentas/cierre.md) |
 
 ## Notas técnicas
 
@@ -407,4 +408,4 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 ---
 
-*Última actualización: 2026-10-28*
+*Última actualización: 2026-11-19*
