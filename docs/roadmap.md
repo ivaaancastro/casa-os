@@ -24,8 +24,8 @@ Detalle completo, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) 
 | 0 — Cierre y limpieza | ✅ | Cierre documental de `feat/cuentas` (PR #42), `main` con CI verde |
 | 1 — Fundación móvil | ✅ | Tab bar inferior (Notas, Cuentas, Calendario, Perfil), menú «Más», cabeceras Jost/Bodoni, aviso de instalación y E2E |
 | 2 — Gestor de contraseñas (móvil) | ✅ | Desbloqueo único por estancia, biométría-first sin TOTP, master password + 2FA, buscador local y lista móvil |
-| 3 — Notas (móvil) | 👉 siguiente | Editor táctil, creación rápida, listado para una mano, carpetas, búsqueda, checklist |
-| 4 — Calendario + push | 🔲 | Mes/semana táctiles, formulario de eventos, Web Push real, panel de avisos móvil |
+| 3 — Notas (móvil) | ✅ | Lista por defecto, buscador fijo, chips de carpetas, FAB, editor apilado, toolbar compacta y checklist táctil |
+| 4 — Calendario + push | 👉 siguiente | Mes/semana táctiles, formulario de eventos, Web Push real, panel de avisos móvil |
 | 5 — Dispositivos y red | 🔲 | `/devices` en móvil, escaneo e importación JSON |
 | 6 — Cierre y documentación | 🔲 | `cierre.md` de cada fase, `MEMORY.md` y `docs/roadmap.md` actualizados, verificación móvil real |
 

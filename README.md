@@ -208,7 +208,7 @@ npm run lint && npm run typecheck && npm run test && npm run build
 ```
 
 `npm run test` ejecuta una pasada; para desarrollo, `npm run test:watch`.
-Los tests E2E de navegación y Cuentas se ejecutan aparte con
+Los tests E2E de navegación, Cuentas y Notas se ejecutan aparte con
 `npm run test:e2e` (Playwright, Chromium a 390 px): necesitan la BD local
 levantada y sembrada (`docker compose up -d db && npm run db:migrate:deploy &&
 npm run db:seed`). Un `globalSetup` deja el usuario de prueba sin 2FA y sin
