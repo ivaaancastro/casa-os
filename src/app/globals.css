@@ -76,6 +76,14 @@
   .no-focus-outline:focus-visible {
     outline: none !important;
   }
+
+  /* Filas desplazables sin la barra del navegador (chips de carpetas). */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes fade-rise {
@@ -301,4 +309,34 @@
   inset: 0;
   background: rgba(10, 10, 10, 0.08);
   pointer-events: none;
+}
+
+/* ============================================================
+   Notas móvil (Fase 3): objetivos táctiles de al menos 44 px.
+   Las reglas del editor van aquí porque TipTap crea su DOM fuera
+   del árbol React y styled-jsx no le aplicaría el scope.
+   ============================================================ */
+@media (max-width: 1023px) {
+  [data-mobile-toolbar] > button:not(:disabled),
+  [data-mobile-toolbar] > div > button:first-child:not(:disabled) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  [data-mobile-toolbar] > select {
+    min-height: 44px;
+  }
+
+  .ProseMirror ul[data-type='taskList'] > li > label {
+    min-height: 44px;
+    min-width: 44px;
+    margin-top: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ProseMirror ul[data-type='taskList'] input[type='checkbox'] {
+    width: 22px;
+    height: 22px;
+  }
 }

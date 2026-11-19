@@ -1,7 +1,7 @@
 'use client';
 
-import type { Note } from './NotesLayout';
 import { extractFirstBlockText, removeFirstBlock } from '@/lib/utils/note-html';
+import type { Note } from '@/types/note';
 
 interface NoteItemProps {
   note: Note;
@@ -41,20 +41,19 @@ export function NoteItem({ note, isSelected, onSelect }: NoteItemProps) {
   return (
     <button
       onClick={onSelect}
+      aria-current={isSelected ? 'true' : undefined}
       className={`
-        w-full text-left p-3 border-b border-mist transition-colors
-        ${isSelected ? 'bg-ink text-canvas' : 'hover:bg-pearl'}
+        flex min-h-[76px] w-full flex-col justify-center border-b border-mist px-4 py-3 text-left transition-colors
+        ${isSelected ? 'border-l-2 border-l-ink bg-pearl' : 'hover:bg-pearl'}
       `}
     >
-      <div className="font-medium text-sm text-ink truncate">
+      <span className="truncate text-sm font-medium text-ink">
         {note.title || 'Sin titulo'}
-      </div>
-      <div className="text-xs text-ash truncate mt-0.5">
+      </span>
+      <span className="mt-0.5 truncate text-xs text-ash">
         {preview || 'Sin contenido'}
-      </div>
-      <div className="text-xs text-ash mt-1">
-        {dateLabel}
-      </div>
+      </span>
+      <span className="mt-1 text-xs text-ash">{dateLabel}</span>
     </button>
   );
 }

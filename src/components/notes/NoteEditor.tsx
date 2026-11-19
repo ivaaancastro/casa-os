@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { TextStyle, FontFamily, FontSize, LineHeight } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
@@ -11,7 +11,7 @@ import Highlight from '@tiptap/extension-highlight';
 import Placeholder from '@tiptap/extension-placeholder';
 import { TableKit } from '@tiptap/extension-table';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
-import type { Note } from './NotesLayout';
+import type { Note } from '@/types/note';
 import { Toolbar } from './Toolbar';
 import { DashBulletList, Indent, AppleListKeymap } from './extensions';
 import {
@@ -27,6 +27,8 @@ interface NoteEditorProps {
   onDeleted: () => void;
   onCreated?: (note: Note) => void;
   onNoteUpdated?: (id: string, patch: { title?: string; content?: string }) => void;
+  /** Usa el toolbar compacto y objetivos táctiles grandes. */
+  mobile?: boolean;
 }
 
 type SaveState = 'saved' | 'saving' | 'idle';
@@ -37,7 +39,7 @@ function isDraft(note: Note | null): boolean {
   return !!note && (note.id.startsWith('draft-') || note.id.startsWith('temp-'));
 }
 
-export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUpdated }: NoteEditorProps) {
+export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUpdated, mobile = false }: NoteEditorProps) {
   const router = useRouter();
   const [completed, setCompleted] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>('idle');
@@ -45,23 +47,30 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const createdRef = useRef(false);
+  const createdIdRef = useRef<string | null>(null);
   const loadedNoteIdRef = useRef<string | null>(null);
 
   const noteRef = useRef<Note | null>(note);
   const completedRef = useRef(completed);
   const onNoteUpdatedRef = useRef(onNoteUpdated);
+  const editorRef = useRef<Editor | null>(null);
+  const persistRef = useRef<((content: string) => Promise<void>) | null>(null);
   noteRef.current = note;
   completedRef.current = completed;
   onNoteUpdatedRef.current = onNoteUpdated;
 
   const persist = useCallback(async (content: string) => {
     const current = noteRef.current;
-    if (!current || isDraft(current)) return;
+    if (!current) return;
+    // Durante la creación el borrador ya tiene id real en el servidor: el
+    // guardado con debounce debe apuntar a él aunque el state aún sea draft.
+    const targetId = isDraft(current) ? createdIdRef.current : current.id;
+    if (!targetId) return;
     const title = extractFirstBlockText(content).slice(0, TITLE_MAX);
     const clean = sanitizeNoteContent(content);
     setSaveState('saving');
     try {
-      const res = await fetch(`/api/notes/${current.id}`, {
+      const res = await fetch(`/api/notes/${targetId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content: clean, completed: completedRef.current }),
@@ -74,7 +83,7 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
       }
       setError('');
       setSaveState('saved');
-      onNoteUpdatedRef.current?.(current.id, { title, content: clean });
+      onNoteUpdatedRef.current?.(targetId, { title, content: clean });
     } catch {
       setError('Error de conexión');
       setSaveState('idle');
@@ -133,6 +142,9 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
     },
   });
 
+  editorRef.current = editor;
+  persistRef.current = persist;
+
   // Carga el contenido solo al cambiar de nota (evita perder foco/cursor)
   useEffect(() => {
     if (!note) {
@@ -140,12 +152,20 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
       return;
     }
     if (loadedNoteIdRef.current === note.id) return;
+    const previousId = loadedNoteIdRef.current;
     loadedNoteIdRef.current = note.id;
+    if (note.id.startsWith('draft-') || note.id.startsWith('temp-')) {
+      createdIdRef.current = null;
+    }
     setCompleted(note.completed);
-    setSaveState('idle');
     setError('');
     setShowConfirmDelete(false);
-    if (editor) {
+    // Al convertir un borrador en nota real el editor ya tiene lo que el
+    // usuario ha escrito: recargar desde el servidor le quitaría el cursor.
+    const createdFromDraft =
+      !!previousId && previousId.startsWith('draft-') && !note.id.startsWith('draft-');
+    if (!createdFromDraft) setSaveState('idle');
+    if (editor && !createdFromDraft) {
       const content = withTitleLine(note.title, note.content);
       if (editor.getHTML() !== content) {
         editor.commands.setContent(content);
@@ -163,6 +183,9 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
   // Convierte el borrador en una nota real en el servidor
   useEffect(() => {
     if (!note || !isDraft(note) || createdRef.current) return;
+    // Se marca ANTES del POST: en desarrollo los effects se ejecutan dos veces
+    // y dos POSTs simultáneos crearon notas duplicadas.
+    createdRef.current = true;
     const noteType = note.type;
     (async () => {
       try {
@@ -172,19 +195,25 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
           body: JSON.stringify({ title: '', content: '', type: noteType }),
         });
         if (!res.ok) {
+          createdRef.current = false;
           setError('Error al crear la nota');
           return;
         }
         const created = await res.json();
-        createdRef.current = true;
+        createdIdRef.current = created.id;
         const html = editor?.getHTML() ?? '<h1></h1>';
         const title = extractFirstBlockText(html).slice(0, TITLE_MAX);
         const clean = sanitizeNoteContent(html);
-        await fetch(`/api/notes/${created.id}`, {
+        const saved = await fetch(`/api/notes/${created.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title, content: clean, completed: completedRef.current }),
         });
+        if (!saved.ok) {
+          setError('Error al guardar');
+          return;
+        }
+        setSaveState('saved');
         onCreated?.({
           id: created.id,
           title,
@@ -204,7 +233,13 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
 
   useEffect(() => {
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        // Al volver a la lista se descartaba el guardado pendiente: se vacía
+        // aquí para no perder lo escrito justo antes de salir del editor.
+        const html = editorRef.current?.getHTML();
+        if (html && persistRef.current) void persistRef.current(html);
+      }
     };
   }, []);
 
@@ -218,6 +253,7 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
       const res = await fetch(`/api/notes/${note.id}`, { method: 'DELETE' });
       if (res.ok) {
         createdRef.current = false;
+        createdIdRef.current = null;
         onDeleted();
         router.refresh();
       }
@@ -257,7 +293,7 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
       {/* Barra: formato + estado + acciones (un solo marco) */}
       <div className="relative border-b border-mist bg-canvas">
         <div className="flex items-start gap-2 px-3 py-2">
-          <Toolbar editor={editor} />
+          <Toolbar editor={editor} compact={mobile} />
           <div className="ml-auto flex shrink-0 items-center gap-1 pt-0.5">
             <span className="px-1 text-xs text-ash">
               {saveState === 'saving' ? 'Guardando…' : saveState === 'saved' ? 'Guardado' : ''}
@@ -266,7 +302,9 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
             {(note.type === 'SHOPPING' || note.type === 'TODO') && (
               <button
                 onClick={toggleCompleted}
-                className={`inline-flex h-8 w-8 items-center justify-center transition-colors ${
+                className={`inline-flex items-center justify-center transition-colors ${
+                  mobile ? 'h-11 w-11' : 'h-8 w-8'
+                } ${
                   completed ? 'bg-ink text-canvas' : 'text-ash hover:bg-pearl hover:text-ink'
                 }`}
                 aria-label={completed ? 'Marcar como pendiente' : 'Marcar como completada'}
@@ -281,7 +319,9 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
             {!isDraft(note) && (
               <button
                 onClick={handleDelete}
-                className={`inline-flex h-8 w-8 items-center justify-center transition-colors ${
+                className={`inline-flex items-center justify-center transition-colors ${
+                  mobile ? 'h-11 w-11' : 'h-8 w-8'
+                } ${
                   showConfirmDelete ? 'bg-alarm text-canvas' : 'text-ash hover:bg-pearl hover:text-alarm'
                 }`}
                 aria-label="Eliminar nota"
@@ -316,7 +356,7 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
 
       {/* Contenido con scroll (el titulo es la primera linea) */}
       <div className="flex-1 overflow-y-auto">
-        <div className="w-full px-6 py-8 sm:px-8 md:px-10 md:py-10 lg:px-12">
+        <div className={mobile ? 'w-full px-4 py-6 md:px-10 md:py-10 lg:px-12' : 'w-full px-6 py-8 sm:px-8 md:px-10 md:py-10 lg:px-12'}>
           <EditorContent editor={editor} className="text-[17px] leading-[1.75] text-ink" />
         </div>
       </div>
