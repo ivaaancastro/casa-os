@@ -11,6 +11,13 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Fase 3 — Notas móvil**: entrada a la lista de notas (en vez del editor
+  vacío), buscador fijo local, chips de carpetas con contadores, creación rápida
+  con FAB, editor apilado con «Volver» que conserva filtro/búsqueda/scroll,
+  toolbar compacta de una fila con panel «Más formato» y checklist con objetivos
+  ≥ 44 px. Escritorio intacto; sin cambios en BD, API ni auth. Incluye 6 E2E con
+  sesión real y auditoría visual a 390×844. Spec: `specs/notas-movil/spec.md`.
+
 - **Fase 2 — Cuentas móvil**: desbloqueo único por estancia en la app (sesión en
   el layout raíz, sigue abierta al cambiar de pestaña y se bloquea al salir o
   tras 15 min), biométrica WebAuthn PRF con auto-intento y master password como

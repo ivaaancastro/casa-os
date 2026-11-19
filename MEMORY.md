@@ -148,12 +148,18 @@ El merge del código **no** cierra una feature. La definición completa está en
 - 5 E2E con login real, 425 tests unitarios y auditoría visual en
   `specs/cuentas-movil/`. Falta probar Face ID/huella en dispositivo real.
 
-**Fase 3 — Notas (móvil)**
+**Fase 3 — Notas (móvil)** ✅ (completada 2026-11-19)
 
-- Editor enriquecido adaptado a pantalla táctil (toolbar compacta, acciones con el pulgar).
-- Creación rápida de notas (botón flotante o desde tab bar).
-- Listado optimizado para desplazamiento con una mano.
-- Carpetas, búsqueda, checklist.
+- Entrar en `/notas` muestra la **lista** (título, preview y fecha), con
+  buscador fijo local y chips horizontales de carpetas con contadores.
+- **FAB** cuadrado de creación rápida; el editor se apila con «← Notas» y el
+  volver conserva filtro, búsqueda y scroll sin recargar.
+- Toolbar compacta de una fila (negrita, listas, tareas y color) con panel
+  «Más formato»; checklist y «completar» con objetivos ≥ 44 px.
+- Una sola vista montada por breakpoint; escritorio intacto. Sin cambios en BD,
+  migraciones, API ni auth. 6 E2E nuevos y auditoría visual en
+  `specs/notas-movil/`. Follow-ups: jerarquía del título en notas nuevas y
+  verificación en dispositivo real.
 
 **Fase 4 — Calendario familiar + recordatorios push**
 
@@ -183,7 +189,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
-**Siguiente:** Fase 3 — Notas móvil (editor táctil, creación rápida, listado para una mano, búsqueda y checklist).
+**Siguiente:** Fase 4 — Calendario familiar + recordatorios push (vistas mes/semana táctiles, formulario de eventos, Web Push real y panel de avisos móvil).
 
 ## Registro de features
 
@@ -214,6 +220,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 | docs | Cierre documental de Cuentas (Fase 0) | #42 | `0051f3a` | — | [`cierre`](specs/cuentas/cierre.md) |
 | feat | Fase 1 — Fundación móvil (tab bar, menú Más, PWA, cabeceras Jost, E2E) | #45 | `4de6b8b` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/fundacion-movil/cierre.md) |
 | feat | Fase 2 — Cuentas móvil (un desbloqueo por estancia, biométría-first, buscador) | #47 | `6b27dca` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas-movil/cierre.md) |
+| feat | Fase 3 — Notas móvil (lista-first, FAB, toolbar compacta, checklist táctil) | #49 | `fb4e0c8` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/notas-movil/cierre.md) |
 
 ## Notas técnicas
 
@@ -301,6 +308,14 @@ El merge del código **no** cierra una feature. La definición completa está en
 - **CI y Google Fonts**: el loader de `next/font/google` falló una vez al
   descargar Bodoni Moda en `main` y pasó al rerun. Si se repite, valorar fuentes
   autoalojadas con `next/font/local`.
+- **Notas móvil**: `NotesLayout` elige entre `NotesMobileView` y
+  `NotesDesktopView` con `useIsMobile()` (`matchMedia`, < 1024 px) para montar un
+  solo editor TipTap por breakpoint; con solo CSS `hidden` se montarían dos con
+  ids duplicados. `filterNotes()`/`countByFolder()` son puros y están en
+  `src/lib/utils/note-filter.ts`; el tipo `Note` en `src/types/note.ts`. El
+  toolbar compacto es `Toolbar compact` con botón «Más» (`aria-label="Más
+  formato"`). Los E2E usan `ensureNotesForE2E()` con fixtures de id fijo porque
+  la BD local puede arrastrar notas de sesiones anteriores.
 
 ## Lecciones aprendidas
 
@@ -425,7 +440,19 @@ El merge del código **no** cierra una feature. La definición completa está en
   código (`90b3fbe`) eliminó la carpeta de migración, pero Neon conservó el
   registro fallido. Producción quedó atascada cinco deployments. Hay que
   comprobar `_prisma_migrations` en la base real, no solo el repo.
+- **Borrador → nota real**: no recargar el editor desde el servidor al
+  convertir un borrador: se pierde el cursor y lo escrito. `createdRef` se
+  marca **antes** del POST (en desarrollo los effects corren dos veces y
+  creaban notas duplicadas) y el guardado con debounce se vuelca al desmontar
+  para no perder el último texto al pulsar «Volver».
+- **TipTap v3 y el título inicial**: inicializar un borrador con `<h1></h1>`
+  vacío y llamar a `focus('start')` en el mismo ciclo provocó
+  `RangeError: Applying a mismatched transaction`. Se descartó; unificar la
+  jerarquía del título en notas nuevas queda como follow-up.
+- **Controles nativos fuera de paleta**: `type="search"` añade una «×» azul del
+  navegador que rompe la paleta cerrada. Se usa `type="text"` con un botón
+  propio en `ash`.
 
 ---
 
-*Última actualización: 2026-11-19 (cierre de la Fase 2)*
+*Última actualización: 2026-11-19 (cierre de la Fase 3)*

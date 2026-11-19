@@ -116,7 +116,7 @@ Ideas para el verano
 [B] [≡] [☑] [A] [Más formato]        ← una fila, ≥ 44 px
 Compra del finde                    ← primera línea = título
 - [x] Pan
-- [ ] Leche
+- [x] Leche
 ...
 ```
 
@@ -125,25 +125,25 @@ a la fila compacta. La tab bar inferior sigue visible y no tapa el contenido.
 
 ## Criterios de aceptación
 
-- [ ] Entrar en `/notas` a 390 px muestra la lista, no el editor vacío (E2E + captura).
-- [ ] El buscador filtra por título y contenido sin peticiones de red por tecla
+- [x] Entrar en `/notas` a 390 px muestra la lista, no el editor vacío (E2E + captura).
+- [x] El buscador filtra por título y contenido sin peticiones de red por tecla
       (test puro + E2E).
-- [ ] Los chips de carpeta filtran por `SHOPPING`/`GENERAL`/`TODO` y muestran
+- [x] Los chips de carpeta filtran por `SHOPPING`/`GENERAL`/`TODO` y muestran
       contadores (test puro + E2E + captura).
-- [ ] Tocar una nota abre el editor; «Volver» regresa con filtro, búsqueda y
+- [x] Tocar una nota abre el editor; «Volver» regresa con filtro, búsqueda y
       scroll conservados (E2E).
-- [ ] El FAB crea una nota y abre el editor con foco en el título; la nota
+- [x] El FAB crea una nota y abre el editor con foco en el título; la nota
       aparece en la lista tras guardar (E2E + captura).
-- [ ] El toolbar móvil cabe en una fila, «Más formato» abre el completo y en
+- [x] El toolbar móvil cabe en una fila, «Más formato» abre el completo y en
       escritorio el toolbar no cambia (capturas + revisión de clases).
-- [ ] Las casillas de tareas y «completar» miden ≥ 44 px; marcar una tarea
+- [x] Las casillas de tareas y «completar» miden ≥ 44 px; marcar una tarea
       persiste con el guardado actual (E2E + captura).
-- [ ] Sin desbordamiento horizontal a 390 px, sin errores en consola y con
+- [x] Sin desbordamiento horizontal a 390 px, sin errores en consola y con
       foco visible en los controles nuevos (Chrome MCP / auditoría).
-- [ ] No hay cambios en BD, migraciones, schemas, auth ni API (revisión de diff).
-- [ ] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
-- [ ] E2E y auditoría `design-audit` con capturas a 390×844 documentados.
-- [ ] CI del PR en verde, squash merge y cierre documental completado.
+- [x] No hay cambios en BD, migraciones, schemas, auth ni API (revisión de diff).
+- [x] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
+- [x] E2E y auditoría `design-audit` con capturas a 390×844 documentados.
+- [x] CI del PR en verde, squash merge y cierre documental completado.
 
 ## Decisiones aprobadas (2026-11-19)
 
