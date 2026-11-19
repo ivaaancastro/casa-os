@@ -22,8 +22,8 @@ Detalle completo, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) 
 | Fase | Estado | Contenido |
 |---|---|---|
 | 0 — Cierre y limpieza | ✅ | Cierre documental de `feat/cuentas` (PR #42), `main` con CI verde |
-| 1 — Fundación móvil | 👉 siguiente | Tab bar inferior (Notas, Cuentas, Calendario, Perfil), menú móvil, diseño tokens (Índitex, Bodoni Moda + Jost), pantalla de instalación |
-| 2 — Gestor de contraseñas (móvil) | 🔲 | `/cuentas` swipeable, WebAuthn FaceID/huella, contraseña master fallback, auto-bloqueo, compartir con familia |
+| 1 — Fundación móvil | ✅ | Tab bar inferior (Notas, Cuentas, Calendario, Perfil), menú «Más», cabeceras Jost/Bodoni, aviso de instalación y E2E |
+| 2 — Gestor de contraseñas (móvil) | 👉 siguiente | `/cuentas` swipeable, WebAuthn FaceID/huella, contraseña master fallback, auto-bloqueo, compartir con familia |
 | 3 — Notas (móvil) | 🔲 | Editor táctil, creación rápida, listado para una mano, carpetas, búsqueda, checklist |
 | 4 — Calendario + push | 🔲 | Mes/semana táctiles, formulario de eventos, Web Push real, panel de avisos móvil |
 | 5 — Dispositivos y red | 🔲 | `/devices` en móvil, escaneo e importación JSON |

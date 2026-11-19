@@ -127,14 +127,14 @@ El merge del código **no** cierra una feature. La definición completa está en
 - `main` al día y sin PRs abiertos. El smoke autenticado en producción sigue registrado como pendiente del propietario en `specs/cuentas/cierre.md` (no se inventó evidencia).
 - Ramas de PRs ya mergeados/cerrados borradas en local y remoto (19 nov 2026); solo queda `main`.
 
-**Fase 1 — Fundación móvil + navegación nativa-sentido**
+**Fase 1 — Fundación móvil + navegación nativa-sentido** ✅ (completada 2026-11-19)
 
-- Rediseño completo: tab bar inferior con 4 pestañas (Notas, Cuentas, Calendario, Perfil).
-- Menú móvil, sin sidebar de escritorio.
-- Pantalla de bienvenida e instalación ("Añadir a pantalla de inicio").
-- Diseño tokens: paleta Índitex (rojo acento `#C41E3A`), Bodoni Moda para títulos, Jost para cuerpo, optimizado para pulgar.
-- Pantallas `/notas`, `/cuentas`, `/calendario`, `/perfil` rediseñadas para móvil.
-- Verificación en iOS Safari y Android Chrome.
+- Tab bar inferior con 4 pestañas (Notas, Cuentas, Calendario, Perfil) y menú
+  «Más» en Perfil; sidebar solo en escritorio. Aviso de instalación PWA compacto.
+- Cabeceras Jost 21 px en móvil; Bodoni solo en el wordmark y en `md:`. Se
+  descartó `#C41E3A` como acento: el rojo (`#8E2222`) sigue siendo solo estado.
+- Spec aprobada, 4 E2E con Playwright, auditoría visual y cierre documental en
+  `specs/fundacion-movil/`. Falta la prueba en dispositivo real (follow-up).
 
 **Fase 2 — Gestor de contraseñas (Cuentas) móvil**
 
@@ -179,7 +179,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
-**Siguiente:** Fase 1 — Fundación móvil (tab bar inferior, menú móvil, pantalla de instalación y tokens visuales).
+**Siguiente:** Fase 2 — Gestor de contraseñas (Cuentas) móvil (lista swipeable, FaceID/huella con WebAuthn, master password como fallback).
 
 ## Registro de features
 
@@ -208,6 +208,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 | fix | Estado real, docs y reparación de migración | #34, #35 | `0e8803e` / `67fe675` | `dpl_6mQZz8KvrbyZVrQqq3xh8zoZkzjg` / `dpl_5GFG2iRFRjVzZGXKnfVDK4rRG2Wd` | [`cierre`](specs/estado-real-produccion/cierre.md) |
 | feat | Cuentas zero-knowledge (bóveda, master password, passkey PRF, kit, contactos, sharing, auditoría) | #37 | `86a68ba` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas/cierre.md) |
 | docs | Cierre documental de Cuentas (Fase 0) | #42 | `0051f3a` | — | [`cierre`](specs/cuentas/cierre.md) |
+| feat | Fase 1 — Fundación móvil (tab bar, menú Más, PWA, cabeceras Jost, E2E) | #45 | `4de6b8b` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/fundacion-movil/cierre.md) |
 
 ## Notas técnicas
 
@@ -286,7 +287,14 @@ El merge del código **no** cierra una feature. La definición completa está en
   enlazado desde `MEMORY.md`. Un cierre puede pasar y describir archivos que no
   existen; hay que contrastarlos con `git ls-files`.
 - **Tests**: `npm run test` ejecuta una pasada (`vitest run`); para watch,
-  `npm run test:watch`. La CI usa la misma pasada.
+  `npm run test:watch`. La CI usa la misma pasada. Los E2E de navegación van
+  aparte: `npm run test:e2e` (Playwright, Pixel 7/Chromium) con login real contra
+  la BD local sembrada. Vitest excluye `tests/e2e/**`. Si `next build` corre
+  mientras está `next dev`, sobrescribe `.next` y el dev server sirve 404:
+  reiniciarlo antes de repetir los E2E.
+- **CI y Google Fonts**: el loader de `next/font/google` falló una vez al
+  descargar Bodoni Moda en `main` y pasó al rerun. Si se repite, valorar fuentes
+  autoalojadas con `next/font/local`.
 
 ## Lecciones aprendidas
 
@@ -414,4 +422,4 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 ---
 
-*Última actualización: 2026-11-19*
+*Última actualización: 2026-11-19 (cierre de la Fase 1)*
