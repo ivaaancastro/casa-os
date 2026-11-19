@@ -149,4 +149,4 @@ server-side descartado (`feat/gestor-contrasenas`).
 - [x] `MEMORY.md` enlaza este cierre y tiene el registro actualizado.
 - [x] `CHANGELOG.md`, `README.md` y `docs/*` están al día.
 - [x] `npm run docs:check -- cuentas` pasa.
-- El PR de cierre tiene el CI verde (pendiente de abrir).
+- [x] El PR de cierre (#42) tiene el CI verde y está mergeado en `main` (squash, `c1030a2`).
