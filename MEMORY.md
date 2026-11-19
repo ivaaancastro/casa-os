@@ -136,13 +136,17 @@ El merge del código **no** cierra una feature. La definición completa está en
 - Spec aprobada, 4 E2E con Playwright, auditoría visual y cierre documental en
   `specs/fundacion-movil/`. Falta la prueba en dispositivo real (follow-up).
 
-**Fase 2 — Gestor de contraseñas (Cuentas) móvil**
+**Fase 2 — Gestor de contraseñas (Cuentas) móvil** ✅ (completada 2026-11-19)
 
-- UI de `/cuentas` rediseñada para móvil (lista swipeable, no tabla de escritorio).
-- **FaceID / huella (WebAuthn)** como desbloqueo principal de la bóveda.
-- Contraseña master como fallback obligatorio cuando la biometría no funciona.
-- Auto-bloqueo, bloqueo manual y recuperación con kit accesibles desde móvil.
-- Compartir cuentas con familia (visibilidad: solo yo / toda la familia / personas concretas).
+- Desbloqueo **una vez por estancia en la app**: sesión en un provider del layout
+  raíz; sigue abierta al cambiar de pestaña y se bloquea al salir/background,
+  manualmente o a los **15 min** de inactividad (`memzero` + limpieza de grant).
+- Biometría primero (passkey WebAuthn PRF con auto-intento) y master password
+  como respaldo con 2FA. Decisión aprobada: **la passkey ya no pide TOTP**.
+- Buscador fijo por nombre/app/página sobre datos descifrados, filtros
+  compactos y tarjetas a una columna. ABM y compartir intactos; sin swipe actions.
+- 5 E2E con login real, 425 tests unitarios y auditoría visual en
+  `specs/cuentas-movil/`. Falta probar Face ID/huella en dispositivo real.
 
 **Fase 3 — Notas (móvil)**
 
@@ -179,7 +183,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
-**Siguiente:** Fase 2 — Gestor de contraseñas (Cuentas) móvil (lista swipeable, FaceID/huella con WebAuthn, master password como fallback).
+**Siguiente:** Fase 3 — Notas móvil (editor táctil, creación rápida, listado para una mano, búsqueda y checklist).
 
 ## Registro de features
 
@@ -209,6 +213,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 | feat | Cuentas zero-knowledge (bóveda, master password, passkey PRF, kit, contactos, sharing, auditoría) | #37 | `86a68ba` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas/cierre.md) |
 | docs | Cierre documental de Cuentas (Fase 0) | #42 | `0051f3a` | — | [`cierre`](specs/cuentas/cierre.md) |
 | feat | Fase 1 — Fundación móvil (tab bar, menú Más, PWA, cabeceras Jost, E2E) | #45 | `4de6b8b` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/fundacion-movil/cierre.md) |
+| feat | Fase 2 — Cuentas móvil (un desbloqueo por estancia, biométría-first, buscador) | #47 | `6b27dca` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas-movil/cierre.md) |
 
 ## Notas técnicas
 
@@ -289,9 +294,10 @@ El merge del código **no** cierra una feature. La definición completa está en
 - **Tests**: `npm run test` ejecuta una pasada (`vitest run`); para watch,
   `npm run test:watch`. La CI usa la misma pasada. Los E2E de navegación van
   aparte: `npm run test:e2e` (Playwright, Pixel 7/Chromium) con login real contra
-  la BD local sembrada. Vitest excluye `tests/e2e/**`. Si `next build` corre
-  mientras está `next dev`, sobrescribe `.next` y el dev server sirve 404:
-  reiniciarlo antes de repetir los E2E.
+  la BD local sembrada. Vitest excluye `tests/e2e/**`. La suite comparte BD y
+  estado de 2FA: `workers: 1` y un `globalSetup` dejan el usuario sin 2FA antes
+  de empezar. Si `next build` corre mientras está `next dev`, sobrescribe `.next`
+  y el dev server sirve 404: reiniciarlo (o borrar `.next`) antes de repetir E2E.
 - **CI y Google Fonts**: el loader de `next/font/google` falló una vez al
   descargar Bodoni Moda en `main` y pasó al rerun. Si se repite, valorar fuentes
   autoalojadas con `next/font/local`.
@@ -422,4 +428,4 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 ---
 
-*Última actualización: 2026-11-19 (cierre de la Fase 1)*
+*Última actualización: 2026-11-19 (cierre de la Fase 2)*
