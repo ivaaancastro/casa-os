@@ -134,24 +134,29 @@ AppShell (layout raíz)
 
 ## Criterios de aceptación
 
-- [ ] Al entrar en `/cuentas` se pide desbloquear una sola vez.
-- [ ] Desbloquear y navegar a Notas → Calendario → Perfil → volver a Cuentas no
-      vuelve a mostrar la pantalla de desbloqueo (verificado con E2E).
-- [ ] Simular salida de la app (visibilitychange a `hidden` / cerrar pestaña)
-      bloquea la bóveda; al volver se pide de nuevo.
-- [ ] Tras 15 min de inactividad la bóveda se bloquea también con la app abierta.
-- [ ] Con passkey PRF, se intenta la biométrica al entrar y el botón aparece
-      primero; si falla o se cancela, se puede usar la master password sin
-      recargar y sin escribir TOTP en la vía biométrica.
-- [ ] Con master password se sigue exigiendo 2FA y se mantiene «He olvidado…».
-- [ ] La búsqueda filtra por título, usuario, URL/app, notas y categoría sin
-      peticiones de red por pulsación.
-- [ ] Crear, ver, editar, borrar y compartir siguen funcionando a 390 px.
-- [ ] No hay cambios en BD, migraciones, login de casa-os ni motor de cifrado.
-- [ ] Claves nunca persisten; `memzero` y limpieza de grant verificados.
-- [ ] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
-- [ ] E2E y auditoría `design-audit` con capturas a 390×844 documentados.
-- [ ] CI del PR en verde y cierre documental completado.
+- [x] Al entrar en `/cuentas` se pide desbloquear una sola vez (E2E + captura 1).
+- [x] Desbloquear y navegar a Notas → Calendario → Perfil → volver a Cuentas no
+      vuelve a mostrar la pantalla de desbloqueo (E2E + captura 3).
+- [x] Simular salida de la app (visibilitychange a `hidden`) bloquea la bóveda;
+      al volver se pide de nuevo (E2E + captura 5).
+- [x] Tras 15 min de inactividad se bloquea: verificado con temporizadores
+      falsos en `tests/vault-session.test.ts` (no se esperaron 15 min reales).
+- [ ] Con passkey PRF se intenta la biométrica al entrar y el botón aparece
+      primero. **Pendiente de dispositivo real**: Chromium de escritorio no
+      dispone de autenticador de plataforma con PRF; ver `cierre.md` →
+      *Pendientes / follow-ups*. La lógica del auto-intento y del fallback está
+      implementada y el esquema sin TOTP está testeado.
+- [x] Con master password se sigue exigiendo 2FA y se mantiene «He olvidado…»
+      (E2E con TOTP real).
+- [x] La búsqueda filtra por título, usuario, URL/app, notas y categoría sin
+      peticiones de red por pulsación (tests puros + E2E + captura 4).
+- [x] Crear, ver, editar, borrar y compartir siguen funcionando: sin cambios
+      funcionales en `AccountDialog`/`ShareDialog`; creación verificada en E2E.
+- [x] No hay cambios en BD, migraciones, login de casa-os ni motor de cifrado.
+- [x] Claves nunca persisten; `memzero` y limpieza de grant en `lock()`.
+- [x] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
+- [x] E2E y auditoría `design-audit` con 6 capturas a 390×844 documentados.
+- [x] CI del PR #47 en verde y cierre documental completado.
 
 ## Decisiones aprobadas (2026-11-19)
 

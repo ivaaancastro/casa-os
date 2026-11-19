@@ -78,9 +78,9 @@ verificado se mueve a `cierre.md` → follow-ups.
 
 ## Fase 5 — Entrega y cierre
 
-- [ ] 16. Commits atómicos, push y PR referencing la spec; CI en verde; squash
-      merge y borrado de rama.
-- [ ] 17. Cierre documental (PR `docs/cierre-cuentas-movil`): `cierre.md`,
+- [x] 16. Commits atómicos, push y PR #47; CI en verde; squash merge (`6b27dca`)
+      y borrado de rama.
+- [x] 17. Cierre documental (PR `docs/cierre-cuentas-movil`): `cierre.md`,
       `MEMORY.md`, `CHANGELOG.md`, `README.md`, `docs/roadmap.md` y
       `npm run docs:check -- cuentas-movil`. La verificación biométrica en
       dispositivo real (Face ID/huella) queda como follow-up honesto: Chromium no

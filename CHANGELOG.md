@@ -11,6 +11,14 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Fase 2 — Cuentas móvil**: desbloqueo único por estancia en la app (sesión en
+  el layout raíz, sigue abierta al cambiar de pestaña y se bloquea al salir o
+  tras 15 min), biométrica WebAuthn PRF con auto-intento y master password como
+  respaldo. Decisión aprobada: la passkey ya no pide TOTP; la contraseña sí
+  mantiene 2FA. Buscador fijo por nombre/app/página, filtros compactos y lista
+  a una columna; ABM y compartir intactos. Incluye 5 E2E con sesión real y
+  auditoría visual. Spec: `specs/cuentas-movil/spec.md`.
+
 - **Fase 1 — Fundación móvil**: tab bar inferior de cuatro pestañas (Notas,
   Cuentas, Calendario, Perfil) con menú «Más» en Perfil, sidebar solo en
   escritorio, aviso de instalación PWA compacto y cabeceras Jost 21 px en móvil
