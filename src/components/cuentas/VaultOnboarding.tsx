@@ -334,9 +334,9 @@ export function VaultOnboarding({
           Desbloqueo con passkey
         </h2>
         <p className="mt-3 max-w-2xl text-sm text-ash">
-          Si este dispositivo soporta PRF, podrás desbloquear la bóveda con tu passkey y el
-          código 2FA. La master password seguirá funcionando siempre. Si el autenticador no
-          soporta PRF, no se registra nada.
+          Si este dispositivo soporta PRF, podrás desbloquear la bóveda con Face ID o huella
+          en un solo paso, sin escribir el código 2FA. La master password seguirá funcionando
+          siempre y sí pedirá 2FA. Si el autenticador no soporta PRF, no se registra nada.
         </p>
 
         {error ? (

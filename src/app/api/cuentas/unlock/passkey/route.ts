@@ -17,7 +17,6 @@ import {
 } from '@/lib/vault/http';
 import { passkeyUnlockSchema } from '@/lib/vault/schemas';
 import { vaultPayload } from '@/lib/vault/service';
-import { verifySecondFactor } from '@/lib/two-factor';
 import {
   clearChallengeCookie,
   parseTransports,
@@ -112,16 +111,9 @@ export async function POST(request: NextRequest) {
     return unauthorized('No se pudo desbloquear');
   }
 
-  const secondFactor = await verifySecondFactor(user.id, data.code);
-  if (!secondFactor.valid) {
-    await logVaultEvent({
-      userId: user.id,
-      actorId: user.id,
-      action: 'UNLOCK_FAILED',
-      ip: getClientIp(request),
-    });
-    return unauthorized('No se pudo desbloquear');
-  }
+  // Fase 2: la verificación WebAuthn (con userVerification required) ya es el
+  // segundo factor. `code` se acepta por compatibilidad pero no se exige.
+  // La ruta de master password (/api/cuentas/unlock) sigue exigiendo TOTP.
 
   await prisma.vaultPasskey.update({
     where: { id: passkey.id },
