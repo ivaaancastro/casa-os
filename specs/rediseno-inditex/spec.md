@@ -66,6 +66,15 @@ serif para los títulos y sans neutra en la interfaz) aplicada a un gestor del h
 - [ ] Responsive correcta en mobile/tablet/desktop.
 - [ ] Documentación actualizada (MEMORY.md + diseño en specs).
 
+## Referencias
+- [`referencias-premium.md`](referencias-premium.md) — patrones extraídos de Awwwards
+  (19 nov 2026) convertidos en decisiones para la Fase 1: wordmark único, paleta
+  cerrada, una señal de color por pantalla, grid sin sombras, metadatos 13 px y
+  tab bar inferior de 4 pestañas. No modifica estos criterios de aceptación.
+- Auditoría posterior con la skill `design-audit` (`.opencode/skills/design-audit/`),
+  basada en `product-design/audit`: evidencia capturada en la sesión, hallazgos
+  ligados a cada paso y límites explícitos de lo verificable desde capturas.
+
 ## Fuera de alcance
 - No cambiar modelo de datos ni APIs.
 - No añadir nuevas secciones funcionales (calendario/inventario queda para otro hito).

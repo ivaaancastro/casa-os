@@ -125,7 +125,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 - Cierre documental de `feat/cuentas`: PR #42 (`docs/cierre-cuentas`) mergeado por squash, `npm run docs:check -- cuentas` en verde y CI de `main` verde.
 - `main` al día y sin PRs abiertos. El smoke autenticado en producción sigue registrado como pendiente del propietario en `specs/cuentas/cierre.md` (no se inventó evidencia).
-- Queda como mantenimiento mecánico borrar las ramas locales/remotas de PRs ya mergeados; no bloquea el inicio de la Fase 1.
+- Ramas de PRs ya mergeados/cerrados borradas en local y remoto (19 nov 2026); solo queda `main`.
 
 **Fase 1 — Fundación móvil + navegación nativa-sentido**
 
@@ -245,6 +245,12 @@ El merge del código **no** cierra una feature. La definición completa está en
   `docs/roadmap.md` es un índice histórico (no duplicar roadmaps). Cada feature
   cerrada tiene `specs/<nombre>/cierre.md`; el protocolo está en
   `docs/cierre-feature.md` y se valida con `npm run docs:check -- <nombre>`.
+- **Referencias de diseño**: `specs/rediseno-inditex/referencias-premium.md`
+  recoge los patrones premium extraídos de Awwwards (19 nov 2026) para la Fase 1.
+  La auditoría de diseño se hace con la skill `design-audit`
+  (`.opencode/skills/design-audit/`, adaptada de `product-design/audit`): capturas
+  nuevas con Chrome MCP, hallazgos ligados a cada paso y límites de evidencia
+  explícitos. No confundir con `design-qa` (comparación contra un mock).
 - **Calendario**: eventos con hora en UTC; eventos de todo el día guardados a
   medianoche UTC y pintados por su clave `YYYY-MM-DD` para no desplazarse de
   día. `Event.reminderMinutes` admite `null`, `0`, `10`, `30`, `60` y `1440`.
