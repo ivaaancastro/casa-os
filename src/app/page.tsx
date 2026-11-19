@@ -9,19 +9,19 @@ export default function Home() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-12 lg:px-16 lg:py-16">
-      <div className="grid animate-fade-rise grid-cols-12 gap-y-12">
+    <div className="mx-auto max-w-7xl px-5 py-6 md:px-10 md:py-12 lg:px-16 lg:py-16">
+      <div className="grid animate-fade-rise grid-cols-12 gap-y-8">
         <header className="col-span-12 border-t border-mist pt-8">
-          <p className="mb-6 text-xs tracking-wider2 text-ash">casa-os — hogar digital</p>
-          <h1 className="font-display text-5xl leading-[0.9] tracking-editorial md:text-7xl">
+          <p className="mb-4 text-[13px] tracking-wider2 text-ash">casa-os — hogar digital</p>
+          <h1 className="font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-7xl md:leading-[0.9] md:tracking-editorial">
             Tu hogar,<br /> en orden.
           </h1>
-          <p className="mt-6 max-w-xl text-base text-ash">
+          <p className="mt-4 max-w-xl text-base text-ash">
             Gestiona dispositivos, notas familiares y más desde un solo lugar.
           </p>
         </header>
 
-        <section className="col-span-12 mt-6">
+        <section className="col-span-12 mt-4">
           <div className="grid grid-cols-12 border-t border-mist">
             {modules.map((m, i) => (
               <a
@@ -35,7 +35,7 @@ export default function Home() {
                   </span>
                   <span className="text-[10px] text-ash group-hover:text-canvas/60">{m.status}</span>
                 </div>
-                <h3 className="mt-8 font-display text-2xl tracking-editorial">{m.title}</h3>
+                <h3 className="mt-8 font-ui text-lg font-medium md:font-display md:text-2xl md:tracking-editorial">{m.title}</h3>
               </a>
             ))}
           </div>

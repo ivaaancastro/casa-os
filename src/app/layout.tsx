@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Bodoni_Moda, Jost } from 'next/font/google';
 import './globals.css';
-import { Sidebar } from '@/components/Sidebar';
+import { AppShell } from '@/components/AppShell';
 import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
 
 const bodoniModa = Bodoni_Moda({
@@ -55,12 +55,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${bodoniModa.variable} ${jost.variable}`}>
       <body className="font-ui bg-canvas text-ink antialiased">
-        <div className="flex min-h-screen bg-canvas">
-          <Sidebar />
-          <main className="min-w-0 flex-1">
-            {children}
-          </main>
-        </div>
+        <AppShell>{children}</AppShell>
         <ServiceWorkerRegister />
       </body>
     </html>
