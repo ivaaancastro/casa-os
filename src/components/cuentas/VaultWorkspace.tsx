@@ -17,6 +17,7 @@ import {
   membersWithVault,
   type DecryptedAccount,
 } from './account-crypto';
+import { filterAccounts, type LoadedAccount } from './search';
 import { AccountDialog } from './AccountDialog';
 import { VaultApiError, errorMessage, vaultFetch } from './api';
 import { ShareDialog } from './ShareDialog';
@@ -25,10 +26,6 @@ import { Alert, Button, Spinner } from './ui';
 import { VaultSettings } from './VaultSettings';
 
 type VaultBlob = NonNullable<VaultStatusResponse['vault']>;
-
-type LoadedAccount =
-  | DecryptedAccount
-  | { record: VaultAccountRecord; payload: null };
 
 export function VaultWorkspace({
   status,
@@ -103,28 +100,15 @@ export function VaultWorkspace({
     }).length;
   }, [accounts, allMembers, ownerId]);
 
-  const filtered = useMemo(() => {
-    if (!accounts) return [];
-    const term = query.trim().toLowerCase();
-    return accounts.filter((account) => {
-      if (visibilityFilter !== 'todas' && account.record.visibility !== visibilityFilter) {
-        return false;
-      }
-      if (!account.payload) return term.length === 0;
-      if (category !== 'todas' && account.payload.category !== category) return false;
-      if (!term) return true;
-      const haystack = [
-        account.payload.title,
-        account.payload.username,
-        account.payload.url,
-        account.payload.notes,
-        account.payload.category,
-      ]
-        .join('\n')
-        .toLowerCase();
-      return haystack.includes(term);
-    });
-  }, [accounts, query, category, visibilityFilter]);
+  const filtered = useMemo(
+    () =>
+      filterAccounts(accounts ?? [], {
+        query,
+        category,
+        visibility: visibilityFilter,
+      }),
+    [accounts, query, category, visibilityFilter],
+  );
 
   async function deleteAccount(account: DecryptedAccount) {
     setDeleting(account.record.id);
@@ -142,29 +126,39 @@ export function VaultWorkspace({
   );
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-8 md:px-10 md:py-10 lg:px-16">
-      <header className="flex flex-wrap items-end justify-between gap-4 border-t border-mist pt-7">
+    <div className="mx-auto w-full max-w-7xl px-5 py-6 md:px-10 md:py-10 lg:px-16">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-t border-mist pt-6">
         <div>
-          <p className="text-xs tracking-wider2 text-ash">Cuentas · bóveda zero-knowledge</p>
-          <h1 className="mt-2 font-display text-4xl leading-[0.95] tracking-editorial md:text-5xl">
+          <p className="text-[13px] tracking-wider2 text-ash">Cuentas · bóveda zero-knowledge</p>
+          <h1 className="mt-2 font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-5xl md:leading-[0.95] md:tracking-editorial">
             Tus cuentas.
           </h1>
-          <p className="mt-3 text-sm text-ash">
+          <p className="mt-2 text-sm text-ash">
             {accounts ? `${accounts.length} cuenta${accounts.length === 1 ? '' : 's'}` : 'Cargando'} ·{' '}
-            se bloquea sola por inactividad
+            se bloquea al salir de la app o tras 15 min
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button type="button" onClick={() => setDialog({ mode: 'create' })}>
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+          <Button
+            type="button"
+            className="min-h-11 flex-1 sm:flex-none"
+            onClick={() => setDialog({ mode: 'create' })}
+          >
             Nueva cuenta
           </Button>
-          <Button type="button" variant="ghost" onClick={() => setSettingsOpen(true)}>
+          <Button
+            type="button"
+            variant="ghost"
+            className="min-h-11"
+            onClick={() => setSettingsOpen(true)}
+          >
             Ajustes
           </Button>
           <Button
             type="button"
             variant="ghost"
-            onClick={() => onLocked('Bóveda bloqueada. Introduce la master password para volver.')}
+            className="min-h-11"
+            onClick={() => onLocked('Bóveda bloqueada. Vuelve a desbloquearla para continuar.')}
           >
             Bloquear
           </Button>
@@ -182,7 +176,7 @@ export function VaultWorkspace({
         </div>
       ) : null}
 
-      <div className="mt-6 grid gap-3 border-y border-mist py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
+      <div className="sticky top-0 z-10 -mx-5 mt-5 grid gap-3 border-y border-mist bg-canvas px-5 py-3 sm:static sm:mx-0 sm:mt-6 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:px-0 sm:py-4">
         <label className="sr-only" htmlFor="cuentas-search">
           Buscar cuentas
         </label>
@@ -190,43 +184,45 @@ export function VaultWorkspace({
           id="cuentas-search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Buscar por título, usuario, URL o notas"
-          className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+          placeholder="Buscar por nombre, app o página"
+          className="min-h-11 w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
         />
-        <label className="sr-only" htmlFor="cuentas-category">
-          Filtrar por categoría
-        </label>
-        <select
-          id="cuentas-category"
-          value={category}
-          onChange={(event) => setCategory(event.target.value)}
-          className="border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
-        >
-          <option value="todas">Todas las categorías</option>
-          {ACCOUNT_CATEGORIES.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-        <label className="sr-only" htmlFor="cuentas-visibility">
-          Filtrar por visibilidad
-        </label>
-        <select
-          id="cuentas-visibility"
-          value={visibilityFilter}
-          onChange={(event) =>
-            setVisibilityFilter(event.target.value as 'todas' | Visibility)
-          }
-          className="border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
-        >
-          <option value="todas">Toda visibilidad</option>
-          {(Object.keys(VISIBILITY_LABEL) as Visibility[]).map((value) => (
-            <option key={value} value={value}>
-              {VISIBILITY_LABEL[value]}
-            </option>
-          ))}
-        </select>
+        <div className="grid grid-cols-2 gap-2 sm:contents">
+          <label className="sr-only" htmlFor="cuentas-category">
+            Filtrar por categoría
+          </label>
+          <select
+            id="cuentas-category"
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+            className="min-h-11 min-w-0 border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+          >
+            <option value="todas">Todas las categorías</option>
+            {ACCOUNT_CATEGORIES.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+          <label className="sr-only" htmlFor="cuentas-visibility">
+            Filtrar por visibilidad
+          </label>
+          <select
+            id="cuentas-visibility"
+            value={visibilityFilter}
+            onChange={(event) =>
+              setVisibilityFilter(event.target.value as 'todas' | Visibility)
+            }
+            className="min-h-11 min-w-0 border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+          >
+            <option value="todas">Toda visibilidad</option>
+            {(Object.keys(VISIBILITY_LABEL) as Visibility[]).map((value) => (
+              <option key={value} value={value}>
+                {VISIBILITY_LABEL[value]}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {error ? (
@@ -243,7 +239,7 @@ export function VaultWorkspace({
 
       {accounts && filtered.length === 0 ? (
         <div className="py-16 text-center">
-          <p className="font-display text-2xl tracking-editorial">
+          <p className="font-ui text-lg font-medium text-ink md:font-display md:text-2xl md:tracking-editorial">
             {accounts.length === 0 ? 'La bóveda está vacía.' : 'No hay cuentas que coincidan.'}
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm text-ash">
@@ -277,11 +273,11 @@ export function VaultWorkspace({
                       : undefined
                   }
                   disabled={!account.payload}
-                  className="flex h-full w-full flex-col items-start gap-3 border border-mist p-5 text-left transition-colors hover:border-ink disabled:cursor-default disabled:hover:border-mist"
+                  className="flex h-full w-full min-h-16 flex-col items-start gap-3 border border-mist p-4 text-left transition-colors hover:border-ink disabled:cursor-default disabled:hover:border-mist sm:p-5"
                 >
                   <div className="flex w-full items-start justify-between gap-3">
                     <span className="min-w-0">
-                      <span className="block truncate font-display text-xl tracking-editorial">
+                      <span className="block truncate font-ui text-base font-medium text-ink md:font-display md:text-xl md:tracking-editorial">
                         {account.payload ? account.payload.title : 'No se pudo descifrar'}
                       </span>
                       <span className="mt-1 block truncate text-sm text-ash">

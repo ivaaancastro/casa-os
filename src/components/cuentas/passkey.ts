@@ -102,3 +102,25 @@ export async function decryptPasskeyKeyring(input: {
 }): Promise<VaultKeyring> {
   return decryptKeyring(input.wrappedKeyring, input.keyringNonce, input.passkeyKey);
 }
+
+/**
+ * Indica si el navegador dispone de un autenticador de plataforma (Face ID,
+ * huella, Windows Hello). Se usa solo para decidir el copy del botón; la
+ * ausencia nunca oculta la vía de la master password.
+ */
+export async function platformAuthenticatorAvailable(): Promise<boolean> {
+  if (typeof window === 'undefined' || !window.PublicKeyCredential) return false;
+  try {
+    return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+  } catch {
+    return false;
+  }
+}
+
+/** Distingue una cancelación del usuario de un error real del autenticador. */
+export function isPasskeyCancellation(error: unknown): boolean {
+  const name = (error as { name?: string } | null)?.name;
+  if (name === 'NotAllowedError' || name === 'AbortError') return true;
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  return /cancel|abort|not allowed|user verification timed out/i.test(message);
+}

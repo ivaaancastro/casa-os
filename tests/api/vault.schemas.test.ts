@@ -7,6 +7,7 @@ import {
   updateAccountKeysSchema,
   updateAccountSchema,
   updateRecoverySchema,
+  passkeyUnlockSchema,
 } from '../../src/lib/vault/schemas';
 
 function b64(bytes: number): string {
@@ -127,5 +128,21 @@ describe('recuperación y borrado', () => {
     expect(deleteVaultSchema.safeParse({ ...base, confirm: 'BORRAR' }).success).toBe(true);
     expect(deleteVaultSchema.safeParse({ ...base, confirm: 'borrar' }).success).toBe(false);
     expect(deleteVaultSchema.safeParse({ ...base, confirm: 'BORRA' }).success).toBe(false);
+  });
+});
+
+describe('passkeyUnlockSchema (Fase 2)', () => {
+  const response = { id: 'credential_1', rawId: 'raw_1' };
+
+  it('acepta desbloquear solo con la aserción WebAuthn', () => {
+    expect(passkeyUnlockSchema.safeParse({ response }).success).toBe(true);
+  });
+
+  it('acepta también clientes que envían el código TOTP', () => {
+    expect(passkeyUnlockSchema.safeParse({ response, code: '123456' }).success).toBe(true);
+  });
+
+  it('rechaza respuestas WebAuthn mal formadas', () => {
+    expect(passkeyUnlockSchema.safeParse({ response: {} }).success).toBe(false);
   });
 });

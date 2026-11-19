@@ -138,9 +138,15 @@ export const passkeyRegisterSchema = z.object({
   keyringNonce: nonce,
 });
 
+/**
+ * Fase 2: la passkey ya aporta posesión + verificación de usuario (WebAuthn
+ * `userVerification: required`), así que el TOTP es opcional. Se acepta el
+ * código de clientes antiguos, pero la vía biométrica no lo exige.
+ * La master password (`unlockSchema`) sigue exigiendo 2FA.
+ */
 export const passkeyUnlockSchema = z.object({
   response: webauthnResponseSchema,
-  code: z.string().trim().min(6).max(64),
+  code: z.string().trim().min(6).max(64).optional(),
 });
 
 export const codeSchema = z.object({

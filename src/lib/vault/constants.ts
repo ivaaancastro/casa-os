@@ -40,7 +40,8 @@ export const VISIBILITY_LABEL: Record<Visibility, string> = {
 };
 
 export const AUTO_LOCK_OPTIONS = [1, 2, 5, 10, 15] as const;
-export const DEFAULT_AUTO_LOCK_MINUTES = 5;
+/** Fase 2: 15 min por defecto, alineado con el TTL del grant del servidor. */
+export const DEFAULT_AUTO_LOCK_MINUTES = 15;
 
 export const MASTER_PASSWORD_MIN_LENGTH = 12;
 
