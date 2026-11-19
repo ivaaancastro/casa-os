@@ -5,6 +5,8 @@ import { useState, useRef, useEffect } from 'react';
 
 interface ToolbarProps {
   editor: Editor | null;
+  /** En móvil: una fila esencial + panel con el resto de formatos. */
+  compact?: boolean;
 }
 
 const FONT_FAMILIES = [
@@ -56,9 +58,10 @@ function getBlockStyle(editor: Editor): string {
   return 'body';
 }
 
-export function Toolbar({ editor }: ToolbarProps) {
+export function Toolbar({ editor, compact = false }: ToolbarProps) {
   const [showColors, setShowColors] = useState(false);
   const [showHighlights, setShowHighlights] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const colorRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
 
@@ -141,8 +144,105 @@ export function Toolbar({ editor }: ToolbarProps) {
     'h-8 border border-mist bg-canvas px-2 text-sm text-ink focus:border-ink focus:outline-none';
   const iconClass = 'h-4 w-4';
 
+  const colorControl = (
+    <div ref={colorRef}>
+      <button
+        type="button"
+        title="Color del texto"
+        aria-label="Color del texto"
+        aria-expanded={showColors}
+        onClick={() => {
+          setShowColors((v) => !v);
+          setShowHighlights(false);
+        }}
+        className={`inline-flex h-8 items-center gap-1 px-2 transition-colors ${
+          showColors ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
+        }`}
+      >
+        <span className="text-sm font-medium" style={{ color: showColors ? undefined : editor.getAttributes('textStyle').color || '#0A0A0A' }}>
+          A
+        </span>
+        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {showColors && (
+        <div className="absolute inset-x-0 top-full z-50 border-b border-mist bg-canvas px-3 py-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[10px] tracking-wider2 text-ash">COLOR DEL TEXTO</span>
+            <button
+              type="button"
+              onClick={() => {
+                editor.chain().focus().unsetColor().run();
+                setShowColors(false);
+              }}
+              className="text-xs text-ash hover:text-ink"
+            >
+              Restablecer
+            </button>
+          </div>
+          <div className="grid grid-cols-12 gap-1.5">
+            {TEXT_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                title={c}
+                aria-label={`Color ${c}`}
+                onClick={() => {
+                  editor.chain().focus().setColor(c).run();
+                  setShowColors(false);
+                }}
+                className="h-6 w-full border border-mist transition-transform hover:scale-110"
+                style={{ backgroundColor: c }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  if (compact && !showMore) {
+    return (
+      <div className="flex flex-1 items-center gap-1" data-mobile-toolbar="">
+        {btn(() => editor.chain().focus().toggleBold().run(), editor.isActive('bold'), false, 'Negrita', <span className="text-sm font-bold">B</span>)}
+        {btn(() => setListStyle('bullet'), editor.isActive('bulletList') && !isDash, false, 'Lista con viñetas', (
+          <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></svg>
+        ))}
+        {btn(() => editor.chain().focus().toggleTaskList().run(), editor.isActive('taskList'), false, 'Lista de tareas', (
+          <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2" /></svg>
+        ))}
+        {colorControl}
+        <button
+          type="button"
+          onClick={() => setShowMore(true)}
+          aria-label="Más formato"
+          title="Más formato"
+          className="inline-flex min-h-11 shrink-0 items-center px-2 text-sm text-ink hover:bg-pearl"
+        >
+          Más
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-1 flex-wrap items-center gap-1">
+    <div
+      className="flex flex-1 flex-wrap items-center gap-1"
+      data-mobile-toolbar={compact ? '' : undefined}
+    >
+      {compact && (
+        <button
+          type="button"
+          onClick={() => setShowMore(false)}
+          aria-label="Menos formato"
+          title="Menos formato"
+          className="inline-flex min-h-11 items-center px-2 text-sm text-ink hover:bg-pearl"
+        >
+          Menos
+        </button>
+      )}
       {/* Estilo de parrafo */}
       <select
         id="paragraph-style"
@@ -247,62 +347,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       {divider()}
 
       {/* Color de texto */}
-      <div ref={colorRef}>
-        <button
-          type="button"
-          title="Color del texto"
-          aria-label="Color del texto"
-          aria-expanded={showColors}
-          onClick={() => {
-            setShowColors((v) => !v);
-            setShowHighlights(false);
-          }}
-          className={`inline-flex h-8 items-center gap-1 px-2 transition-colors ${
-            showColors ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
-          }`}
-        >
-          <span className="text-sm font-medium" style={{ color: showColors ? undefined : editor.getAttributes('textStyle').color || '#0A0A0A' }}>
-            A
-          </span>
-          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {showColors && (
-          <div className="absolute inset-x-0 top-full z-50 border-b border-mist bg-canvas px-3 py-3">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-[10px] tracking-wider2 text-ash">COLOR DEL TEXTO</span>
-              <button
-                type="button"
-                onClick={() => {
-                  editor.chain().focus().unsetColor().run();
-                  setShowColors(false);
-                }}
-                className="text-xs text-ash hover:text-ink"
-              >
-                Restablecer
-              </button>
-            </div>
-            <div className="grid grid-cols-12 gap-1.5">
-              {TEXT_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  title={c}
-                  aria-label={`Color ${c}`}
-                  onClick={() => {
-                    editor.chain().focus().setColor(c).run();
-                    setShowColors(false);
-                  }}
-                  className="h-6 w-full border border-mist transition-transform hover:scale-110"
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      {colorControl}
 
       {/* Resaltado */}
       <div ref={highlightRef}>

@@ -1,7 +1,7 @@
 'use client';
 
 import { NoteItem } from './NoteItem';
-import type { Note } from './NotesLayout';
+import type { Note } from '@/types/note';
 
 interface NotesListProps {
   notes: Note[];
