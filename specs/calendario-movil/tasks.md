@@ -41,5 +41,5 @@
 
 ## Fase 6 — Integración y cierre
 
-- [ ] 19. Commits atómicos en español (Conventional Commits), push de `feat/calendario-movil`, PR con referencia a la spec y CI en verde; squash merge y borrar rama.
-- [ ] 20. Cierre documental (Fase A y B de `AGENTS.md`): borrador de `cierre.md`, `CHANGELOG.md`, `README.md`, `docs/*`, `MEMORY.md`, verificación de producción, `npm run docs:check -- calendario-movil`, PR `docs/cierre-calendario-movil` y CI de `main` en verde.
+- [x] 19. Commits atómicos en español (Conventional Commits), push de `feat/calendario-movil`, PR con referencia a la spec y CI en verde; squash merge y borrar rama.
+- [x] 20. Cierre documental (Fase A y B de `AGENTS.md`): borrador de `cierre.md`, `CHANGELOG.md`, `README.md`, `docs/*`, `MEMORY.md`, verificación de producción, `npm run docs:check -- calendario-movil`, PR `docs/cierre-calendario-movil` y CI de `main` en verde.

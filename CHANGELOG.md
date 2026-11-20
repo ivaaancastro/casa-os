@@ -11,6 +11,13 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Fase 4 — Calendario móvil + avisos**: breakpoint unificado a 1023 px,
+  rejilla de mes con chips táctiles y agenda del día, semana en tarjetas, FAB
+  portalado a `body`, hojas inferiores para eventos y avisos con safe-area y
+  títulos Jost en móvil. Sin cambios en BD, esquemas, API ni auth; el Web Push
+  real se reutiliza (ya cerrado en `specs/recordatorios`). Incluye 7 E2E con
+  login real y auditoría visual a 390×844. Spec: `specs/calendario-movil/spec.md`.
+
 - **Fase 3 — Notas móvil**: entrada a la lista de notas (en vez del editor
   vacío), buscador fijo local, chips de carpetas con contadores, creación rápida
   con FAB, editor apilado con «Volver» que conserva filtro/búsqueda/scroll,

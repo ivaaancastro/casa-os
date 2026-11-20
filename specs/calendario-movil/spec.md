@@ -155,31 +155,31 @@ Jueves, 5 de noviembre                   ← agenda del día seleccionado
 
 ## Criterios de aceptación
 
-- [ ] Entrar en `/calendario` a 390 px muestra la vista Mes con chips táctiles,
+- [x] Entrar en `/calendario` a 390 px muestra la vista Mes con chips táctiles,
       no la rejilla de puntos actual (E2E + captura).
-- [ ] El breakpoint unificado es `< 1024px` y solo se monta una vista; en
+- [x] El breakpoint unificado es `< 1024px` y solo se monta una vista; en
       768–1023 px tocar un día selecciona la agenda (revisión de código + E2E).
-- [ ] Tocar un día abre su agenda con chips ≥ 44 px; tocar un chip abre el
+- [x] Tocar un día abre su agenda con chips ≥ 44 px; tocar un chip abre el
       detalle; en escritorio el tap sigue abriendo el alta (E2E + captura).
-- [ ] La vista Semana en móvil muestra tarjetas de día con chips y botón «+»
+- [x] La vista Semana en móvil muestra tarjetas de día con chips y botón «+»
       ≥ 44 px, y la navegación temporal funciona (E2E + captura).
-- [ ] El FAB crea un evento y abre la hoja inferior; el evento aparece en la
+- [x] El FAB crea un evento y abre la hoja inferior; el evento aparece en la
       rejilla/agenda tras guardar (E2E + captura).
-- [ ] La hoja de evento respeta la tab bar y la zona segura; los campos siguen
+- [x] La hoja de evento respeta la tab bar y la zona segura; los campos siguen
       validando todo el día vs. con hora (E2E + captura).
-- [ ] FAMILY puede crear pero no editar ajenos; ADMIN sí (revisión + E2E según
+- [x] FAMILY puede crear pero no editar ajenos; ADMIN sí (revisión + E2E según
       rol disponible en fixtures).
-- [ ] El panel Avisos se abre desde la toolbar móvil y muestra sus estados con
+- [x] El panel Avisos se abre desde la toolbar móvil y muestra sus estados con
       botones ≥ 44 px, sin tocar VAPID/cron; el envío real se remite a la
       evidencia de `specs/recordatorios/cierre.md` (E2E de estados + captura).
-- [ ] El deep link `/calendario?date=YYYY-MM-DD` selecciona el día a 390 px
+- [x] El deep link `/calendario?date=YYYY-MM-DD` selecciona el día a 390 px
       (E2E).
-- [ ] Sin desbordamiento horizontal a 390 px, sin errores en consola y con
+- [x] Sin desbordamiento horizontal a 390 px, sin errores en consola y con
       foco visible en los controles nuevos (Chrome MCP / auditoría).
-- [ ] No hay cambios en BD, migraciones, schemas, auth ni API (revisión de diff).
-- [ ] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
-- [ ] E2E y auditoría `design-audit` con capturas a 390×844 documentados.
-- [ ] CI del PR en verde, squash merge y cierre documental completado.
+- [x] No hay cambios en BD, migraciones, schemas, auth ni API (revisión de diff).
+- [x] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
+- [x] E2E y auditoría `design-audit` con capturas a 390×844 documentados.
+- [x] CI del PR en verde, squash merge y cierre documental completado.
 
 ## Decisiones aprobadas (2026-11-20)
 
