@@ -9,6 +9,15 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ## [Sin lanzar]
 
+### Changed
+
+- **Fase 6 — Cierre y documentación global**: auditoría de los 15 cierres del
+  protocolo con `docs:check` (todos en verde), documentos vivos al día y nueva
+  guía `docs/verificacion-movil-real.md` para que el propietario complete la
+  prueba en iOS/Android. La verificación real y el smoke autenticado en
+  producción quedan declarados como no ejecutados por el agente. Detalle:
+  `specs/cierre-global/`.
+
 ### Added
 
 - **Fase 5 — Dispositivos y red en móvil**: vistas por breakpoint con estado

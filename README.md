@@ -226,6 +226,8 @@ ejecuta lint, typecheck, tests y build en cada PR y en `main`.
 - [`specs/`](specs/) — `plan.md`, `spec.md`, `tasks.md` y `cierre.md` por feature.
 - [`docs/`](docs/) — arquitectura, despliegue, PWA, 2FA, calendario,
   recordatorios, escaneo de red y guías.
+- [`docs/verificacion-movil-real.md`](docs/verificacion-movil-real.md) —
+  checklist pendiente para probar la PWA en iOS/Android reales.
 
 Cada feature se cierra con un PR `docs/cierre-<nombre>` después de verificar
 producción. El registro queda en `specs/<nombre>/cierre.md` y se valida con:

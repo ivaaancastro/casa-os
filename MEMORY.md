@@ -194,10 +194,17 @@ El merge del código **no** cierra una feature. La definición completa está en
   `specs/dispositivos-movil/`. Follow-ups: espaciado de cabecera, preview largo
   sin virtualizar y prueba en dispositivo real.
 
-**Fase 6 — Cierre y documentación**
+**Fase 6 — Cierre y documentación** ✅ (completada 2026-11-20)
 
-- `cierre.md` de cada fase, `MEMORY.md` y `docs/roadmap.md` actualizados.
-- Verificación en móvil real (iOS + Android).
+- Auditoría de los **15 cierres del protocolo** con `docs:check`: todos en verde
+  (`specs/cierre-global/auditoria-docs.md`). No se fabricaron cierres para las
+  10 specs anteriores al protocolo.
+- Documentos vivos al día: `MEMORY.md`, `docs/roadmap.md`, `CHANGELOG.md` y
+  `README.md`. El foco del roadmap está cerrado; lo que queda es backlog.
+- Guía `docs/verificacion-movil-real.md` con el checklist por pestaña para
+  iOS/Android. **El agente no la ejecutó**: la completa el propietario con sus
+  dispositivos; el smoke autenticado en producción sigue pendiente y no se
+  ejecutó aquí. Detalle: [`specs/cierre-global/cierre.md`](specs/cierre-global/cierre.md).
 
 ### 📋 Backlog (sin fecha)
 
@@ -210,7 +217,8 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
-**Siguiente:** Fase 6 — Cierre y documentación (verificación en móvil real iOS + Android y `cierre.md` de cada fase al día).
+**Siguiente:** ninguna fase del roadmap; queda el backlog y la verificación en
+móvil real del propietario (`docs/verificacion-movil-real.md`).
 
 ## Registro de features
 
@@ -500,4 +508,4 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 ---
 
-*Última actualización: 2026-11-20 (cierre de la Fase 5)*
+*Última actualización: 2026-11-20 (cierre global de las Fases 1-6)*
