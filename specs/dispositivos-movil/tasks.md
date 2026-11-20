@@ -36,5 +36,5 @@
 
 ## Fase 6 — Integración y cierre
 
-- [ ] 14. Commits atómicos en español (Conventional Commits), push de `feat/dispositivos-movil`, PR con referencia a la spec y CI en verde; squash merge y borrar rama.
-- [ ] 15. Cierre documental (Fase A y B de `AGENTS.md`): borrador de `cierre.md`, `CHANGELOG.md`, `README.md`, `docs/*`, `MEMORY.md`, verificación de producción, `npm run docs:check -- dispositivos-movil`, PR `docs/cierre-dispositivos-movil` y CI de `main` en verde.
+- [x] 14. Commits atómicos en español (Conventional Commits), push de `feat/dispositivos-movil`, PR con referencia a la spec y CI en verde; squash merge y borrar rama.
+- [x] 15. Cierre documental (Fase A y B de `AGENTS.md`): borrador de `cierre.md`, `CHANGELOG.md`, `README.md`, `docs/*`, `MEMORY.md`, verificación de producción, `npm run docs:check -- dispositivos-movil`, PR `docs/cierre-dispositivos-movil` y CI de `main` en verde.
