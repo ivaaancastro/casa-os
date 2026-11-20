@@ -29,6 +29,8 @@ interface EventPanelProps {
   state: EventPanelState;
   members: MemberOption[];
   currentUser: { id: string; role: string };
+  /** Hoja inferior en móvil; panel lateral en escritorio. */
+  mobile?: boolean;
   onClose: () => void;
   onSaved: () => void;
   onDeleted: () => void;
@@ -93,6 +95,7 @@ export function EventPanel({
   state,
   members,
   currentUser,
+  mobile = false,
   onClose,
   onSaved,
   onDeleted,
@@ -256,7 +259,11 @@ export function EventPanel({
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex justify-end">
+    <div
+      className={`fixed inset-0 z-[60] flex ${
+        mobile ? 'items-end justify-center' : 'justify-end'
+      }`}
+    >
       <button
         type="button"
         aria-label="Cerrar panel de evento"
@@ -268,16 +275,23 @@ export function EventPanel({
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${titleId}-heading`}
-        className={`relative flex h-full w-full max-w-lg flex-col overflow-y-auto border-l border-mist bg-canvas p-6 shadow-2xl md:p-8 ${
-          closing ? 'animate-panel-out' : 'animate-panel-in'
-        }`}
+        data-mobile-panel={mobile ? '' : undefined}
+        className={`relative flex w-full flex-col overflow-y-auto border-mist bg-canvas ${
+          mobile
+            ? 'max-h-[92dvh] max-w-none border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-none'
+            : 'h-full max-w-lg border-l p-6 shadow-2xl md:p-8'
+        } ${closing ? (mobile ? 'animate-sheet-out' : 'animate-panel-out') : mobile ? 'animate-sheet-in' : 'animate-panel-in'}`}
       >
         <header className="flex items-start justify-between gap-4 border-b border-mist pb-4">
           <div>
             <p className="text-[10px] tracking-wider2 text-ash">Calendario</p>
             <h2
               id={`${titleId}-heading`}
-              className="mt-1 font-display text-3xl leading-none tracking-editorial"
+              className={
+                mobile
+                  ? 'mt-1 font-ui text-[21px] font-medium leading-none text-ink'
+                  : 'mt-1 font-display text-3xl leading-none tracking-editorial'
+              }
             >
               {heading}
             </h2>
@@ -286,7 +300,7 @@ export function EventPanel({
             ref={closeRef}
             type="button"
             onClick={requestClose}
-            className="flex h-10 w-10 shrink-0 items-center justify-center border border-mist text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
             aria-label="Cerrar"
           >
             ×
@@ -344,7 +358,11 @@ export function EventPanel({
                 />
               </div>
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div
+                className={
+                  mobile ? 'grid grid-cols-1 gap-4' : 'grid gap-4 sm:grid-cols-2'
+                }
+              >
                 <div>
                   <label htmlFor={`${titleId}-start`} className="label">
                     Inicio
@@ -374,7 +392,11 @@ export function EventPanel({
               </div>
             )}
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div
+              className={
+                mobile ? 'grid grid-cols-1 gap-4' : 'grid gap-4 sm:grid-cols-2'
+              }
+            >
               <div>
                 <label htmlFor={`${titleId}-owner`} className="label">
                   Quién
@@ -431,7 +453,7 @@ export function EventPanel({
               activados. Puedes gestionarlos en «Avisos».
             </p>
 
-            <div className="flex flex-wrap gap-3 border-t border-mist pt-5">
+            <div className="panel-actions flex flex-wrap gap-3 border-t border-mist pt-5">
               <button
                 type="submit"
                 className="btn-primary"
@@ -462,7 +484,13 @@ export function EventPanel({
               <p className="text-[10px] tracking-wider2 text-ash">
                 {dateLabel}
               </p>
-              <h3 className="mt-2 font-display text-3xl leading-tight tracking-editorial">
+              <h3
+                className={
+                  mobile
+                    ? 'mt-2 font-ui text-[21px] font-medium leading-tight text-ink'
+                    : 'mt-2 font-display text-3xl leading-tight tracking-editorial'
+                }
+              >
                 {event?.title}
               </h3>
               <p className="mt-2 text-sm text-ash">
@@ -499,7 +527,7 @@ export function EventPanel({
               </p>
             )}
 
-            <div className="flex flex-wrap gap-3 border-t border-mist pt-5">
+            <div className="panel-actions flex flex-wrap gap-3 border-t border-mist pt-5">
               {canEdit && (
                 <button
                   type="button"

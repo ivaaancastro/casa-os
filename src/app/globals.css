@@ -111,6 +111,61 @@
 }
 .animate-panel-out { animation: panel-out 0.16s ease-in both; }
 
+/* Hojas inferiores (calendario móvil): entran y salen por abajo, sin rebote. */
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-sheet-in { animation: sheet-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes sheet-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(24px); }
+}
+.animate-sheet-out { animation: sheet-out 0.16s ease-in both; }
+
+/* ============================================================
+   Calendario móvil (Fase 4): objetivos táctiles y hojas inferiores.
+   Los paneles se crean con createPortal, así que las reglas van aquí
+   y no en styled-jsx con scope.
+   ============================================================ */
+@media (max-width: 1023px) {
+  .date-nav {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* La barra de acciones queda visible al recorrer el formulario. */
+  [data-mobile-panel] .panel-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    background: var(--color-canvas);
+    padding-bottom: 0.75rem;
+  }
+
+  [data-mobile-panel] button,
+  [data-mobile-panel] .btn {
+    min-height: 44px;
+  }
+
+  [data-mobile-panel] .input,
+  [data-mobile-panel] select,
+  [data-mobile-panel] textarea {
+    min-height: 44px;
+  }
+
+  [data-mobile-panel] a {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  [data-mobile-panel] .input[type='checkbox'] {
+    min-height: 0;
+  }
+}
+
 /* ============================================================
    Editor de notas (TipTap / ProseMirror)
    Global (no `style jsx`): TipTap crea el DOM fuera del arbol React,
