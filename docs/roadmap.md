@@ -27,7 +27,7 @@ Detalle completo, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) 
 | 3 — Notas (móvil) | ✅ | Lista por defecto, buscador fijo, chips de carpetas, FAB, editor apilado, toolbar compacta y checklist táctil |
 | 4 — Calendario + push | ✅ | Mes/semana táctiles con chips y agenda, FAB, hojas inferiores, panel de avisos móvil (push real reutilizado) |
 | 5 — Dispositivos y red | ✅ | Vistas por breakpoint, FAB portalado, hojas inferiores, importación táctil y comando copiable |
-| 6 — Cierre y documentación | 👉 siguiente | `cierre.md` de cada fase, `MEMORY.md` y `docs/roadmap.md` actualizados, verificación móvil real |
+| 6 — Cierre y documentación | ✅ | 15 cierres auditados con `docs:check`, documentos vivos al día y guía de verificación móvil real para el propietario |
 
 ## Hitos previos (ya entregados)
 
