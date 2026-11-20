@@ -164,6 +164,22 @@
   [data-mobile-panel] .input[type='checkbox'] {
     min-height: 0;
   }
+
+  /* Dispositivos móvil (Fase 5): el .btn compartido queda un poco por debajo
+     de 44 px; se sube en móvil y se agrandan los controles de importación. */
+  .btn {
+    min-height: 44px;
+  }
+
+  [data-testid='devices-mobile-list'] button,
+  [data-testid='devices-mobile-scan-preview'] button {
+    min-height: 44px;
+  }
+
+  [data-testid='devices-mobile-scan-preview'] label {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* ============================================================

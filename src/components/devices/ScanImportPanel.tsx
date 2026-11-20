@@ -4,6 +4,9 @@ import { useId, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SCAN_STATUS_LABELS, type ScanStatus } from '@/lib/utils/scan';
 import { formatRelativeTime } from '@/lib/utils/device';
+import { BottomSheet } from './BottomSheet';
+
+const SCAN_COMMAND = 'npm run scan -- --out scan-latest.json';
 
 interface ScanExistingDevice {
   id: string;
@@ -71,6 +74,7 @@ interface ImportResponse extends ScanPreview {
 }
 
 interface ScanImportPanelProps {
+  mobile?: boolean;
   onClose: () => void;
 }
 
@@ -131,11 +135,12 @@ function describeImport(result: ImportResponse): string {
     : 'Escaneo aplicado · sin cambios.';
 }
 
-export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
+export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProps) {
   const router = useRouter();
   const ids = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [copied, setCopied] = useState(false);
   const [preview, setPreview] = useState<ScanPreview | null>(null);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [pending, setPending] = useState(false);
@@ -157,6 +162,27 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
       else next.add(index);
       return next;
     });
+  }
+
+  async function handleCopy() {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(SCAN_COMMAND);
+      } else {
+        // Fallback para navegadores sin Clipboard API (p. ej. HTTP local).
+        const helper = document.createElement('textarea');
+        helper.value = SCAN_COMMAND;
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        document.body.appendChild(helper);
+        helper.select();
+        document.execCommand('copy');
+        helper.remove();
+      }
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
   }
 
   async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
@@ -326,37 +352,54 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
           }`
       : 'Actualizar estado';
 
-  return (
-    <div className="card">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[10px] tracking-wider2 text-ash">Escaneo de red</p>
-          <p className="mt-1 max-w-2xl text-xs text-ash">
-            El escaneo se ejecuta en tu ordenador, no en Vercel. Sube el archivo
-            y revisa el resultado antes de importar.
-          </p>
+  const content = (
+    <>
+      {!mobile && (
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] tracking-wider2 text-ash">Escaneo de red</p>
+            <p className="mt-1 max-w-2xl text-xs text-ash">
+              El escaneo se ejecuta en tu ordenador, no en Vercel. Sube el archivo
+              y revisa el resultado antes de importar.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="shrink-0 text-xs text-ash transition-colors hover:text-ink disabled:opacity-40"
+            onClick={onClose}
+            disabled={pending}
+          >
+            Cerrar
+          </button>
         </div>
-        <button
-          type="button"
-          className="shrink-0 text-xs text-ash transition-colors hover:text-ink disabled:opacity-40"
-          onClick={onClose}
-          disabled={pending}
-        >
-          Cerrar
-        </button>
-      </div>
+      )}
 
-      <div className="mt-4 border border-mist bg-canvas p-4">
+      <div className={mobile ? 'border border-mist bg-canvas p-4' : 'mt-4 border border-mist bg-canvas p-4'}>
         <p className="text-xs text-ash">
           En el ordenador conectado a la red de casa:
         </p>
         <code className="mt-2 block break-words text-[11px] leading-5 text-ink">
-          npm run scan -- --out scan-latest.json
+          {SCAN_COMMAND}
         </code>
-        <p className="mt-2 text-xs text-ash">
-          Luego selecciona <span className="text-ink">scan-latest.json</span>.
-          Se importan los equipos nuevos que marques y se actualiza el estado
-          del inventario.
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="btn-secondary min-h-11 text-xs"
+            aria-label="Copiar comando"
+            title="Copiar comando"
+          >
+            Copiar comando
+          </button>
+          <span role="status" className="text-xs text-ash">
+            {copied ? 'Comando copiado' : ''}
+          </span>
+        </div>
+        <p className="mt-3 text-xs text-ash">
+          Desde el móvil selecciona el archivo{' '}
+          <span className="text-ink">scan-latest.json</span> (recíbelo por
+          AirDrop, Drive o correo). Se importan los equipos nuevos que marques y
+          se actualiza el estado del inventario.
         </p>
       </div>
 
@@ -371,7 +414,7 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
           accept=".json,application/json"
           onChange={handleFile}
           disabled={pending}
-          className="block w-full text-xs text-ash file:mr-3 file:border file:border-mist file:bg-canvas file:px-3 file:py-2 file:text-xs file:text-ink disabled:opacity-40"
+          className="block min-h-11 w-full text-xs text-ash file:mr-3 file:min-h-11 file:border file:border-mist file:bg-canvas file:px-3 file:py-2 file:text-xs file:text-ink disabled:opacity-40"
         />
       </div>
 
@@ -514,16 +557,18 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
               return (
                 <li key={item.index} className="border-b border-mist py-4">
                   <div className="flex gap-3">
-                    <div className="w-4 shrink-0 pt-1">
+                    <div className="w-11 shrink-0">
                       {isSelectable ? (
-                        <input
-                          type="checkbox"
-                          checked={selected.has(item.index)}
-                          onChange={() => toggle(item.index)}
-                          disabled={pending}
-                          aria-label={`Importar ${item.suggestedName}`}
-                          className="h-4 w-4 accent-ink"
-                        />
+                        <label className="flex h-11 w-11 items-center justify-center">
+                          <input
+                            type="checkbox"
+                            checked={selected.has(item.index)}
+                            onChange={() => toggle(item.index)}
+                            disabled={pending}
+                            aria-label={`Importar ${item.suggestedName}`}
+                            className="h-5 w-5 accent-ink"
+                          />
+                        </label>
                       ) : null}
                     </div>
 
@@ -568,7 +613,13 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
             })}
           </ul>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div
+            className={
+              mobile
+                ? 'panel-actions mt-5 flex flex-wrap items-center gap-3 border-t border-mist pt-4'
+                : 'mt-5 flex flex-wrap items-center gap-3'
+            }
+          >
             <button
               type="button"
               className="btn-primary"
@@ -595,6 +646,16 @@ export function ScanImportPanel({ onClose }: ScanImportPanelProps) {
           )}
         </div>
       )}
-    </div>
+    </>
   );
+
+  if (mobile) {
+    return (
+      <BottomSheet eyebrow="Escaneo de red" title="Importar escaneo" onClose={onClose}>
+        {content}
+      </BottomSheet>
+    );
+  }
+
+  return <div className="card">{content}</div>;
 }
