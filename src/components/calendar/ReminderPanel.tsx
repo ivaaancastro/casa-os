@@ -5,6 +5,8 @@ import { createPortal } from 'react-dom';
 import { urlBase64ToUint8Array } from '@/lib/utils/push-client';
 
 interface ReminderPanelProps {
+  /** Hoja inferior en móvil; panel lateral en escritorio. */
+  mobile?: boolean;
   onClose: () => void;
 }
 
@@ -94,7 +96,7 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return data;
 }
 
-export function ReminderPanel({ onClose }: ReminderPanelProps) {
+export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
   const [config, setConfig] = useState<PushConfig | null>(null);
   const [subscriptions, setSubscriptions] = useState<SubscriptionSummary[]>([]);
   const [upcoming, setUpcoming] = useState<UpcomingReminder[]>([]);
@@ -387,7 +389,11 @@ export function ReminderPanel({ onClose }: ReminderPanelProps) {
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex justify-end">
+    <div
+      className={`fixed inset-0 z-[60] flex ${
+        mobile ? 'items-end justify-center' : 'justify-end'
+      }`}
+    >
       <button
         type="button"
         aria-label="Cerrar panel de avisos"
@@ -399,16 +405,23 @@ export function ReminderPanel({ onClose }: ReminderPanelProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${headingId}-heading`}
-        className={`relative flex h-full w-full max-w-lg flex-col overflow-y-auto border-l border-mist bg-canvas p-6 shadow-2xl md:p-8 ${
-          closing ? 'animate-panel-out' : 'animate-panel-in'
-        }`}
+        data-mobile-panel={mobile ? '' : undefined}
+        className={`relative flex w-full flex-col overflow-y-auto border-mist bg-canvas ${
+          mobile
+            ? 'max-h-[92dvh] max-w-none border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-none'
+            : 'h-full max-w-lg border-l p-6 shadow-2xl md:p-8'
+        } ${closing ? (mobile ? 'animate-sheet-out' : 'animate-panel-out') : mobile ? 'animate-sheet-in' : 'animate-panel-in'}`}
       >
         <header className="flex items-start justify-between gap-4 border-b border-mist pb-4">
           <div>
             <p className="text-[10px] tracking-wider2 text-ash">Calendario</p>
             <h2
               id={`${headingId}-heading`}
-              className="mt-1 font-display text-3xl leading-none tracking-editorial"
+              className={
+                mobile
+                  ? 'mt-1 font-ui text-[21px] font-medium leading-none text-ink'
+                  : 'mt-1 font-display text-3xl leading-none tracking-editorial'
+              }
             >
               Avisos
             </h2>
@@ -417,7 +430,7 @@ export function ReminderPanel({ onClose }: ReminderPanelProps) {
             ref={closeRef}
             type="button"
             onClick={requestClose}
-            className="flex h-10 w-10 shrink-0 items-center justify-center border border-mist text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
             aria-label="Cerrar"
           >
             ×
@@ -544,7 +557,13 @@ export function ReminderPanel({ onClose }: ReminderPanelProps) {
           <div className="flex items-end justify-between gap-3">
             <div>
               <p className="text-[10px] tracking-wider2 text-ash">Calendario</p>
-              <h3 className="mt-1 font-display text-2xl leading-none tracking-editorial">
+              <h3
+                className={
+                  mobile
+                    ? 'mt-1 font-ui text-xl font-medium leading-none text-ink'
+                    : 'mt-1 font-display text-2xl leading-none tracking-editorial'
+                }
+              >
                 Próximos avisos
               </h3>
             </div>

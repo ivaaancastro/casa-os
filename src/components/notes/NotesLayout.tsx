@@ -7,7 +7,7 @@ import type { FolderFilter } from '@/lib/utils/note-filter';
 import type { Note } from '@/types/note';
 import { NotesDesktopView } from './NotesDesktopView';
 import { NotesMobileView } from './NotesMobileView';
-import { useIsMobile } from './useIsMobile';
+import { useIsMobile } from '@/components/mobile/useIsMobile';
 
 interface NotesLayoutProps {
   notes: Note[];

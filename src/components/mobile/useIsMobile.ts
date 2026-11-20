@@ -11,7 +11,8 @@ const useIsomorphicLayoutEffect =
 
 /**
  * `true` cuando el viewport es móvil/tablet (< 1024px, `lg:` de Tailwind).
- * Permite montar una sola vista (móvil o escritorio) por breakpoint.
+ * Fuente única de verdad para Notas, Calendario y el resto de vistas móviles:
+ * montar un solo árbol por breakpoint evita ids duplicados y editores dobles.
  */
 export function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = useState(false);
