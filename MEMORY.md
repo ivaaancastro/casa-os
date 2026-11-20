@@ -180,10 +180,19 @@ El merge del código **no** cierra una feature. La definición completa está en
   Follow-ups: chips truncados en la rejilla, eventos fuera del primer viewport
   y prueba en dispositivo real.
 
-**Fase 5 — Dispositivos y red (mantenimiento opcional)**
+**Fase 5 — Dispositivos y red** ✅ (completada 2026-11-20)
 
-- `/devices` en móvil (lista, no tabla de escritorio).
-- Escaneo de red e importación JSON (ajuste UI móvil).
+- `/devices` ya era una lista de tarjetas mobile-first, no una tabla: no se
+  rehízo. `DeviceLayout` conserva el estado y monta una sola vista por
+  breakpoint (`DeviceMobileView` / `DeviceDesktopView`).
+- **FAB portalado a `body`** con hoja de dos acciones (Añadir / Importar) y una
+  `BottomSheet` compartida por formulario e importación, con safe-area, Escape,
+  foco y acciones ≥ 44 px. FAMILY ve la lista en solo lectura.
+- «Copiar comando» para el `nmap` que corre en un ordenador de casa; el JSON se
+  elige desde el móvil. El flujo `dryRun`/preview/deduplicación no cambió.
+- 8 E2E nuevos (ADMIN y FAMILY) y auditoría visual sin hallazgos P0/P1 en
+  `specs/dispositivos-movil/`. Follow-ups: espaciado de cabecera, preview largo
+  sin virtualizar y prueba en dispositivo real.
 
 **Fase 6 — Cierre y documentación**
 
@@ -201,7 +210,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
-**Siguiente:** Fase 5 — Dispositivos y red (`/devices` en móvil como lista, escaneo e importación JSON adaptados).
+**Siguiente:** Fase 6 — Cierre y documentación (verificación en móvil real iOS + Android y `cierre.md` de cada fase al día).
 
 ## Registro de features
 
@@ -234,6 +243,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 | feat | Fase 2 — Cuentas móvil (un desbloqueo por estancia, biométría-first, buscador) | #47 | `6b27dca` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas-movil/cierre.md) |
 | feat | Fase 3 — Notas móvil (lista-first, FAB, toolbar compacta, checklist táctil) | #49 | `fb4e0c8` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/notas-movil/cierre.md) |
 | feat | Fase 4 — Calendario móvil (chips, agenda, FAB portalado, hojas inferiores, avisos) | #51 | `3e558ea` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/calendario-movil/cierre.md) |
+| feat | Fase 5 — Dispositivos móvil (vistas por breakpoint, FAB, hojas, importación táctil) | #53 | `1d3bde1` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/dispositivos-movil/cierre.md) |
 
 ## Notas técnicas
 
@@ -478,7 +488,16 @@ El merge del código **no** cierra una feature. La definición completa está en
   estaba verificada en producción. La Fase 4 solo adaptó el panel: en local con
   `next start` el SW se registra pero aparece «no configurado en el servidor»
   al faltar VAPID locales; no es un fallo y no se inventó evidencia de envío.
+- **Roadmap ≠ estado real del código**: la Fase 5 pedía «lista, no tabla», pero
+  `/devices` ya era una lista revisada a 390 px. Explorar antes de escribir la
+  spec evitó rehacer una feature cerrada; el valor estuvo en vistas, hojas y E2E.
+- **Una `BottomSheet` compartida**: acciones, formulario e importación usan el
+  mismo portal a `body` con scrim/Escape/foco/safe-area. Reutilizarla evita que
+  cada panel vuelva a inventar el cierre y el manejo del teclado.
+- **E2E de roles**: los fixtures de devices crean un usuario FAMILY con id/IP
+  deterministas y limpian por rango `10.99.0.x`; las IP/MAC son únicas en BD y
+  un descuido produce 409 en lugar del estado esperado.
 
 ---
 
-*Última actualización: 2026-11-20 (cierre de la Fase 4)*
+*Última actualización: 2026-11-20 (cierre de la Fase 5)*

@@ -11,6 +11,14 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Added
 
+- **Fase 5 — Dispositivos y red en móvil**: vistas por breakpoint con estado
+  centralizado, FAB portalado a `body` con hoja de acciones, `BottomSheet`
+  compartida por el formulario y la importación, botón «Copiar comando» para el
+  `nmap` local, objetivos ≥ 44 px y `h1` en Jost. FAMILY en solo lectura. Sin
+  cambios en BD, esquemas, API ni auth; el flujo `dryRun`/preview intacto.
+  Incluye 8 E2E con ADMIN/FAMILY y auditoría visual a 390×844.
+  Spec: `specs/dispositivos-movil/spec.md`.
+
 - **Fase 4 — Calendario móvil + avisos**: breakpoint unificado a 1023 px,
   rejilla de mes con chips táctiles y agenda del día, semana en tarjetas, FAB
   portalado a `body`, hojas inferiores para eventos y avisos con safe-area y

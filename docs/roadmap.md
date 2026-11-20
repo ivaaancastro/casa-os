@@ -26,8 +26,8 @@ Detalle completo, orden y criterios de “hecho”: [`MEMORY.md`](../MEMORY.md) 
 | 2 — Gestor de contraseñas (móvil) | ✅ | Desbloqueo único por estancia, biométría-first sin TOTP, master password + 2FA, buscador local y lista móvil |
 | 3 — Notas (móvil) | ✅ | Lista por defecto, buscador fijo, chips de carpetas, FAB, editor apilado, toolbar compacta y checklist táctil |
 | 4 — Calendario + push | ✅ | Mes/semana táctiles con chips y agenda, FAB, hojas inferiores, panel de avisos móvil (push real reutilizado) |
-| 5 — Dispositivos y red | 👉 siguiente | `/devices` en móvil, escaneo e importación JSON |
-| 6 — Cierre y documentación | 🔲 | `cierre.md` de cada fase, `MEMORY.md` y `docs/roadmap.md` actualizados, verificación móvil real |
+| 5 — Dispositivos y red | ✅ | Vistas por breakpoint, FAB portalado, hojas inferiores, importación táctil y comando copiable |
+| 6 — Cierre y documentación | 👉 siguiente | `cierre.md` de cada fase, `MEMORY.md` y `docs/roadmap.md` actualizados, verificación móvil real |
 
 ## Hitos previos (ya entregados)
 

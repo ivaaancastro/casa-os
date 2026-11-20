@@ -144,28 +144,28 @@ Router de casa                      ← tarjeta ≥ 88 px
 
 ## Criterios de aceptación
 
-- [ ] Entrar en `/devices` a 390 px muestra la lista de tarjetas con
+- [x] Entrar en `/devices` a 390 px muestra la lista de tarjetas con
       `devices-mobile-list` y sin desbordamiento horizontal (E2E + captura).
-- [ ] Solo se monta una vista por breakpoint; `DeviceLayout` conserva el estado
+- [x] Solo se monta una vista por breakpoint; `DeviceLayout` conserva el estado
       al abrir/cerrar hojas (revisión de código + E2E).
-- [ ] El FAB está portalado a `body`, flota sobre la tab bar y abre las dos
+- [x] El FAB está portalado a `body`, flota sobre la tab bar y abre las dos
       acciones; no se ancla al wrapper animado (medición en Chrome + E2E).
-- [ ] FAMILY no ve el FAB ni acciones de edición/importación (E2E con ese rol
+- [x] FAMILY no ve el FAB ni acciones de edición/importación (E2E con ese rol
       o revisión del guard en UI; la API ya está cubierta).
-- [ ] Alta y edición funcionan desde la hoja inferior; borrado en dos pasos;
+- [x] Alta y edición funcionan desde la hoja inferior; borrado en dos pasos;
       el dispositivo aparece/desaparece de la lista (E2E + captura).
-- [ ] La importación muestra preview y «Estado tras aplicar» en la hoja
+- [x] La importación muestra preview y «Estado tras aplicar» en la hoja
       inferior con un fixture JSON, y aplica los cambios (E2E + captura).
-- [ ] «Copiar comando» copia el comando y anuncia el resultado (E2E con
+- [x] «Copiar comando» copia el comando y anuncia el resultado (E2E con
       clipboard permitido + captura del estado).
-- [ ] Todos los botones/file input/checkboxes nuevos miden ≥ 44 px y el
+- [x] Todos los botones/file input/checkboxes nuevos miden ≥ 44 px y el
       `<h1>` móvil usa Jost (medición en Chrome + captura).
-- [ ] Sin desbordamiento horizontal, sin errores en consola y con foco visible
+- [x] Sin desbordamiento horizontal, sin errores en consola y con foco visible
       en los controles nuevos (Chrome MCP / auditoría).
-- [ ] No hay cambios en BD, migraciones, schemas, auth ni API (revisión de diff).
-- [ ] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
-- [ ] E2E y auditoría `design-audit` con capturas a 390×844 documentados.
-- [ ] CI del PR en verde, squash merge y cierre documental completado.
+- [x] No hay cambios en BD, migraciones, schemas, auth ni API (revisión de diff).
+- [x] `npm run lint && npm run typecheck && npm run test && npm run build` pasan.
+- [x] E2E y auditoría `design-audit` con capturas a 390×844 documentados.
+- [x] CI del PR en verde, squash merge y cierre documental completado.
 
 ## Decisiones aprobadas (2026-11-20)
 
