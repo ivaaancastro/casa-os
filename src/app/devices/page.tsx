@@ -3,11 +3,11 @@ import { getSessionUser } from '@/lib/api-auth';
 import { prisma } from '@/lib/prisma';
 import { deviceWithOwner } from '@/lib/devices';
 import { formatDeviceStatus, formatRelativeTime } from '@/lib/utils/device';
-import {
-  DeviceManager,
-  type DeviceItem,
-  type DeviceOwnerOption,
-} from '@/components/devices/DeviceManager';
+import { DeviceLayout } from '@/components/devices/DeviceLayout';
+import type {
+  DeviceItem,
+  DeviceOwnerOption,
+} from '@/components/devices/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,7 +67,7 @@ export default async function DevicesPage() {
           <p className="mb-4 text-xs tracking-wider2 text-ash">
             Casa · Dispositivos
           </p>
-          <h1 className="font-display text-5xl leading-[0.9] tracking-editorial md:text-6xl">
+          <h1 className="font-ui text-[21px] font-medium leading-tight text-ink md:font-display md:text-6xl md:leading-[0.9] md:tracking-editorial">
             Dispositivos
           </h1>
           <p className="mt-4 max-w-xl text-sm text-ash">
@@ -85,7 +85,7 @@ export default async function DevicesPage() {
         </header>
 
         <section className="col-span-12 border-t border-mist pt-8">
-          <DeviceManager
+          <DeviceLayout
             devices={items}
             owners={ownersOptions}
             currentUserRole={user.role}
