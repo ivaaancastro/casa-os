@@ -161,12 +161,24 @@ El merge del código **no** cierra una feature. La definición completa está en
   `specs/notas-movil/`. Follow-ups: jerarquía del título en notas nuevas y
   verificación en dispositivo real.
 
-**Fase 4 — Calendario familiar + recordatorios push**
+**Fase 4 — Calendario familiar + recordatorios push** ✅ (completada 2026-11-20)
 
-- Vista mes y semana rediseñadas para móvil (eventos como chips táctiles, no rejilla pequeña).
-- Creación/edición de eventos con formulario táctil.
-- **Web Push real**: notificaciones de recordatorios que llegan al móvil incluso con la app cerrada.
-- Panel de avisos móvil.
+- Breakpoint móvil unificado a **1023 px** (`lg:`): el calendario usaba 767 px
+  y dejaba una franja 768–1023 px con comportamiento de escritorio. El hook
+  compartido vive en `src/components/mobile/useIsMobile.ts`.
+- Vista Mes con celdas táctiles y chips de evento (≤2 + «+N más») y agenda del
+  día con chips grandes; semana en tarjetas con «+» de 44 px. Un solo árbol
+  montado por breakpoint: `CalendarMobileView` / `CalendarDesktopView`.
+- **FAB portado a `body`**: el wrapper con `animate-fade-rise` deja un
+  `transform` que rompía `position: fixed` y lo dejaba a 1181 px del viewport.
+- `EventPanel` y `ReminderPanel` reutilizan su portal como hoja inferior con
+  safe-area, campos apilados, acciones pegajosas y Jost en móvil. Bodoni solo
+  en `md:`/escritorio.
+- **El Web Push real no se rehízo**: ya está cerrado y verificado en
+  `specs/recordatorios` (PR #26-28). Se adapta el panel y se documenta la
+  evidencia existente; 7 E2E nuevos y auditoría en `specs/calendario-movil/`.
+  Follow-ups: chips truncados en la rejilla, eventos fuera del primer viewport
+  y prueba en dispositivo real.
 
 **Fase 5 — Dispositivos y red (mantenimiento opcional)**
 
@@ -189,7 +201,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
-**Siguiente:** Fase 4 — Calendario familiar + recordatorios push (vistas mes/semana táctiles, formulario de eventos, Web Push real y panel de avisos móvil).
+**Siguiente:** Fase 5 — Dispositivos y red (`/devices` en móvil como lista, escaneo e importación JSON adaptados).
 
 ## Registro de features
 
@@ -221,6 +233,7 @@ El merge del código **no** cierra una feature. La definición completa está en
 | feat | Fase 1 — Fundación móvil (tab bar, menú Más, PWA, cabeceras Jost, E2E) | #45 | `4de6b8b` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/fundacion-movil/cierre.md) |
 | feat | Fase 2 — Cuentas móvil (un desbloqueo por estancia, biométría-first, buscador) | #47 | `6b27dca` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cuentas-movil/cierre.md) |
 | feat | Fase 3 — Notas móvil (lista-first, FAB, toolbar compacta, checklist táctil) | #49 | `fb4e0c8` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/notas-movil/cierre.md) |
+| feat | Fase 4 — Calendario móvil (chips, agenda, FAB portalado, hojas inferiores, avisos) | #51 | `3e558ea` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/calendario-movil/cierre.md) |
 
 ## Notas técnicas
 
@@ -452,7 +465,20 @@ El merge del código **no** cierra una feature. La definición completa está en
 - **Controles nativos fuera de paleta**: `type="search"` añade una «×» azul del
   navegador que rompe la paleta cerrada. Se usa `type="text"` con un botón
   propio en `ash`.
+- **`position: fixed` dentro de `animate-fade-rise`**: la animación deja un
+  `transform: matrix(1,0,0,1,0,0)` con `fill-mode: both` y convierte al wrapper
+  en bloque contenedor; un FAB con `bottom` quedaba a 1181 px del viewport en
+  vez de flotar. Solución: `createPortal(..., document.body)` tras el montaje.
+  Aplica a cualquier control flotante dentro del contenido animado.
+- **Bodoni se cuela en móvil**: la regla global `h1,h2,h3,h4 → font-display` gana
+  sobre la intención de Jost. En componentes móviles hay que poner `font-ui`
+  explícitamente; la auditoría lo detectó en el título del mes y en «Próximos
+  avisos».
+- **Push cerrado ≠ UI móvil cerrada**: la infraestructura de recordatorios ya
+  estaba verificada en producción. La Fase 4 solo adaptó el panel: en local con
+  `next start` el SW se registra pero aparece «no configurado en el servidor»
+  al faltar VAPID locales; no es un fallo y no se inventó evidencia de envío.
 
 ---
 
-*Última actualización: 2026-11-19 (cierre de la Fase 3)*
+*Última actualización: 2026-11-20 (cierre de la Fase 4)*
