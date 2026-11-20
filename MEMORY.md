@@ -252,6 +252,7 @@ móvil real del propietario (`docs/verificacion-movil-real.md`).
 | feat | Fase 3 — Notas móvil (lista-first, FAB, toolbar compacta, checklist táctil) | #49 | `fb4e0c8` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/notas-movil/cierre.md) |
 | feat | Fase 4 — Calendario móvil (chips, agenda, FAB portalado, hojas inferiores, avisos) | #51 | `3e558ea` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/calendario-movil/cierre.md) |
 | feat | Fase 5 — Dispositivos móvil (vistas por breakpoint, FAB, hojas, importación táctil) | #53 | `1d3bde1` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/dispositivos-movil/cierre.md) |
+| docs | Cierre global del roadmap móvil (Fases 1-6) | #55 | `1c9fc7b` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cierre-global/cierre.md) |
 
 ## Notas técnicas
 
