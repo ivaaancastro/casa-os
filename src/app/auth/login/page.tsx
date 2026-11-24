@@ -5,15 +5,15 @@ function LoginPageContent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-6 py-16">
       <div className="w-full max-w-md">
-        <div className="mb-12 border-t border-mist pt-8">
-          <h1 className="font-display text-6xl leading-[0.9] tracking-editorial">
+        <div className="mb-8">
+          <h1 className="font-ui text-[40px] font-semibold leading-tight tracking-editorial text-ink">
             casa<span className="text-ash">·</span>os
           </h1>
-          <p className="mt-3 text-sm text-ash">Tu hogar digital</p>
+          <p className="mt-2 text-[15px] text-ash">Tu hogar digital</p>
         </div>
 
-        <div className="w-full">
-          <h2 className="mb-6 font-display text-2xl tracking-editorial">
+        <div className="rounded-2xl bg-surface p-6 shadow-sm">
+          <h2 className="mb-6 text-[20px] font-semibold text-ink">
             Iniciar sesión
           </h2>
           <LoginForm />

@@ -169,7 +169,7 @@ export function VaultRecovery({
 
   if (recovered) {
     return (
-      <section className="mx-auto w-full max-w-2xl border-t border-mist pt-8">
+      <section className="mx-auto w-full max-w-2xl border-t border-mist/60 pt-8">
         <p className="text-xs tracking-wider2 text-ash">Recuperación completada</p>
         <h1 className="mt-3 font-display text-4xl leading-[0.95] tracking-editorial md:text-5xl">
           Guarda el kit nuevo.
@@ -179,7 +179,7 @@ export function VaultRecovery({
           anterior ya no abre la bóveda: descarga y guarda este.
         </p>
 
-        <div className="mt-6 border border-mist bg-pearl p-5">
+        <div className="mt-6 border border-mist/60 bg-pearl p-5">
           <p className="text-xs tracking-wider2 text-ash">Código de recuperación</p>
           <code className="mt-3 block break-all font-mono text-base leading-relaxed text-ink">
             {recovered.kit.recoveryKey}
@@ -201,7 +201,7 @@ export function VaultRecovery({
   }
 
   return (
-    <section className="mx-auto w-full max-w-2xl border-t border-mist pt-8">
+    <section className="mx-auto w-full max-w-2xl border-t border-mist/60 pt-8">
       <p className="text-xs tracking-wider2 text-ash">Recuperación de la bóveda</p>
       <h1 className="mt-3 font-display text-4xl leading-[0.95] tracking-editorial md:text-5xl">
         Recupera el acceso.
@@ -225,7 +225,7 @@ export function VaultRecovery({
             rows={3}
             spellCheck={false}
             autoComplete="off"
-            className="w-full resize-none border border-mist bg-canvas px-3 py-2.5 font-mono text-sm outline-none focus:border-ink"
+            className="w-full resize-none border border-mist/60 bg-canvas px-3 py-2.5 font-mono text-sm outline-none focus:border-ink"
           />
         </Field>
 
@@ -238,7 +238,7 @@ export function VaultRecovery({
             onChange={(event) => setTotp(event.target.value)}
             autoComplete="one-time-code"
             required
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
 
@@ -253,7 +253,7 @@ export function VaultRecovery({
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="new-password"
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
 
@@ -262,7 +262,7 @@ export function VaultRecovery({
             {[0, 1, 2, 3, 4].map((segment) => (
               <span
                 key={segment}
-                className={`h-1 flex-1 ${segment <= strength.score ? 'bg-ink' : 'bg-mist'}`}
+                className={`h-1 flex-1 ${segment <= strength.score ? 'bg-accent' : 'bg-mist'}`}
               />
             ))}
           </div>
@@ -279,7 +279,7 @@ export function VaultRecovery({
             value={confirm}
             onChange={(event) => setConfirm(event.target.value)}
             autoComplete="new-password"
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
 

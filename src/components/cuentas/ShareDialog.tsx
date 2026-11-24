@@ -103,7 +103,7 @@ export function ShareDialog({
           {(Object.keys(VISIBILITY_LABEL) as Visibility[]).map((value) => (
             <label
               key={value}
-              className="flex cursor-pointer items-start gap-3 border border-mist p-3 text-sm transition-colors hover:border-ink"
+              className="flex cursor-pointer items-start gap-3 border border-mist/60 p-3 text-sm transition-colors hover:border-ink"
             >
               <input
                 type="radio"
@@ -137,7 +137,7 @@ export function ShareDialog({
             {available.length <= 1 ? (
               <p className="text-sm text-ash">Todavía no hay otros miembros con bóveda.</p>
             ) : (
-              <ul className="divide-y divide-mist border border-mist">
+              <ul className="divide-y divide-mist border border-mist/60">
                 {available
                   .filter((member) => member.id !== ownerId)
                   .map((member) => {
@@ -154,7 +154,7 @@ export function ShareDialog({
                             className="h-4 w-4 accent-ink"
                           />
                         ) : (
-                          <span className="h-4 w-4 border border-ink bg-ink" aria-hidden="true" />
+                          <span className="h-4 w-4 border border-accent bg-accent" aria-hidden="true" />
                         )}
                         <span className="min-w-0 flex-1 text-sm">
                           <span className="block truncate">{memberLabel(member)}</span>
@@ -179,7 +179,7 @@ export function ShareDialog({
           </div>
         ) : null}
 
-        <p className="border-t border-mist pt-4 text-xs leading-relaxed text-ash">
+        <p className="border-t border-mist/60 pt-4 text-xs leading-relaxed text-ash">
           Revocar corta el acceso futuro; no borra lo que la otra persona ya haya visto. Si hay
           miembros nuevos, vuelve a compartir para darles acceso.
         </p>

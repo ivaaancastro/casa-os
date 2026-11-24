@@ -11,6 +11,18 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Changed
 
+- **Rediseño visual Apple (rama `feat/rediseno-apple`)**: migración de la
+  identidad editorial Inditex/Zara a un lenguaje Apple (HIG): tipografía del
+  sistema (SF Pro), superficie agrupada `#F2F2F7`, radios 10–28 px, sombras
+  suaves, materiales translúcidos con `backdrop-filter`, tab bar inferior
+  flotante estilo liquid glass, feedback en `:active`, soporte de
+  `prefers-reduced-motion`, `prefers-reduced-transparency` y
+  `prefers-contrast`. Clases globales actualizadas en ~50 archivos; sin cambios
+  en modelo de datos, APIs ni lógica de negocio. Lighthouse accesibilidad 100/100
+  en dashboard móvil. Spec: `specs/rediseno-apple/spec.md`.
+
+### Changed
+
 - **Fase 6 — Cierre y documentación global**: auditoría de los 15 cierres del
   protocolo con `docs:check` (todos en verde), documentos vivos al día y nueva
   guía `docs/verificacion-movil-real.md` para que el propietario complete la

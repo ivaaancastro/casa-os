@@ -28,12 +28,12 @@ export function MonthViewMobile({
   onOpenEvent,
 }: MonthViewMobileProps) {
   return (
-    <div className="border-t border-mist" data-testid="calendar-mobile-month">
-      <div className="grid grid-cols-7 border-l border-mist">
+    <div className="border-t border-mist/60" data-testid="calendar-mobile-month">
+      <div className="grid grid-cols-7 border-l border-mist/60">
         {WEEKDAY_SHORT.map((label, index) => (
           <div
             key={label}
-            className="border-b border-r border-mist py-2 text-center text-[10px] tracking-wider2 text-ash"
+            className="border-b border-r border-mist/60 py-2 text-center text-[10px] tracking-wider2 text-ash"
           >
             <abbr title={WEEKDAY_LONG[index]} className="no-underline">
               {label}
@@ -42,7 +42,7 @@ export function MonthViewMobile({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 border-l border-mist">
+      <div className="grid grid-cols-7 border-l border-mist/60">
         {days.map((day) => {
           const { visible, hidden } = eventsForDayChips(events, day.date);
           const isSelected = selectedKey === day.key;
@@ -50,7 +50,7 @@ export function MonthViewMobile({
           return (
             <div
               key={day.key}
-              className={`relative min-h-[104px] min-w-0 border-b border-r border-mist px-0.5 pb-1 pt-1 ${
+              className={`relative min-h-[104px] min-w-0 border-b border-r border-mist/60 px-0.5 pb-1 pt-1 ${
                 !day.inMonth ? 'bg-pearl/45' : ''
               } ${day.isToday ? 'bg-pearl' : ''} ${
                 isSelected ? 'ring-1 ring-inset ring-ink' : ''
@@ -70,7 +70,7 @@ export function MonthViewMobile({
                   <span
                     className={`inline-flex h-7 min-h-7 w-7 min-w-7 items-center justify-center text-xs tabular-nums ${
                       day.isToday
-                        ? 'bg-ink text-canvas'
+                        ? 'bg-accent text-white'
                         : day.inMonth
                           ? 'text-ink'
                           : 'text-ash/70'

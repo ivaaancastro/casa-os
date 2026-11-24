@@ -68,13 +68,13 @@ export function DeviceDesktopView({
       )}
 
       {devices.length === 0 && !creating && (
-        <div className="border border-mist p-6">
+        <div className="border border-mist/60 p-6">
           <p className="text-sm text-ash">Todavía no hay dispositivos.</p>
         </div>
       )}
 
       {devices.length > 0 && (
-        <ul className="border-t border-mist">
+        <ul className="border-t border-mist/60">
           {devices.map((device) => {
             const isEditing = editingId === device.id;
             const isConfirming = confirmingId === device.id;
@@ -82,7 +82,7 @@ export function DeviceDesktopView({
               DEVICE_TYPE_LABELS[device.type as DeviceType] ?? device.type;
 
             return (
-              <li key={device.id} className="border-b border-mist">
+              <li key={device.id} className="border-b border-mist/60">
                 <div className="py-5">
                   <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                     <div className="min-w-0">

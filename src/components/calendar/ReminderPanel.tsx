@@ -406,13 +406,13 @@ export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
         aria-modal="true"
         aria-labelledby={`${headingId}-heading`}
         data-mobile-panel={mobile ? '' : undefined}
-        className={`relative flex w-full flex-col overflow-y-auto border-mist bg-canvas ${
+        className={`relative flex w-full flex-col overflow-y-auto border-mist/60 bg-canvas ${
           mobile
             ? 'max-h-[92dvh] max-w-none border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-none'
             : 'h-full max-w-lg border-l p-6 shadow-2xl md:p-8'
         } ${closing ? (mobile ? 'animate-sheet-out' : 'animate-panel-out') : mobile ? 'animate-sheet-in' : 'animate-panel-in'}`}
       >
-        <header className="flex items-start justify-between gap-4 border-b border-mist pb-4">
+        <header className="flex items-start justify-between gap-4 border-b border-mist/60 pb-4">
           <div>
             <p className="text-[10px] tracking-wider2 text-ash">Calendario</p>
             <h2
@@ -430,7 +430,7 @@ export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
             ref={closeRef}
             type="button"
             onClick={requestClose}
-            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist/60 text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
             aria-label="Cerrar"
           >
             ×
@@ -449,7 +449,7 @@ export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
         {notice && (
           <p
             role="status"
-            className="mt-4 border border-mist bg-pearl px-3 py-2 text-xs text-ink"
+            className="mt-4 border border-mist/60 bg-pearl px-3 py-2 text-xs text-ink"
           >
             {notice}
           </p>
@@ -478,7 +478,7 @@ export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
             </p>
           ) : isActive ? (
             <div className="mt-3 space-y-4">
-              <div className="flex items-start gap-3 border border-mist px-3 py-3">
+              <div className="flex items-start gap-3 border border-mist/60 px-3 py-3">
                 <span
                   className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-ink"
                   aria-hidden="true"
@@ -553,7 +553,7 @@ export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
           )}
         </section>
 
-        <section className="mt-8 border-t border-mist pt-6">
+        <section className="mt-8 border-t border-mist/60 pt-6">
           <div className="flex items-end justify-between gap-3">
             <div>
               <p className="text-[10px] tracking-wider2 text-ash">Calendario</p>
@@ -579,7 +579,7 @@ export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
               No hay avisos programados. Crea o edita un evento con recordatorio.
             </p>
           ) : (
-            <ul className="mt-4 divide-y divide-mist border-y border-mist">
+            <ul className="mt-4 divide-y divide-mist border-y border-mist/60">
               {upcoming.map((reminder) => (
                 <li key={`${reminder.eventId}-${reminder.scheduledFor}`}>
                   <a
@@ -604,7 +604,7 @@ export function ReminderPanel({ mobile = false, onClose }: ReminderPanelProps) {
           )}
         </section>
 
-        <section className="mt-8 border-t border-mist pt-6 text-xs leading-relaxed text-ash">
+        <section className="mt-8 border-t border-mist/60 pt-6 text-xs leading-relaxed text-ash">
           <p className="text-[10px] tracking-wider2 text-ink">Cómo funciona</p>
           <p className="mt-2">
             Si el evento tiene un responsable, solo recibe el aviso esa persona.

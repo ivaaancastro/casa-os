@@ -57,7 +57,7 @@ test.describe('dispositivos móvil', () => {
       const h1 = document.querySelector('h1');
       return h1 ? getComputedStyle(h1).fontFamily : '';
     });
-    expect(font).toContain('Jost');
+    expect(font).toContain('-apple-system');
   });
 
   test('el FAB abre las acciones y permite dar de alta', async ({ page }) => {

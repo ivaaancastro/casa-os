@@ -21,7 +21,7 @@ export default async function PerfilPage() {
   if (!user) redirect('/auth/login');
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-12 lg:px-16 lg:py-16">
+    <div className="mx-auto max-w-5xl px-5 py-8 md:px-8 md:py-10">
       <div className="grid animate-fade-rise grid-cols-12 gap-y-8">
         <PageHeader
           eyebrow="Casa · Perfil"
@@ -30,13 +30,13 @@ export default async function PerfilPage() {
           action={<MoreDrawer />}
         />
 
-        <section className="col-span-12 border-t border-mist pt-8">
+        <section className="col-span-12 border-t border-mist/60 pt-8">
           <ProfileForm
             user={{ name: user.name, email: user.email, role: user.role }}
           />
         </section>
 
-        <section className="col-span-12 border-t border-mist pt-8">
+        <section className="col-span-12 border-t border-mist/60 pt-8">
           <SecuritySection />
         </section>
       </div>

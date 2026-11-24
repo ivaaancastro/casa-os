@@ -28,7 +28,7 @@ export function DeviceActionSheet({ onCreate, onImportScan }: DeviceActionSheetP
             onClick={() => setOpen(true)}
             aria-label="Añadir dispositivo"
             title="Añadir dispositivo"
-            className="fixed right-4 z-30 flex h-14 w-14 items-center justify-center bg-ink text-canvas transition-colors active:bg-black"
+            className="fixed right-4 z-30 flex h-14 w-14 items-center justify-center bg-accent text-white transition-colors active:bg-black"
             style={{ bottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

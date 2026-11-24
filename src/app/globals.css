@@ -4,12 +4,15 @@
 
 @layer base {
   :root {
-    --color-canvas: #FFFFFF;
-    --color-ink: #0A0A0A;
-    --color-ash: #6B6B6B;
-    --color-mist: #E4E4E4;
-    --color-pearl: #F5F5F5;
-    --color-alarm: #8E2222;
+    --color-canvas: #F2F2F7;
+    --color-surface: #FFFFFF;
+    --color-ink: #000000;
+    --color-ash: #3C3C43;
+    --color-mist: #C6C6C8;
+    --color-pearl: #FFFFFF;
+    --color-alarm: #FF3B30;
+    --color-accent: #007AFF;
+    --color-success: #34C759;
   }
 
   * {
@@ -26,7 +29,7 @@
   }
 
   :where(a, button, input, textarea, select):focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
 
@@ -37,35 +40,56 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .bg-surface\/70,
+    .bg-surface\/80,
+    .bg-white\/60,
+    .bg-white\/50 {
+      background-color: #FFFFFF !important;
+      backdrop-filter: none !important;
+    }
+  }
+
+  @media (prefers-contrast: more) {
+    .border-mist\/60,
+    .border-mist\/40 {
+      border-color: #000000 !important;
+    }
+  }
 }
 
 @layer components {
   .card {
-    @apply bg-canvas border border-mist px-6 py-6;
+    @apply bg-surface border border-mist/60 px-6 py-6 rounded-2xl shadow-sm;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium border border-transparent transition-colors duration-200 ease-edit disabled:opacity-40 disabled:cursor-not-allowed rounded-none;
+    @apply inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium border border-transparent transition-all duration-200 ease-edit disabled:opacity-40 disabled:cursor-not-allowed rounded-xl;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
   }
 
   .btn-primary {
-    @apply btn bg-ink text-canvas hover:bg-black active:bg-black;
+    @apply btn bg-accent text-white hover:opacity-90 active:opacity-80;
   }
 
   .btn-secondary {
-    @apply btn bg-canvas text-ink border-ink hover:bg-ink hover:text-canvas active:bg-mist active:text-ink;
+    @apply btn bg-surface text-ink border border-mist/60 hover:bg-canvas active:bg-mist;
   }
 
   .btn-danger {
-    @apply btn bg-canvas text-alarm border-alarm hover:bg-alarm hover:text-canvas active:opacity-80;
+    @apply btn bg-surface text-alarm border border-alarm hover:bg-alarm hover:text-white active:opacity-80;
   }
 
   .date-nav {
-    @apply flex h-10 w-10 items-center justify-center border border-mist text-sm text-ink transition-colors duration-200 ease-edit hover:border-ink hover:bg-pearl active:bg-mist disabled:opacity-40;
+    @apply flex h-10 w-10 items-center justify-center border border-mist/60 text-sm text-ink transition-colors duration-200 ease-edit hover:border-ink hover:bg-pearl active:bg-mist disabled:opacity-40;
   }
 
   .input {
-    @apply w-full px-3 py-2.5 text-sm text-ink bg-canvas border border-mist placeholder-ash focus:border-ink focus:outline-none rounded-none;
+    @apply w-full px-3 py-2.5 text-sm text-ink bg-canvas border border-transparent placeholder-ash focus:border-accent focus:outline-none rounded-xl shadow-sm;
   }
 
   .label {

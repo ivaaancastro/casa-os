@@ -276,7 +276,7 @@ export function SecuritySection() {
           {recoveryCodes.map((item) => (
             <li
               key={item}
-              className="border border-mist bg-pearl px-3 py-2 font-mono text-sm tracking-wider text-ink"
+              className="border border-mist/60 bg-pearl px-3 py-2 font-mono text-sm tracking-wider text-ink"
             >
               {item}
             </li>
@@ -332,7 +332,7 @@ export function SecuritySection() {
           <p className="text-sm text-ash">Generando código…</p>
         ) : setup ? (
           <div className="grid gap-6 md:grid-cols-[280px_1fr] md:items-start">
-            <div className="border border-mist bg-pearl p-3">
+            <div className="border border-mist/60 bg-pearl p-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={setup.qrDataUrl}
@@ -345,7 +345,7 @@ export function SecuritySection() {
             <div className="space-y-4">
               <div>
                 <p className="label">Clave manual</p>
-                <code className="block break-all border border-mist bg-pearl px-3 py-2 font-mono text-sm">
+                <code className="block break-all border border-mist/60 bg-pearl px-3 py-2 font-mono text-sm">
                   {setup.secret}
                 </code>
                 <p className="mt-2 text-xs text-ash">
@@ -499,15 +499,15 @@ export function SecuritySection() {
           <span
             className={`inline-flex w-fit items-center border px-3 py-1 text-[10px] tracking-wider2 ${
               status?.enabled
-                ? 'border-ink bg-ink text-canvas'
-                : 'border-mist bg-pearl text-ash'
+                ? 'border-ink bg-accent text-white'
+                : 'border-mist/60 bg-pearl text-ash'
             }`}
           >
             {status?.enabled ? 'ACTIVADO' : 'DESACTIVADO'}
           </span>
         </div>
 
-        <div className="mt-6 border-t border-mist pt-5">
+        <div className="mt-6 border-t border-mist/60 pt-5">
           {status?.enabled ? (
             <div className="space-y-4">
               <p className="text-sm text-ink">
@@ -576,7 +576,7 @@ export function SecuritySection() {
           Últimos eventos de seguridad
         </p>
         {status?.events.length ? (
-          <ul className="divide-y divide-mist border-t border-mist">
+          <ul className="divide-y divide-mist border-t border-mist/60">
             {status.events.map((event) => (
               <li
                 key={event.id}
