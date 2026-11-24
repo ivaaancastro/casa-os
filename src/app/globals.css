@@ -40,6 +40,23 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .bg-surface\/70,
+    .bg-surface\/80,
+    .bg-white\/60,
+    .bg-white\/50 {
+      background-color: #FFFFFF !important;
+      backdrop-filter: none !important;
+    }
+  }
+
+  @media (prefers-contrast: more) {
+    .border-mist\/60,
+    .border-mist\/40 {
+      border-color: #000000 !important;
+    }
+  }
 }
 
 @layer components {
@@ -48,7 +65,11 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium border border-transparent transition-colors duration-200 ease-edit disabled:opacity-40 disabled:cursor-not-allowed rounded-lg;
+    @apply inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium border border-transparent transition-all duration-200 ease-edit disabled:opacity-40 disabled:cursor-not-allowed rounded-lg;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
   }
 
   .btn-primary {
