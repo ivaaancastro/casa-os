@@ -154,7 +154,7 @@ export function ShareDialog({
                             className="h-4 w-4 accent-ink"
                           />
                         ) : (
-                          <span className="h-4 w-4 border border-ink bg-ink" aria-hidden="true" />
+                          <span className="h-4 w-4 border border-accent bg-accent" aria-hidden="true" />
                         )}
                         <span className="min-w-0 flex-1 text-sm">
                           <span className="block truncate">{memberLabel(member)}</span>

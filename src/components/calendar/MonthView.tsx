@@ -70,7 +70,7 @@ export function MonthView({
                   <span
                     className={`inline-flex h-6 w-6 items-center justify-center text-xs tabular-nums ${
                       day.isToday
-                        ? 'bg-ink px-1 text-canvas'
+                        ? 'bg-accent px-1 text-white'
                         : day.inMonth
                           ? 'text-ink'
                           : 'text-ash/70'
@@ -126,7 +126,7 @@ export function MonthView({
                       <span
                         key={event.id}
                         className={`h-1 w-1 ${
-                          event.allDay ? 'bg-ink' : 'bg-ash'
+                          event.allDay ? 'bg-accent' : 'bg-ash'
                         }`}
                         aria-hidden="true"
                       />

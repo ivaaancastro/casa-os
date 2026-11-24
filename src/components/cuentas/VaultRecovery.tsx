@@ -262,7 +262,7 @@ export function VaultRecovery({
             {[0, 1, 2, 3, 4].map((segment) => (
               <span
                 key={segment}
-                className={`h-1 flex-1 ${segment <= strength.score ? 'bg-ink' : 'bg-mist'}`}
+                className={`h-1 flex-1 ${segment <= strength.score ? 'bg-accent' : 'bg-mist'}`}
               />
             ))}
           </div>

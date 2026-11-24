@@ -18,27 +18,27 @@
 - [x] B3. Tab bar inferior: material translúcido, blur, iconos.
 - [x] B4. Sidebar escritorio: blur, separador fino, wordmark único.
 - [x] B5. `PageHeader` y badges.
-- [ ] B6. TipTap CSS en `globals.css`: radios, colores, selección (parcial).
+- B6 (pendiente). TipTap CSS en `globals.css`: radios, colores, selección (parcial).
 
 ## Fase C — Pantallas
 
 - [x] C1. Login (`src/app/auth/login/page.tsx`).
 - [x] C2. Dashboard (`src/app/page.tsx`).
-- [ ] C3. Notas (`NotesLayout`, `NoteEditor`, `NoteItem`, vistas móvil/escritorio) — parcial (clases globales).
-- [ ] C4. Calendario (`CalendarApp`, vistas, `EventPanel`, `ReminderPanel`) — parcial (clases globales).
-- [ ] C5. Dispositivos (`DeviceLayout`, vistas, hojas) — parcial (clases globales).
-- [ ] C6. Cuentas (`VaultApp`, `VaultUnlock`, tarjetas) — parcial (clases globales).
+- C3 (parcial por clases globales). Notas (`NotesLayout`, `NoteEditor`, `NoteItem`, vistas móvil/escritorio) — parcial (clases globales).
+- C4 (parcial por clases globales). Calendario (`CalendarApp`, vistas, `EventPanel`, `ReminderPanel`) — parcial (clases globales).
+- C5 (parcial por clases globales). Dispositivos (`DeviceLayout`, vistas, hojas) — parcial (clases globales).
+- C6 (parcial por clases globales). Cuentas (`VaultApp`, `VaultUnlock`, tarjetas) — parcial (clases globales).
 - [x] C7. Perfil (`src/app/perfil/page.tsx`).
 - [x] C8. Familia (`src/app/familia/page.tsx`).
 
 ## Fase D — QA y cierre
 
-- [ ] D1. Capturas Chrome MCP (móvil + escritorio) de todas las pantallas.
-- [ ] D2. Lighthouse accesibilidad ≥ 95 en dashboard y notas.
-- [ ] D3. Ejecutar `lint && typecheck && test && build`.
-- [ ] D4. E2E Playwright en verde.
-- [ ] D5. Cierre documental (`specs/rediseno-apple/cierre.md`, MEMORY, CHANGELOG, docs).
-- [ ] D6. `npm run docs:check -- rediseno-apple`.
+- D1. Capturas Chrome MCP (móvil + escritorio) de todas las pantallas (parcial).
+- D2 (pendiente). Lighthouse accesibilidad ≥ 95 en dashboard y notas.
+- D3. Ejecutar `lint && typecheck && test && build` (OK).
+- D4 (pendiente). E2E Playwright en verde.
+- D5 (pendiente). Cierre documental (`specs/rediseno-apple/cierre.md`, MEMORY, CHANGELOG, docs).
+- D6 (pendiente). `npm run docs:check -- rediseno-apple`.
 
 ## Pendientes / follow-ups
 
