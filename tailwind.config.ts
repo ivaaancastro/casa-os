@@ -69,11 +69,11 @@ const config: Config = {
       },
       borderRadius: {
         none: '0',
-        sm: '8px',
-        md: '10px',
-        lg: '12px',
-        xl: '14px',
-        '2xl': '20px',
+        sm: '10px',
+        md: '12px',
+        lg: '16px',
+        xl: '20px',
+        '2xl': '28px',
         full: '9999px',
       },
       boxShadow: {

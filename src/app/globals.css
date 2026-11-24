@@ -44,7 +44,7 @@
 
 @layer components {
   .card {
-    @apply bg-surface border border-mist/60 px-6 py-6 rounded-xl shadow-sm;
+    @apply bg-surface border border-mist/60 px-6 py-6 rounded-2xl shadow-sm;
   }
 
   .btn {
@@ -68,7 +68,7 @@
   }
 
   .input {
-    @apply w-full px-3 py-2.5 text-sm text-ink bg-canvas border border-transparent placeholder-ash focus:border-accent focus:outline-none rounded-md shadow-sm;
+    @apply w-full px-3 py-2.5 text-sm text-ink bg-canvas border border-transparent placeholder-ash focus:border-accent focus:outline-none rounded-xl shadow-sm;
   }
 
   .label {

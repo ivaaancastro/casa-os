@@ -42,7 +42,7 @@ export function BottomTabBar() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-mist/60 bg-surface/80 backdrop-blur-xl lg:hidden"
+      className="fixed inset-x-4 bottom-4 z-40 rounded-2xl border border-white/40 bg-white/60 px-2 py-1 shadow-lg backdrop-blur-2xl backdrop-saturate-150 lg:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <ul className="flex items-stretch">
