@@ -1,6 +1,5 @@
 export default function Home() {
   const modules = [
-    { title: 'Dashboard', status: 'En desarrollo', href: '/' },
     { title: 'Dispositivos', status: 'Disponible', href: '/devices' },
     { title: 'Notas', status: 'Disponible', href: '/notas' },
     { title: 'Calendario', status: 'Disponible', href: '/calendario' },
@@ -9,11 +8,11 @@ export default function Home() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-6 md:px-10 md:py-12 lg:px-16 lg:py-16">
-      <div className="grid animate-fade-rise grid-cols-12 gap-y-8">
-        <header className="col-span-12 border-t border-mist pt-8">
-          <p className="mb-4 text-[13px] tracking-wider2 text-ash">casa-os — hogar digital</p>
-          <h1 className="font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-7xl md:leading-[0.9] md:tracking-editorial">
+    <div className="mx-auto max-w-5xl px-5 py-6 md:px-8 md:py-12">
+      <div className="grid animate-fade-rise grid-cols-1 gap-8">
+        <header className="border-b border-mist/60 pb-8">
+          <p className="mb-3 text-[13px] tracking-wide text-ash">Tu hogar digital</p>
+          <h1 className="font-ui text-[28px] font-semibold leading-tight text-ink md:text-[44px]">
             Tu hogar,<br /> en orden.
           </h1>
           <p className="mt-4 max-w-xl text-base text-ash">
@@ -21,37 +20,35 @@ export default function Home() {
           </p>
         </header>
 
-        <section className="col-span-12 mt-4">
-          <div className="grid grid-cols-12 border-t border-mist">
-            {modules.map((m, i) => (
-              <a
-                key={m.title}
-                href={m.href}
-                className="group col-span-12 border-b border-mist border-r-0 p-6 transition-colors hover:bg-ink hover:text-canvas md:col-span-4 md:border-r"
-              >
-                <div className="flex items-baseline justify-between">
-                  <span className="text-[10px] text-ash group-hover:text-canvas/60">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="text-[10px] text-ash group-hover:text-canvas/60">{m.status}</span>
-                </div>
-                <h3 className="mt-8 font-ui text-lg font-medium md:font-display md:text-2xl md:tracking-editorial">{m.title}</h3>
-              </a>
-            ))}
-          </div>
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {modules.map((m, i) => (
+            <a
+              key={m.title}
+              href={m.href}
+              className="group rounded-2xl bg-surface p-5 shadow-sm transition-shadow hover:shadow-md"
+            >
+              <div className="flex items-baseline justify-between">
+                <span className="text-[11px] font-medium text-ash">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="text-[11px] text-ash">{m.status}</span>
+              </div>
+              <h2 className="mt-6 text-[17px] font-semibold text-ink">{m.title}</h2>
+            </a>
+          ))}
         </section>
 
-        <section className="col-span-12 mt-4 border-t border-mist pt-8">
-          <h2 className="mb-4 font-display text-2xl tracking-editorial">Primeros pasos</h2>
-          <ol className="grid max-w-xl gap-2 text-sm text-ash">
-            <li className="flex gap-4 border-b border-mist pb-2">
-              <span className="text-ink">1</span> Configura `.env` con `cp .env.example .env`.
+        <section className="rounded-2xl bg-surface p-6 shadow-sm">
+          <h2 className="mb-4 text-[17px] font-semibold text-ink">Primeros pasos</h2>
+          <ol className="grid gap-3 text-sm text-ash">
+            <li className="flex gap-3">
+              <span className="font-semibold text-accent">1</span> Crea tu primera nota en Notas.
             </li>
-            <li className="flex gap-4 border-b border-mist pb-2">
-              <span className="text-ink">2</span> Prepara la base de datos con `docker compose up -d db &amp;&amp; npm run db:migrate:deploy &amp;&amp; npm run db:seed`.
+            <li className="flex gap-3">
+              <span className="font-semibold text-accent">2</span> Añade o importa tus dispositivos.
             </li>
-            <li className="flex gap-4 border-b border-mist pb-2">
-              <span className="text-ink">3</span> Instala dependencias y arranca con `npm run dev`.
+            <li className="flex gap-3">
+              <span className="font-semibold text-accent">3</span> Invita a tu familia desde Familia.
             </li>
           </ol>
         </section>

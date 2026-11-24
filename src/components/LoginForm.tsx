@@ -45,7 +45,7 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="bg-red-50 text-red-700 text-sm px-3 py-2 rounded-lg border border-red-200" role="alert">
+        <div className="bg-alarm/10 text-alarm text-sm px-3 py-2 rounded-lg border border-alarm/30" role="alert">
           {error}
         </div>
       )}

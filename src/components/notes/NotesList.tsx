@@ -23,7 +23,7 @@ export function NotesList({
   return (
     <>
       {/* Busqueda + crear */}
-      <div className="flex items-center gap-2 border-b border-mist px-3 py-2">
+      <div className="flex items-center gap-2 border-b border-mist/60 px-3 py-2">
         <div className="relative flex-1">
           <svg
             className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ash"
@@ -45,12 +45,12 @@ export function NotesList({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Buscar"
-            className="w-full border border-mist py-1.5 pl-8 pr-3 text-sm focus:border-ink focus:outline-none"
+            className="w-full border border-mist/60 py-1.5 pl-8 pr-3 text-sm focus:border-ink focus:outline-none"
           />
         </div>
         <button
           onClick={onCreateNote}
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center border border-ink text-ink transition-colors hover:bg-ink hover:text-canvas"
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center border border-ink text-ink transition-colors hover:bg-accent hover:text-canvas"
           aria-label="Nueva nota"
           title="Nueva nota"
         >

@@ -134,7 +134,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
         </form>
       </section>
 
-      <section className="lg:border-l lg:border-mist lg:pl-10">
+      <section className="lg:border-l lg:border-mist/60 lg:pl-10">
         <p className="mb-6 text-[10px] tracking-wider2 text-ash">Cambiar contraseña</p>
 
         <form onSubmit={handleChangePassword} className="space-y-4">

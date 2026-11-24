@@ -42,7 +42,7 @@ export function MoreDrawer({ trigger = 'Más' }: Props) {
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-controls="more-drawer"
-        className="flex min-h-11 items-center border border-mist px-4 text-xs text-ink transition-colors hover:border-ink"
+        className="flex min-h-11 items-center border border-mist/60 px-4 text-xs text-ink transition-colors hover:border-ink"
       >
         {trigger}
       </button>
@@ -62,7 +62,7 @@ export function MoreDrawer({ trigger = 'Más' }: Props) {
               onClick={() => setOpen(false)}
               aria-hidden="true"
             />
-            <div className="absolute inset-x-0 bottom-0 border-t border-mist bg-canvas px-6 pt-5 pb-8">
+            <div className="absolute inset-x-0 bottom-0 border-t border-mist/60 bg-canvas px-6 pt-5 pb-8">
               <div className="mb-4 flex items-center justify-between">
                 <span className="font-display text-2xl leading-none tracking-editorial">
                   casa<span className="text-ash">·</span>os
@@ -86,7 +86,7 @@ export function MoreDrawer({ trigger = 'Más' }: Props) {
                   </svg>
                 </button>
               </div>
-              <nav className="space-y-px border-t border-mist pt-4">
+              <nav className="space-y-px border-t border-mist/60 pt-4">
                 {MORE_ITEMS.map((item) => (
                   <Link
                     key={item.href}
@@ -94,14 +94,14 @@ export function MoreDrawer({ trigger = 'Más' }: Props) {
                     aria-current={pathname === item.href ? 'page' : undefined}
                     onClick={() => setOpen(false)}
                     className={`flex min-h-11 items-center px-3 text-sm ${
-                      pathname === item.href ? 'bg-ink text-canvas' : 'text-ink'
+                      pathname === item.href ? 'bg-accent text-white' : 'text-ink'
                     }`}
                   >
                     {item.label}
                   </Link>
                 ))}
               </nav>
-              <div className="mt-4 border-t border-mist pt-4">
+              <div className="mt-4 border-t border-mist/60 pt-4">
                 <LogoutButton />
               </div>
             </div>

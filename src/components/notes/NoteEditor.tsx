@@ -291,7 +291,7 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Barra: formato + estado + acciones (un solo marco) */}
-      <div className="relative border-b border-mist bg-canvas">
+      <div className="relative border-b border-mist/60 bg-canvas">
         <div className="flex items-start gap-2 px-3 py-2">
           <Toolbar editor={editor} compact={mobile} />
           <div className="ml-auto flex shrink-0 items-center gap-1 pt-0.5">
@@ -305,7 +305,7 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
                 className={`inline-flex items-center justify-center transition-colors ${
                   mobile ? 'h-11 w-11' : 'h-8 w-8'
                 } ${
-                  completed ? 'bg-ink text-canvas' : 'text-ash hover:bg-pearl hover:text-ink'
+                  completed ? 'bg-accent text-white' : 'text-ash hover:bg-pearl hover:text-ink'
                 }`}
                 aria-label={completed ? 'Marcar como pendiente' : 'Marcar como completada'}
                 title={completed ? 'Marcar como pendiente' : 'Marcar como completada'}
@@ -362,7 +362,7 @@ export function NoteEditor({ note, currentUserId, onDeleted, onCreated, onNoteUp
       </div>
 
       {!isDraft(note) && (
-        <div className="flex items-center justify-between border-t border-mist px-3 py-2 text-xs text-ash">
+        <div className="flex items-center justify-between border-t border-mist/60 px-3 py-2 text-xs text-ash">
           <span>Creada por {note.author.name || 'Desconocido'}</span>
           <span>
             {new Date(note.createdAt).toLocaleDateString('es-ES', {

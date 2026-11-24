@@ -108,7 +108,7 @@ export function VaultSettings({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-ink/40 p-0 sm:p-6">
       <div className="mx-auto min-h-full w-full max-w-5xl bg-canvas p-5 sm:p-8">
-        <div className="flex items-start justify-between gap-4 border-t border-mist pt-5">
+        <div className="flex items-start justify-between gap-4 border-t border-mist/60 pt-5">
           <div>
             <p className="text-xs tracking-wider2 text-ash">Cuentas</p>
             <h2 className="mt-2 font-display text-3xl tracking-editorial">Ajustes de la bóveda</h2>
@@ -116,14 +116,14 @@ export function VaultSettings({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 shrink-0 items-center justify-center border border-mist text-ash transition-colors hover:border-ink hover:text-ink"
+            className="flex h-9 w-9 shrink-0 items-center justify-center border border-mist/60 text-ash transition-colors hover:border-ink hover:text-ink"
             aria-label="Cerrar ajustes"
           >
             ×
           </button>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2 border-b border-mist pb-3">
+        <div className="mt-6 flex flex-wrap gap-2 border-b border-mist/60 pb-3">
           {(Object.keys(SECTION_LABEL) as Section[]).map((value) => (
             <button
               key={value}
@@ -131,8 +131,8 @@ export function VaultSettings({
               onClick={() => setSection(value)}
               className={`px-3 py-2 text-sm transition-colors ${
                 section === value
-                  ? 'bg-ink text-canvas'
-                  : 'border border-mist text-ink hover:border-ink'
+                  ? 'bg-accent text-white'
+                  : 'border border-mist/60 text-ink hover:border-ink'
               }`}
             >
               {SECTION_LABEL[value]}
@@ -383,7 +383,7 @@ function SecuritySection({
               onChange={(event) => setCurrentPassword(event.target.value)}
               autoComplete="current-password"
               required
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
           <Field label="Nueva master password" htmlFor="settings-new-password">
@@ -394,7 +394,7 @@ function SecuritySection({
               onChange={(event) => setNewPassword(event.target.value)}
               autoComplete="new-password"
               required
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
           <Field label="Repite la nueva" htmlFor="settings-confirm-password">
@@ -405,7 +405,7 @@ function SecuritySection({
               onChange={(event) => setConfirm(event.target.value)}
               autoComplete="new-password"
               required
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
           {passwordError ? <Alert>{passwordError}</Alert> : null}
@@ -433,13 +433,13 @@ function SecuritySection({
               onChange={(event) => setKitPassword(event.target.value)}
               autoComplete="current-password"
               required
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
           {kitError ? <Alert>{kitError}</Alert> : null}
           {kitNotice ? <Alert tone="success">{kitNotice}</Alert> : null}
           {kit ? (
-            <div className="border border-mist bg-pearl p-4">
+            <div className="border border-mist/60 bg-pearl p-4">
               <p className="text-sm">Kit nuevo listo. Descárgalo y guárdalo antes de cerrar.</p>
               <div className="mt-3">
                 <Button type="button" variant="ghost" onClick={() => downloadRecoveryKit(kit)}>
@@ -526,9 +526,9 @@ function PasskeysSection({
       </p>
 
       {passkeys.length === 0 ? (
-        <p className="mt-5 border border-mist p-4 text-sm text-ash">No hay passkeys registradas.</p>
+        <p className="mt-5 border border-mist/60 p-4 text-sm text-ash">No hay passkeys registradas.</p>
       ) : (
-        <ul className="mt-5 divide-y divide-mist border border-mist">
+        <ul className="mt-5 divide-y divide-mist border border-mist/60">
           {passkeys.map((passkey, index) => (
             <li key={passkey.id} className="flex flex-wrap items-center gap-3 p-4 text-sm">
               <span className="flex-1">
@@ -689,11 +689,11 @@ function ContactsSection({
         </p>
 
         {outgoing.length === 0 ? (
-          <p className="mt-5 border border-mist p-4 text-sm text-ash">
+          <p className="mt-5 border border-mist/60 p-4 text-sm text-ash">
             No has invitado a ningún contacto.
           </p>
         ) : (
-          <ul className="mt-5 divide-y divide-mist border border-mist">
+          <ul className="mt-5 divide-y divide-mist border border-mist/60">
             {outgoing.map((contact) => (
               <li key={contact.id} className="flex flex-wrap items-center gap-3 p-4 text-sm">
                 <span className="flex-1">
@@ -715,13 +715,13 @@ function ContactsSection({
           </ul>
         )}
 
-        <form onSubmit={invite} className="mt-6 grid gap-4 border-t border-mist pt-5">
+        <form onSubmit={invite} className="mt-6 grid gap-4 border-t border-mist/60 pt-5">
           <Field label="Invitar a un miembro" htmlFor="contact-member">
             <select
               id="contact-member"
               value={contactId}
               onChange={(event) => setContactId(event.target.value)}
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             >
               <option value="">Elige un miembro con bóveda</option>
               {eligible.map((member) => (
@@ -742,7 +742,7 @@ function ContactsSection({
               onChange={(event) => setCode(event.target.value)}
               rows={2}
               spellCheck={false}
-              className="w-full resize-none border border-mist bg-canvas px-3 py-2.5 font-mono text-sm outline-none focus:border-ink"
+              className="w-full resize-none border border-mist/60 bg-canvas px-3 py-2.5 font-mono text-sm outline-none focus:border-ink"
             />
           </Field>
           <div>
@@ -764,11 +764,11 @@ function ContactsSection({
         </p>
 
         {incoming.length === 0 ? (
-          <p className="mt-5 border border-mist p-4 text-sm text-ash">
+          <p className="mt-5 border border-mist/60 p-4 text-sm text-ash">
             Nadie te ha elegido como contacto.
           </p>
         ) : (
-          <ul className="mt-5 divide-y divide-mist border border-mist">
+          <ul className="mt-5 divide-y divide-mist border border-mist/60">
             {incoming.map((contact) => (
               <li key={contact.id} className="p-4 text-sm">
                 <div className="flex flex-wrap items-center gap-3">
@@ -808,7 +808,7 @@ function ContactsSection({
                   </Button>
                 </div>
                 {revealed?.id === contact.id ? (
-                  <div className="mt-4 border border-mist bg-pearl p-4">
+                  <div className="mt-4 border border-mist/60 bg-pearl p-4">
                     <p className="text-xs tracking-wider2 text-ash">
                       Código de recuperación de {contact.ownerName || contact.ownerEmail}
                     </p>
@@ -854,9 +854,9 @@ function ActivitySection() {
       {!events && !error ? <div className="mt-5"><Spinner label="Cargando actividad" /></div> : null}
       {events ? (
         events.length === 0 ? (
-          <p className="mt-5 border border-mist p-4 text-sm text-ash">Sin actividad todavía.</p>
+          <p className="mt-5 border border-mist/60 p-4 text-sm text-ash">Sin actividad todavía.</p>
         ) : (
-          <ul className="mt-5 divide-y divide-mist border border-mist">
+          <ul className="mt-5 divide-y divide-mist border border-mist/60">
             {events.map((event) => (
               <li key={event.id} className="flex flex-wrap items-baseline gap-2 p-3 text-sm">
                 <span className="flex-1">{ACTION_LABEL[event.action] ?? event.action}</span>
@@ -928,7 +928,7 @@ function DangerSection({
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"
             required
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
         <Field label="Código 2FA" htmlFor="danger-code">
@@ -940,7 +940,7 @@ function DangerSection({
             onChange={(event) => setCode(event.target.value)}
             autoComplete="one-time-code"
             required
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
         <Field label="Escribe BORRAR para confirmar" htmlFor="danger-confirm">
@@ -950,7 +950,7 @@ function DangerSection({
             onChange={(event) => setConfirm(event.target.value)}
             autoComplete="off"
             required
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
         {error ? <Alert>{error}</Alert> : null}

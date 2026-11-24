@@ -35,7 +35,7 @@ export function CalendarDesktopView({
 }: CalendarViewProps) {
   return (
     <div className="space-y-6">
-      <div className="space-y-5 border-b border-mist pb-5">
+      <div className="space-y-5 border-b border-mist/60 pb-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <button
@@ -65,7 +65,7 @@ export function CalendarDesktopView({
 
           <div className="flex flex-wrap items-center gap-3">
             <div
-              className="flex border border-mist"
+              className="flex border border-mist/60"
               role="group"
               aria-label="Vista del calendario"
             >
@@ -75,7 +75,7 @@ export function CalendarDesktopView({
                 onClick={() => onChangeView('month')}
                 className={`px-3 py-2 text-xs transition-colors active:bg-mist ${
                   view === 'month'
-                    ? 'bg-ink text-canvas'
+                    ? 'bg-accent text-white'
                     : 'text-ash hover:bg-pearl hover:text-ink'
                 }`}
               >
@@ -85,9 +85,9 @@ export function CalendarDesktopView({
                 type="button"
                 aria-pressed={view === 'week'}
                 onClick={() => onChangeView('week')}
-                className={`border-l border-mist px-3 py-2 text-xs transition-colors active:bg-mist ${
+                className={`border-l border-mist/60 px-3 py-2 text-xs transition-colors active:bg-mist ${
                   view === 'week'
-                    ? 'bg-ink text-canvas'
+                    ? 'bg-accent text-white'
                     : 'text-ash hover:bg-pearl hover:text-ink'
                 }`}
               >
@@ -154,7 +154,7 @@ export function CalendarDesktopView({
       </div>
 
       {selectedDay && (
-        <section className="border-t border-mist pt-6">
+        <section className="border-t border-mist/60 pt-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-[10px] tracking-wider2 text-ash">Agenda</p>
@@ -181,13 +181,13 @@ export function CalendarDesktopView({
           </div>
 
           {selectedEvents.length === 0 ? (
-            <p className="mt-4 border-t border-mist pt-4 text-sm text-ash">
+            <p className="mt-4 border-t border-mist/60 pt-4 text-sm text-ash">
               No hay eventos este día.
             </p>
           ) : (
-            <ul className="mt-4 border-t border-mist">
+            <ul className="mt-4 border-t border-mist/60">
               {selectedEvents.map((event) => (
-                <li key={event.id} className="border-b border-mist">
+                <li key={event.id} className="border-b border-mist/60">
                   <button
                     type="button"
                     onClick={() => onOpenEvent(event)}

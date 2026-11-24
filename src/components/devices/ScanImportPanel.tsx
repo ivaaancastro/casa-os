@@ -374,7 +374,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
         </div>
       )}
 
-      <div className={mobile ? 'border border-mist bg-canvas p-4' : 'mt-4 border border-mist bg-canvas p-4'}>
+      <div className={mobile ? 'border border-mist/60 bg-canvas p-4' : 'mt-4 border border-mist/60 bg-canvas p-4'}>
         <p className="text-xs text-ash">
           En el ordenador conectado a la red de casa:
         </p>
@@ -414,7 +414,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
           accept=".json,application/json"
           onChange={handleFile}
           disabled={pending}
-          className="block min-h-11 w-full text-xs text-ash file:mr-3 file:min-h-11 file:border file:border-mist file:bg-canvas file:px-3 file:py-2 file:text-xs file:text-ink disabled:opacity-40"
+          className="block min-h-11 w-full text-xs text-ash file:mr-3 file:min-h-11 file:border file:border-mist/60 file:bg-canvas file:px-3 file:py-2 file:text-xs file:text-ink disabled:opacity-40"
         />
       </div>
 
@@ -430,7 +430,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
       {success && (
         <p
           role="status"
-          className="mt-4 border border-mist px-4 py-3 text-xs text-ink"
+          className="mt-4 border border-mist/60 px-4 py-3 text-xs text-ink"
         >
           {success}
         </p>
@@ -443,7 +443,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
       )}
 
       {preview && (
-        <div className="mt-6 border-t border-mist pt-5">
+        <div className="mt-6 border-t border-mist/60 pt-5">
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-ash">
             <span>
               <strong className="font-normal text-ink">
@@ -483,7 +483,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
             </p>
           )}
 
-          <div className="mt-4 border border-mist bg-canvas p-4">
+          <div className="mt-4 border border-mist/60 bg-canvas p-4">
             <p className="text-[10px] tracking-wider2 text-ash">
               Estado tras aplicar
             </p>
@@ -544,7 +544,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
             )}
           </div>
 
-          <ul className="mt-4 border-t border-mist">
+          <ul className="mt-4 border-t border-mist/60">
             {preview.items.map((item) => {
               const isSelectable = item.status === 'new';
               const statusClass =
@@ -555,7 +555,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
                     : 'text-ash';
 
               return (
-                <li key={item.index} className="border-b border-mist py-4">
+                <li key={item.index} className="border-b border-mist/60 py-4">
                   <div className="flex gap-3">
                     <div className="w-11 shrink-0">
                       {isSelectable ? (
@@ -616,7 +616,7 @@ export function ScanImportPanel({ mobile = false, onClose }: ScanImportPanelProp
           <div
             className={
               mobile
-                ? 'panel-actions mt-5 flex flex-wrap items-center gap-3 border-t border-mist pt-4'
+                ? 'panel-actions mt-5 flex flex-wrap items-center gap-3 border-t border-mist/60 pt-4'
                 : 'mt-5 flex flex-wrap items-center gap-3'
             }
           >

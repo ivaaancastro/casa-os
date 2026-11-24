@@ -93,7 +93,7 @@ export function VaultApp({
               setLoading(true);
               void refreshStatus();
             }}
-            className="border border-mist px-4 py-2.5 text-sm transition-colors hover:border-ink"
+            className="border border-mist/60 px-4 py-2.5 text-sm transition-colors hover:border-ink"
           >
             Reintentar
           </button>
@@ -118,7 +118,7 @@ export function VaultApp({
         </p>
         <a
           href="/perfil"
-          className="mt-6 inline-flex border border-ink bg-ink px-4 py-2.5 text-sm text-canvas transition-colors hover:bg-ash"
+          className="mt-6 inline-flex border border-accent bg-accent px-4 py-2.5 text-sm text-white transition-colors hover:opacity-90"
         >
           Ir a Perfil → Seguridad
         </a>

@@ -50,7 +50,7 @@ export function NotesMobileView({
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* La lista permanece montada (oculta) para conservar el scroll al volver */}
       <div className={showEditor ? 'hidden' : 'flex min-h-0 flex-1 flex-col'}>
-        <header className="shrink-0 border-b border-mist px-4 pb-2 pt-3">
+        <header className="shrink-0 border-b border-mist/60 px-4 pb-2 pt-3">
           <div className="flex items-baseline justify-between gap-3">
             <h1 className="font-ui text-[21px] font-medium leading-none tracking-editorial text-ink">
               Notas
@@ -82,7 +82,7 @@ export function NotesMobileView({
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Buscar notas"
               aria-label="Buscar notas"
-              className="h-11 w-full border border-mist bg-canvas pl-9 pr-11 text-sm text-ink placeholder:text-ash focus:border-ink focus:outline-none"
+              className="h-11 w-full border border-mist/60 bg-canvas pl-9 pr-11 text-sm text-ink placeholder:text-ash focus:border-ink focus:outline-none"
             />
             {searchQuery && (
               <button
@@ -126,7 +126,7 @@ export function NotesMobileView({
           onClick={onCreateNote}
           aria-label="Nueva nota"
           title="Nueva nota"
-          className="absolute right-4 z-30 flex h-14 w-14 items-center justify-center bg-ink text-canvas transition-colors hover:bg-black"
+          className="absolute right-4 z-30 flex h-14 w-14 items-center justify-center bg-accent text-white transition-colors hover:bg-black"
           style={{ bottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}
         >
           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +137,7 @@ export function NotesMobileView({
 
       {showEditor && (
         <section className="flex min-h-0 flex-1 flex-col" aria-label="Editar nota">
-          <div className="flex shrink-0 items-center gap-3 border-b border-mist px-3 py-2">
+          <div className="flex shrink-0 items-center gap-3 border-b border-mist/60 px-3 py-2">
             <button
               onClick={onBack}
               aria-label="Volver a la lista de notas"

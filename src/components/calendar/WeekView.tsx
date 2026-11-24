@@ -31,19 +31,19 @@ export function WeekView({
   onCreateAt,
 }: WeekViewProps) {
   return (
-    <div className="border-t border-mist">
-      <div className="hidden border-l border-mist md:grid md:grid-cols-7">
+    <div className="border-t border-mist/60">
+      <div className="hidden border-l border-mist/60 md:grid md:grid-cols-7">
         {days.map((day) => {
           const dayEvents = eventsForDay(events, day.date);
 
           return (
             <section
               key={day.key}
-              className={`flex min-h-[380px] flex-col border-b border-r border-mist ${
+              className={`flex min-h-[380px] flex-col border-b border-r border-mist/60 ${
                 day.isToday ? 'bg-pearl/40' : ''
               }`}
             >
-              <header className="border-b border-mist p-3">
+              <header className="border-b border-mist/60 p-3">
                 <p className="text-[10px] tracking-wider2 text-ash">
                   {WEEKDAY_LONG[(day.date.getDay() + 6) % 7]}
                 </p>
@@ -83,7 +83,7 @@ export function WeekView({
               <button
                 type="button"
                 onClick={() => onCreateAt(day)}
-                className="border-t border-mist py-2 text-[10px] tracking-wider2 text-ash transition-colors hover:bg-pearl hover:text-ink active:bg-mist"
+                className="border-t border-mist/60 py-2 text-[10px] tracking-wider2 text-ash transition-colors hover:bg-pearl hover:text-ink active:bg-mist"
               >
                 + Añadir
               </button>
@@ -99,7 +99,7 @@ export function WeekView({
           return (
             <section
               key={day.key}
-              className={`border-b border-mist py-4 ${
+              className={`border-b border-mist/60 py-4 ${
                 day.isToday ? 'bg-pearl/40' : ''
               }`}
             >
@@ -107,7 +107,7 @@ export function WeekView({
                 <div className="flex items-baseline gap-3">
                   <span
                     className={`inline-flex h-8 w-8 items-center justify-center text-sm tabular-nums ${
-                      day.isToday ? 'bg-ink text-canvas' : 'text-ink'
+                      day.isToday ? 'bg-accent text-white' : 'text-ink'
                     }`}
                   >
                     {day.date.getDate()}
@@ -125,7 +125,7 @@ export function WeekView({
                 <button
                   type="button"
                   onClick={() => onCreateAt(day)}
-                  className="border border-mist px-2 py-1 text-[10px] tracking-wider2 text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
+                  className="border border-mist/60 px-2 py-1 text-[10px] tracking-wider2 text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
                   aria-label={`Añadir evento el ${day.date.getDate()} de ${monthShort(
                     day.date,
                   )}`}

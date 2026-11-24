@@ -71,13 +71,13 @@ export function NotesDesktopView({
 
       <aside
         className={`
-          absolute inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-mist bg-canvas
+          absolute inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-mist/60 bg-canvas
           transition-transform duration-300 ease-edit
           lg:static lg:z-auto lg:translate-x-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
-        <div className="flex items-center justify-between border-b border-mist px-4 py-3">
+        <div className="flex items-center justify-between border-b border-mist/60 px-4 py-3">
           <span className="text-xl font-medium leading-none text-ink md:font-display md:tracking-editorial">
             Notas
           </span>
@@ -110,7 +110,7 @@ export function NotesDesktopView({
       </aside>
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <div className="flex items-center gap-3 border-b border-mist px-3 py-2 lg:hidden">
+        <div className="flex items-center gap-3 border-b border-mist/60 px-3 py-2 lg:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-ink hover:text-ash"

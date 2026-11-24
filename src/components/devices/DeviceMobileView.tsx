@@ -24,11 +24,11 @@ export function DeviceMobileView({
       )}
 
       {devices.length === 0 ? (
-        <div className="border border-mist p-6">
+        <div className="border border-mist/60 p-6">
           <p className="text-sm text-ash">Todavía no hay dispositivos.</p>
         </div>
       ) : (
-        <ul className="border-t border-mist">
+        <ul className="border-t border-mist/60">
           {devices.map((device) => {
             const isEditing = editingId === device.id;
             const isConfirming = confirmingId === device.id;
@@ -36,7 +36,7 @@ export function DeviceMobileView({
               DEVICE_TYPE_LABELS[device.type as DeviceType] ?? device.type;
 
             return (
-              <li key={device.id} className="border-b border-mist">
+              <li key={device.id} className="border-b border-mist/60">
                 <div className="py-4">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="text-base text-ink">{device.name}</span>
@@ -69,7 +69,7 @@ export function DeviceMobileView({
                       <button
                         type="button"
                         onClick={() => onToggleEdit(device.id)}
-                        className="inline-flex min-h-11 items-center border border-mist px-4 text-xs text-ink active:bg-mist"
+                        className="inline-flex min-h-11 items-center border border-mist/60 px-4 text-xs text-ink active:bg-mist"
                       >
                         {isEditing ? 'Cerrar' : 'Editar'}
                       </button>
@@ -88,7 +88,7 @@ export function DeviceMobileView({
                           <button
                             type="button"
                             onClick={onCancelDelete}
-                            className="inline-flex min-h-11 items-center border border-mist px-4 text-xs text-ash active:bg-mist"
+                            className="inline-flex min-h-11 items-center border border-mist/60 px-4 text-xs text-ash active:bg-mist"
                           >
                             No
                           </button>
@@ -97,7 +97,7 @@ export function DeviceMobileView({
                         <button
                           type="button"
                           onClick={() => onRequestDelete(device.id)}
-                          className="inline-flex min-h-11 items-center border border-mist px-4 text-xs text-alarm active:bg-mist"
+                          className="inline-flex min-h-11 items-center border border-mist/60 px-4 text-xs text-alarm active:bg-mist"
                         >
                           Eliminar
                         </button>

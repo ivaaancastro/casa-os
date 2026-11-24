@@ -127,7 +127,7 @@ export function VaultWorkspace({
 
   return (
     <div className="mx-auto w-full max-w-7xl px-5 py-6 md:px-10 md:py-10 lg:px-16">
-      <header className="flex flex-wrap items-end justify-between gap-4 border-t border-mist pt-6">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-t border-mist/60 pt-6">
         <div>
           <p className="text-[13px] tracking-wider2 text-ash">Cuentas · bóveda zero-knowledge</p>
           <h1 className="mt-2 font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-5xl md:leading-[0.95] md:tracking-editorial">
@@ -176,7 +176,7 @@ export function VaultWorkspace({
         </div>
       ) : null}
 
-      <div className="sticky top-0 z-10 -mx-5 mt-5 grid gap-3 border-y border-mist bg-canvas px-5 py-3 sm:static sm:mx-0 sm:mt-6 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:px-0 sm:py-4">
+      <div className="sticky top-0 z-10 -mx-5 mt-5 grid gap-3 border-y border-mist/60 bg-canvas px-5 py-3 sm:static sm:mx-0 sm:mt-6 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:px-0 sm:py-4">
         <label className="sr-only" htmlFor="cuentas-search">
           Buscar cuentas
         </label>
@@ -185,7 +185,7 @@ export function VaultWorkspace({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Buscar por nombre, app o página"
-          className="min-h-11 w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+          className="min-h-11 w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
         />
         <div className="grid grid-cols-2 gap-2 sm:contents">
           <label className="sr-only" htmlFor="cuentas-category">
@@ -195,7 +195,7 @@ export function VaultWorkspace({
             id="cuentas-category"
             value={category}
             onChange={(event) => setCategory(event.target.value)}
-            className="min-h-11 min-w-0 border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="min-h-11 min-w-0 border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           >
             <option value="todas">Todas las categorías</option>
             {ACCOUNT_CATEGORIES.map((item) => (
@@ -213,7 +213,7 @@ export function VaultWorkspace({
             onChange={(event) =>
               setVisibilityFilter(event.target.value as 'todas' | Visibility)
             }
-            className="min-h-11 min-w-0 border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="min-h-11 min-w-0 border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           >
             <option value="todas">Toda visibilidad</option>
             {(Object.keys(VISIBILITY_LABEL) as Visibility[]).map((value) => (
@@ -273,7 +273,7 @@ export function VaultWorkspace({
                       : undefined
                   }
                   disabled={!account.payload}
-                  className="flex h-full w-full min-h-16 flex-col items-start gap-3 border border-mist p-4 text-left transition-colors hover:border-ink disabled:cursor-default disabled:hover:border-mist sm:p-5"
+                  className="flex h-full w-full min-h-16 flex-col items-start gap-3 border border-mist/60 p-4 text-left transition-colors hover:border-ink disabled:cursor-default disabled:hover:border-mist/60 sm:p-5"
                 >
                   <div className="flex w-full items-start justify-between gap-3">
                     <span className="min-w-0">
@@ -286,7 +286,7 @@ export function VaultWorkspace({
                           : 'Clave de la cuenta no válida'}
                       </span>
                     </span>
-                    <span className="shrink-0 border border-mist px-2 py-1 text-[10px] tracking-wider2 text-ash">
+                    <span className="shrink-0 border border-mist/60 px-2 py-1 text-[10px] tracking-wider2 text-ash">
                       {VISIBILITY_LABEL[account.record.visibility]}
                     </span>
                   </div>

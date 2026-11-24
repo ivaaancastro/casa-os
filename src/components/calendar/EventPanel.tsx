@@ -276,13 +276,13 @@ export function EventPanel({
         aria-modal="true"
         aria-labelledby={`${titleId}-heading`}
         data-mobile-panel={mobile ? '' : undefined}
-        className={`relative flex w-full flex-col overflow-y-auto border-mist bg-canvas ${
+        className={`relative flex w-full flex-col overflow-y-auto border-mist/60 bg-canvas ${
           mobile
             ? 'max-h-[92dvh] max-w-none border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-none'
             : 'h-full max-w-lg border-l p-6 shadow-2xl md:p-8'
         } ${closing ? (mobile ? 'animate-sheet-out' : 'animate-panel-out') : mobile ? 'animate-sheet-in' : 'animate-panel-in'}`}
       >
-        <header className="flex items-start justify-between gap-4 border-b border-mist pb-4">
+        <header className="flex items-start justify-between gap-4 border-b border-mist/60 pb-4">
           <div>
             <p className="text-[10px] tracking-wider2 text-ash">Calendario</p>
             <h2
@@ -300,7 +300,7 @@ export function EventPanel({
             ref={closeRef}
             type="button"
             onClick={requestClose}
-            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist/60 text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
             aria-label="Cerrar"
           >
             ×
@@ -333,7 +333,7 @@ export function EventPanel({
               />
             </div>
 
-            <label className="flex cursor-pointer items-center gap-3 border border-mist px-3 py-3 text-sm active:bg-pearl">
+            <label className="flex cursor-pointer items-center gap-3 border border-mist/60 px-3 py-3 text-sm active:bg-pearl">
               <input
                 type="checkbox"
                 checked={allDay}
@@ -453,7 +453,7 @@ export function EventPanel({
               activados. Puedes gestionarlos en «Avisos».
             </p>
 
-            <div className="panel-actions flex flex-wrap gap-3 border-t border-mist pt-5">
+            <div className="panel-actions flex flex-wrap gap-3 border-t border-mist/60 pt-5">
               <button
                 type="submit"
                 className="btn-primary"
@@ -498,7 +498,7 @@ export function EventPanel({
               </p>
             </div>
 
-            <dl className="divide-y divide-mist border-y border-mist text-sm">
+            <dl className="divide-y divide-mist border-y border-mist/60 text-sm">
               <div className="flex justify-between gap-4 py-3">
                 <dt className="text-ash">Quién</dt>
                 <dd>{event?.owner?.name ?? 'Toda la casa'}</dd>
@@ -522,12 +522,12 @@ export function EventPanel({
             )}
 
             {!canEdit && (
-              <p className="border border-mist px-3 py-2 text-xs text-ash">
+              <p className="border border-mist/60 px-3 py-2 text-xs text-ash">
                 Solo quien creó el evento o un administrador puede editarlo.
               </p>
             )}
 
-            <div className="panel-actions flex flex-wrap gap-3 border-t border-mist pt-5">
+            <div className="panel-actions flex flex-wrap gap-3 border-t border-mist/60 pt-5">
               {canEdit && (
                 <button
                   type="button"

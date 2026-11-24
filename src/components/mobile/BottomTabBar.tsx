@@ -14,13 +14,13 @@ const ICONS: Record<string, React.ReactNode> = {
   ),
   '/cuentas': (
     <>
-      <rect x="4" y="10" width="16" height="10" rx="0" />
+      <rect x="4" y="10" width="16" height="10" rx="2" />
       <path d="M8 10V7a4 4 0 0 1 8 0v3" />
     </>
   ),
   '/calendario': (
     <>
-      <rect x="4" y="5" width="16" height="15" rx="0" />
+      <rect x="4" y="5" width="16" height="15" rx="2" />
       <path d="M4 9h16M8 3v4M16 3v4" />
     </>
   ),
@@ -42,7 +42,7 @@ export function BottomTabBar() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-mist bg-canvas lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-mist/60 bg-surface/80 backdrop-blur-xl lg:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <ul className="flex items-stretch">
@@ -56,13 +56,13 @@ export function BottomTabBar() {
                 className={`
                   relative flex min-h-11 flex-col items-center justify-center gap-1
                   px-1 pt-2 pb-1.5 text-[11px] transition-colors duration-200
-                  ${isActive ? 'text-ink' : 'text-ash hover:text-ink'}
+                  ${isActive ? 'text-accent' : 'text-ash hover:text-ink'}
                 `}
               >
                 {isActive && (
                   <span
                     aria-hidden="true"
-                    className="absolute inset-x-4 top-0 h-0.5 bg-ink"
+                    className="absolute inset-x-4 top-0 h-0.5 bg-accent"
                   />
                 )}
                 <svg
@@ -70,9 +70,9 @@ export function BottomTabBar() {
                   className="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth={1.5}
-                  strokeLinecap="square"
-                  strokeLinejoin="miter"
+                  strokeWidth={1.6}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   viewBox="0 0 24 24"
                 >
                   {ICONS[item.href]}

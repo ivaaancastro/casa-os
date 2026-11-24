@@ -17,7 +17,7 @@ export default async function CalendarioPage() {
   });
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-12 lg:px-16 lg:py-16">
+    <div className="mx-auto max-w-5xl px-5 py-8 md:px-8 md:py-10">
       <div className="grid animate-fade-rise grid-cols-12 gap-y-8">
         <PageHeader
           eyebrow="Casa · Calendario"
@@ -25,7 +25,7 @@ export default async function CalendarioPage() {
           description="La vida de la casa, día a día. Crea planes, marca quién se encarga y recibe un aviso cuando toque."
         />
 
-        <section className="col-span-12 border-t border-mist pt-8">
+        <section className="col-span-12 border-t border-mist/60 pt-8">
           <CalendarApp
             members={members}
             currentUser={{ id: user.id, role: user.role }}

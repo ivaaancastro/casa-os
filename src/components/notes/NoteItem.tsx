@@ -43,7 +43,7 @@ export function NoteItem({ note, isSelected, onSelect }: NoteItemProps) {
       onClick={onSelect}
       aria-current={isSelected ? 'true' : undefined}
       className={`
-        flex min-h-[76px] w-full flex-col justify-center border-b border-mist px-4 py-3 text-left transition-colors
+        flex min-h-[76px] w-full flex-col justify-center border-b border-mist/60 px-4 py-3 text-left transition-colors
         ${isSelected ? 'border-l-2 border-l-ink bg-pearl' : 'hover:bg-pearl'}
       `}
     >
