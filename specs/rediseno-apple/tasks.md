@@ -36,7 +36,7 @@
 - D1. Capturas Chrome MCP (móvil + escritorio) de todas las pantallas (parcial).
 - D2 (pendiente). Lighthouse accesibilidad ≥ 95 en dashboard y notas.
 - D3. Ejecutar `lint && typecheck && test && build` (OK).
-- D4 (pendiente). E2E Playwright en verde.
+- D4 (OK: 26/26 E2E). E2E Playwright en verde.
 - D5 (pendiente). Cierre documental (`specs/rediseno-apple/cierre.md`, MEMORY, CHANGELOG, docs).
 - D6 (pendiente). `npm run docs:check -- rediseno-apple`.
 

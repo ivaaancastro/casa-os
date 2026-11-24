@@ -42,7 +42,7 @@ La rama está implementada y verificada en local; queda pendiente el merge a
 | `npm run typecheck` | OK |
 | `npm run test` | 443 tests OK |
 | `npm run build` | OK |
-| CI del PR | Pendiente de PR/merge |
+| CI del PR | Pendiente de PR/merge; E2E local 26/26 OK |
 
 ### UI / Chrome
 
