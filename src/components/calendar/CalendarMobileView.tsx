@@ -41,7 +41,7 @@ export function CalendarMobileView({
   return (
     <>
       <div className="relative pb-28">
-      <header className="border-b border-mist px-4 pb-3 pt-3">
+      <header className="border-b border-mist/60 px-4 pb-3 pt-3">
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -66,7 +66,7 @@ export function CalendarMobileView({
 
         <div className="mt-3 flex items-center gap-2">
           <div
-            className="flex border border-mist"
+            className="flex border border-mist/60"
             role="group"
             aria-label="Vista del calendario"
           >
@@ -76,7 +76,7 @@ export function CalendarMobileView({
               onClick={() => onChangeView('month')}
               className={`inline-flex min-h-11 min-w-14 items-center justify-center px-3 text-sm transition-colors active:bg-mist ${
                 view === 'month'
-                  ? 'bg-ink text-canvas'
+                  ? 'bg-accent text-white'
                   : 'text-ash hover:bg-pearl hover:text-ink'
               }`}
             >
@@ -86,9 +86,9 @@ export function CalendarMobileView({
               type="button"
               aria-pressed={view === 'week'}
               onClick={() => onChangeView('week')}
-              className={`inline-flex min-h-11 min-w-14 items-center justify-center border-l border-mist px-3 text-sm transition-colors active:bg-mist ${
+              className={`inline-flex min-h-11 min-w-14 items-center justify-center border-l border-mist/60 px-3 text-sm transition-colors active:bg-mist ${
                 view === 'week'
-                  ? 'bg-ink text-canvas'
+                  ? 'bg-accent text-white'
                   : 'text-ash hover:bg-pearl hover:text-ink'
               }`}
             >
@@ -99,7 +99,7 @@ export function CalendarMobileView({
           <button
             type="button"
             onClick={onGoToday}
-            className="inline-flex min-h-11 items-center border border-mist px-3 text-sm text-ink active:bg-mist"
+            className="inline-flex min-h-11 items-center border border-mist/60 px-3 text-sm text-ink active:bg-mist"
           >
             Hoy
           </button>
@@ -107,7 +107,7 @@ export function CalendarMobileView({
           <button
             type="button"
             onClick={onOpenReminders}
-            className="inline-flex min-h-11 items-center border border-mist px-3 text-sm text-ink active:bg-mist"
+            className="inline-flex min-h-11 items-center border border-mist/60 px-3 text-sm text-ink active:bg-mist"
           >
             Avisos
           </button>
@@ -157,7 +157,7 @@ export function CalendarMobileView({
       </div>
 
       {selectedDay && (
-        <section className="border-t border-mist px-4 pb-4 pt-4" data-testid="calendar-mobile-agenda">
+        <section className="border-t border-mist/60 px-4 pb-4 pt-4" data-testid="calendar-mobile-agenda">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-[10px] tracking-wider2 text-ash">Agenda</p>
@@ -177,9 +177,9 @@ export function CalendarMobileView({
           {selectedEvents.length === 0 ? (
             <p className="mt-3 text-sm text-ash">No hay eventos este día.</p>
           ) : (
-            <ul className="mt-3 border-t border-mist">
+            <ul className="mt-3 border-t border-mist/60">
               {selectedEvents.map((event) => (
-                <li key={event.id} className="border-b border-mist">
+                <li key={event.id} className="border-b border-mist/60">
                   <button
                     type="button"
                     onClick={() => onOpenEvent(event)}
@@ -200,7 +200,7 @@ export function CalendarMobileView({
           <button
             type="button"
             onClick={onCreateForSelected}
-            className="mt-4 inline-flex min-h-11 w-full items-center justify-center border border-mist text-sm text-ink active:bg-mist"
+            className="mt-4 inline-flex min-h-11 w-full items-center justify-center border border-mist/60 text-sm text-ink active:bg-mist"
           >
             Añadir evento este día
           </button>
@@ -219,7 +219,7 @@ export function CalendarMobileView({
             onClick={onCreate}
             aria-label="Nuevo evento"
             title="Nuevo evento"
-            className="fixed right-4 z-30 flex h-14 w-14 items-center justify-center bg-ink text-canvas transition-colors active:bg-black"
+            className="fixed right-4 z-30 flex h-14 w-14 items-center justify-center bg-accent text-white transition-colors active:bg-black"
             style={{ bottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

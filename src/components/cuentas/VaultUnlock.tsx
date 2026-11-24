@@ -160,7 +160,7 @@ export function VaultUnlock({
   }
 
   return (
-    <section className="mx-auto w-full max-w-xl border-t border-mist pt-6 md:pt-8">
+    <section className="mx-auto w-full max-w-xl border-t border-mist/60 pt-6 md:pt-8">
       <p className="mb-3 text-[13px] tracking-wider2 text-ash">
         Cuentas · bóveda bloqueada
       </p>
@@ -193,7 +193,7 @@ export function VaultUnlock({
             onClick={() => void attemptPasskey()}
             disabled={pending !== null}
             aria-label={biometricLabel}
-            className="flex min-h-14 w-full items-center justify-center gap-3 bg-ink px-5 text-sm text-canvas transition-colors hover:bg-ash disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-14 w-full items-center justify-center gap-3 bg-accent px-5 text-sm text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <svg
               aria-hidden="true"
@@ -219,7 +219,7 @@ export function VaultUnlock({
                 id="vault-unlock-passkey"
                 value={passkeyId}
                 onChange={(event) => setPasskeyId(event.target.value)}
-                className="mt-1 w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+                className="mt-1 w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
               >
                 {vault.passkeys.map((passkey, index) => (
                   <option key={passkey.id} value={passkey.id}>
@@ -248,14 +248,14 @@ export function VaultUnlock({
           ) : null}
         </div>
       ) : (
-        <p className="mt-6 border-t border-mist pt-4 text-sm text-ash">
+        <p className="mt-6 border-t border-mist/60 pt-4 text-sm text-ash">
           No hay desbloqueo biométrico configurado en este dispositivo. Usa tu
           master password.
         </p>
       )}
 
       {showPassword ? (
-        <form onSubmit={unlockWithPassword} className="mt-6 grid gap-4 border-t border-mist pt-6">
+        <form onSubmit={unlockWithPassword} className="mt-6 grid gap-4 border-t border-mist/60 pt-6">
           <Field
             label="Master password"
             htmlFor="vault-unlock-password"
@@ -268,7 +268,7 @@ export function VaultUnlock({
               onChange={(event) => setPassword(event.target.value)}
               autoComplete="current-password"
               required
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
 
@@ -285,7 +285,7 @@ export function VaultUnlock({
               onChange={(event) => setCode(event.target.value)}
               autoComplete="one-time-code"
               required
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
 
@@ -297,7 +297,7 @@ export function VaultUnlock({
         </form>
       ) : null}
 
-      <div className="mt-6 border-t border-mist pt-5">
+      <div className="mt-6 border-t border-mist/60 pt-5">
         <button
           type="button"
           onClick={onRecovery}

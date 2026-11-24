@@ -27,12 +27,12 @@ export function MonthView({
   onOpenEvent,
 }: MonthViewProps) {
   return (
-    <div className="border-t border-mist">
-      <div className="grid grid-cols-7 border-l border-mist">
+    <div className="border-t border-mist/60">
+      <div className="grid grid-cols-7 border-l border-mist/60">
         {WEEKDAY_SHORT.map((label, index) => (
           <div
             key={label}
-            className="border-b border-r border-mist py-2 text-center text-[10px] tracking-wider2 text-ash"
+            className="border-b border-r border-mist/60 py-2 text-center text-[10px] tracking-wider2 text-ash"
           >
             <abbr title={WEEKDAY_LONG[index]} className="no-underline">
               {label}
@@ -41,7 +41,7 @@ export function MonthView({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 border-l border-mist">
+      <div className="grid grid-cols-7 border-l border-mist/60">
         {days.map((day) => {
           const dayEvents = eventsForDay(events, day.date);
           const visible = dayEvents.slice(0, 3);
@@ -50,7 +50,7 @@ export function MonthView({
           return (
             <div
               key={day.key}
-              className={`relative min-h-[74px] border-b border-r border-mist p-1.5 md:min-h-[116px] md:p-2 ${
+              className={`relative min-h-[74px] border-b border-r border-mist/60 p-1.5 md:min-h-[116px] md:p-2 ${
                 !day.inMonth ? 'bg-pearl/45' : ''
               } ${day.isToday ? 'bg-pearl' : ''} ${
                 isSelected ? 'ring-1 ring-inset ring-ink' : ''
@@ -70,7 +70,7 @@ export function MonthView({
                   <span
                     className={`inline-flex h-6 w-6 items-center justify-center text-xs tabular-nums ${
                       day.isToday
-                        ? 'bg-ink px-1 text-canvas'
+                        ? 'bg-accent px-1 text-white'
                         : day.inMonth
                           ? 'text-ink'
                           : 'text-ash/70'
@@ -126,7 +126,7 @@ export function MonthView({
                       <span
                         key={event.id}
                         className={`h-1 w-1 ${
-                          event.allDay ? 'bg-ink' : 'bg-ash'
+                          event.allDay ? 'bg-accent' : 'bg-ash'
                         }`}
                         aria-hidden="true"
                       />

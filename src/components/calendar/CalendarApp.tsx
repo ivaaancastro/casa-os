@@ -192,11 +192,11 @@ export function CalendarApp({ members, currentUser }: CalendarAppProps) {
     return (
       <div className="space-y-6" aria-busy="true">
         <div className="h-24 animate-pulse bg-pearl" />
-        <div className="grid grid-cols-7 border border-mist">
+        <div className="grid grid-cols-7 border border-mist/60">
           {Array.from({ length: 42 }, (_, index) => (
             <div
               key={index}
-              className="h-20 border-b border-r border-mist bg-canvas last:border-r-0 md:h-28"
+              className="h-20 border-b border-r border-mist/60 bg-canvas last:border-r-0 md:h-28"
             />
           ))}
         </div>

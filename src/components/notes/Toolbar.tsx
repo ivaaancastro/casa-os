@@ -132,7 +132,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
       title={title}
       aria-label={title}
       className={`inline-flex h-8 min-w-[30px] items-center justify-center px-2 transition-colors ${
-        active ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
+        active ? 'bg-accent text-white' : 'text-ink hover:bg-pearl'
       } ${disabled ? 'cursor-not-allowed opacity-30' : ''}`}
     >
       {children}
@@ -141,7 +141,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
 
   const divider = () => <div className="mx-1 h-5 w-px bg-mist" />;
   const selectClass =
-    'h-8 border border-mist bg-canvas px-2 text-sm text-ink focus:border-ink focus:outline-none';
+    'h-8 border border-mist/60 bg-canvas px-2 text-sm text-ink focus:border-ink focus:outline-none';
   const iconClass = 'h-4 w-4';
 
   const colorControl = (
@@ -156,7 +156,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
           setShowHighlights(false);
         }}
         className={`inline-flex h-8 items-center gap-1 px-2 transition-colors ${
-          showColors ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
+          showColors ? 'bg-accent text-white' : 'text-ink hover:bg-pearl'
         }`}
       >
         <span className="text-sm font-medium" style={{ color: showColors ? undefined : editor.getAttributes('textStyle').color || '#0A0A0A' }}>
@@ -168,7 +168,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
       </button>
 
       {showColors && (
-        <div className="absolute inset-x-0 top-full z-50 border-b border-mist bg-canvas px-3 py-3">
+        <div className="absolute inset-x-0 top-full z-50 border-b border-mist/60 bg-canvas px-3 py-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[10px] tracking-wider2 text-ash">COLOR DEL TEXTO</span>
             <button
@@ -193,7 +193,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
                   editor.chain().focus().setColor(c).run();
                   setShowColors(false);
                 }}
-                className="h-6 w-full border border-mist transition-transform hover:scale-110"
+                className="h-6 w-full border border-mist/60 transition-transform hover:scale-110"
                 style={{ backgroundColor: c }}
               />
             ))}
@@ -361,7 +361,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
             setShowColors(false);
           }}
           className={`inline-flex h-8 items-center gap-1 px-2 transition-colors ${
-            showHighlights ? 'bg-ink text-canvas' : 'text-ink hover:bg-pearl'
+            showHighlights ? 'bg-accent text-white' : 'text-ink hover:bg-pearl'
           }`}
         >
           <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,7 +373,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
         </button>
 
         {showHighlights && (
-          <div className="absolute inset-x-0 top-full z-50 border-b border-mist bg-canvas px-3 py-3">
+          <div className="absolute inset-x-0 top-full z-50 border-b border-mist/60 bg-canvas px-3 py-3">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-[10px] tracking-wider2 text-ash">RESALTADO</span>
               <button
@@ -398,7 +398,7 @@ export function Toolbar({ editor, compact = false }: ToolbarProps) {
                     editor.chain().focus().toggleHighlight({ color: c }).run();
                     setShowHighlights(false);
                   }}
-                  className="h-6 w-full border border-mist transition-transform hover:scale-110"
+                  className="h-6 w-full border border-mist/60 transition-transform hover:scale-110"
                   style={{ backgroundColor: c }}
                 />
               ))}

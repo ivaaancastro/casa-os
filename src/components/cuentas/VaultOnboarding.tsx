@@ -254,7 +254,7 @@ export function VaultOnboarding({
 
   if (step === 'kit' && prepared) {
     return (
-      <section className="mx-auto w-full max-w-2xl border-t border-mist pt-8">
+      <section className="mx-auto w-full max-w-2xl border-t border-mist/60 pt-8">
         <p className="text-xs tracking-wider2 text-ash">Paso 2 de 3 · Kit de recuperación</p>
         <h2 className="mt-3 font-display text-3xl leading-[0.95] tracking-editorial md:text-4xl">
           Guarda el kit offline
@@ -264,7 +264,7 @@ export function VaultOnboarding({
           guarda este código y no puede recuperarlo por ti.
         </p>
 
-        <div className="mt-6 border border-mist bg-pearl p-5">
+        <div className="mt-6 border border-mist/60 bg-pearl p-5">
           <p className="text-xs tracking-wider2 text-ash">Código de recuperación</p>
           <code className="mt-3 block break-all font-mono text-base leading-relaxed text-ink">
             {prepared.kit.recoveryKey}
@@ -328,7 +328,7 @@ export function VaultOnboarding({
 
   if (step === 'passkey' && session) {
     return (
-      <section className="mx-auto w-full max-w-2xl border-t border-mist pt-8">
+      <section className="mx-auto w-full max-w-2xl border-t border-mist/60 pt-8">
         <p className="text-xs tracking-wider2 text-ash">Paso 3 de 3 · Passkey (opcional)</p>
         <h2 className="mt-3 font-display text-3xl leading-[0.95] tracking-editorial md:text-4xl">
           Desbloqueo con passkey
@@ -358,7 +358,7 @@ export function VaultOnboarding({
   }
 
   return (
-    <section className="mx-auto w-full max-w-2xl border-t border-mist pt-8">
+    <section className="mx-auto w-full max-w-2xl border-t border-mist/60 pt-8">
       <p className="text-xs tracking-wider2 text-ash">Paso 1 de 3 · Master password</p>
       <h1 className="mt-3 font-display text-4xl leading-[0.95] tracking-editorial md:text-5xl">
         Crea tu bóveda.
@@ -380,7 +380,7 @@ export function VaultOnboarding({
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="new-password"
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
 
@@ -389,7 +389,7 @@ export function VaultOnboarding({
             {[0, 1, 2, 3, 4].map((segment) => (
               <span
                 key={segment}
-                className={`h-1 flex-1 ${segment <= strength.score ? 'bg-ink' : 'bg-mist'}`}
+                className={`h-1 flex-1 ${segment <= strength.score ? 'bg-accent' : 'bg-mist'}`}
               />
             ))}
           </div>
@@ -406,7 +406,7 @@ export function VaultOnboarding({
             value={confirm}
             onChange={(event) => setConfirm(event.target.value)}
             autoComplete="new-password"
-            className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
           />
         </Field>
 

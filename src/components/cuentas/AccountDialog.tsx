@@ -234,7 +234,7 @@ export function AccountDialog({
               value={payload.title}
               onChange={(event) => update('title', event.target.value)}
               autoComplete="off"
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
 
@@ -246,7 +246,7 @@ export function AccountDialog({
                 onChange={(event) => update('username', event.target.value)}
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+                className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
               />
             </Field>
             <Field label="Categoría" htmlFor="account-category">
@@ -254,7 +254,7 @@ export function AccountDialog({
                 id="account-category"
                 value={payload.category}
                 onChange={(event) => update('category', event.target.value)}
-                className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+                className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
               >
                 {ACCOUNT_CATEGORIES.map((category) => (
                   <option key={category} value={category}>
@@ -274,7 +274,7 @@ export function AccountDialog({
                 onChange={(event) => update('password', event.target.value)}
                 autoComplete="new-password"
                 spellCheck={false}
-                className="min-w-0 flex-1 border border-mist bg-canvas px-3 py-2.5 font-mono text-sm outline-none focus:border-ink"
+                className="min-w-0 flex-1 border border-mist/60 bg-canvas px-3 py-2.5 font-mono text-sm outline-none focus:border-ink"
               />
               <Button type="button" variant="ghost" onClick={() => setRevealed((value) => !value)}>
                 {revealed ? 'Ocultar' : 'Ver'}
@@ -303,7 +303,7 @@ export function AccountDialog({
               onChange={(event) => update('url', event.target.value)}
               autoComplete="off"
               spellCheck={false}
-              className="w-full border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
 
@@ -313,7 +313,7 @@ export function AccountDialog({
               value={payload.notes}
               onChange={(event) => update('notes', event.target.value)}
               rows={3}
-              className="w-full resize-y border border-mist bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full resize-y border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             />
           </Field>
 
@@ -334,18 +334,18 @@ export function AccountDialog({
                   value={field.label}
                   onChange={(event) => updateField(index, { label: event.target.value })}
                   placeholder="Etiqueta"
-                  className="min-w-0 flex-1 border border-mist bg-canvas px-3 py-2 text-sm outline-none focus:border-ink"
+                  className="min-w-0 flex-1 border border-mist/60 bg-canvas px-3 py-2 text-sm outline-none focus:border-ink"
                 />
                 <input
                   value={field.value}
                   onChange={(event) => updateField(index, { value: event.target.value })}
                   placeholder="Valor"
-                  className="min-w-0 flex-[2] border border-mist bg-canvas px-3 py-2 text-sm outline-none focus:border-ink"
+                  className="min-w-0 flex-[2] border border-mist/60 bg-canvas px-3 py-2 text-sm outline-none focus:border-ink"
                 />
                 <button
                   type="button"
                   onClick={() => removeField(index)}
-                  className="border border-mist px-3 text-sm text-ash transition-colors hover:border-alarm hover:text-alarm"
+                  className="border border-mist/60 px-3 text-sm text-ash transition-colors hover:border-alarm hover:text-alarm"
                   aria-label="Eliminar campo"
                 >
                   ×
@@ -355,12 +355,12 @@ export function AccountDialog({
           </div>
 
           {current === 'create' ? (
-            <div className="space-y-3 border-t border-mist pt-5">
+            <div className="space-y-3 border-t border-mist/60 pt-5">
               <p className="text-xs tracking-wider2 text-ash">Visibilidad</p>
               {(Object.keys(VISIBILITY_LABEL) as Visibility[]).map((value) => (
                 <label
                   key={value}
-                  className="flex cursor-pointer items-center gap-3 border border-mist p-3 text-sm hover:border-ink"
+                  className="flex cursor-pointer items-center gap-3 border border-mist/60 p-3 text-sm hover:border-ink"
                 >
                   <input
                     type="radio"
@@ -421,7 +421,7 @@ export function AccountDialog({
 
           {error ? <Alert>{error}</Alert> : null}
 
-          <div className="flex flex-wrap justify-end gap-3 border-t border-mist pt-5">
+          <div className="flex flex-wrap justify-end gap-3 border-t border-mist/60 pt-5">
             {stale ? (
               <Button
                 type="button"
@@ -455,7 +455,7 @@ export function AccountDialog({
               onCopy={payload.username ? () => copy(payload.username, 'usuario') : undefined}
               copied={copied === 'usuario'}
             />
-            <div className="border-t border-mist pt-4">
+            <div className="border-t border-mist/60 pt-4">
               <dt className="text-xs tracking-wider2 text-ash">Contraseña</dt>
               <dd className="mt-2 flex flex-wrap items-center gap-2">
                 <code className="min-w-0 flex-1 break-all font-mono text-sm">
@@ -483,13 +483,13 @@ export function AccountDialog({
               copied={copied === 'url'}
             />
             {payload.notes ? (
-              <div className="border-t border-mist pt-4">
+              <div className="border-t border-mist/60 pt-4">
                 <dt className="text-xs tracking-wider2 text-ash">Notas</dt>
                 <dd className="mt-2 whitespace-pre-wrap text-sm">{payload.notes}</dd>
               </div>
             ) : null}
             {payload.customFields.length > 0 ? (
-              <div className="space-y-3 border-t border-mist pt-4">
+              <div className="space-y-3 border-t border-mist/60 pt-4">
                 {payload.customFields.map((field, index) => (
                   <Detail
                     key={`${field.label}-${index}`}
@@ -501,13 +501,13 @@ export function AccountDialog({
                 ))}
               </div>
             ) : null}
-            <div className="border-t border-mist pt-4">
+            <div className="border-t border-mist/60 pt-4">
               <dt className="text-xs tracking-wider2 text-ash">Categoría</dt>
               <dd className="mt-1">{payload.category || 'Otros'}</dd>
             </div>
           </dl>
 
-          <p className="border-t border-mist pt-4 text-xs text-ash">
+          <p className="border-t border-mist/60 pt-4 text-xs text-ash">
             {readable
               ? 'La contraseña se oculta al cerrar este panel. Copiar usa el portapapeles del sistema; intentamos vaciarlo a los 60 s, pero el navegador puede impedirlo.'
               : 'No se pudo descifrar esta cuenta.'}
@@ -536,7 +536,7 @@ export function AccountDialog({
             </div>
           ) : null}
 
-          <div className="flex flex-wrap justify-end gap-3 border-t border-mist pt-5">
+          <div className="flex flex-wrap justify-end gap-3 border-t border-mist/60 pt-5">
             {account?.record.canEdit ? (
               <Button type="button" variant="ghost" onClick={() => setCurrent('edit')}>
                 Editar

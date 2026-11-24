@@ -57,9 +57,9 @@ export function BottomSheet({ eyebrow, title, onClose, children }: BottomSheetPr
         aria-modal="true"
         aria-labelledby={titleId}
         data-mobile-panel=""
-        className="relative flex max-h-[92dvh] w-full max-w-none flex-col overflow-y-auto border-t border-mist bg-canvas px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-none animate-sheet-in"
+        className="relative flex max-h-[92dvh] w-full max-w-none flex-col overflow-y-auto border-t border-mist/60 bg-canvas px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-none animate-sheet-in"
       >
-        <header className="flex items-start justify-between gap-4 border-b border-mist pb-4">
+        <header className="flex items-start justify-between gap-4 border-b border-mist/60 pb-4">
           <div>
             {eyebrow && (
               <p className="text-[10px] tracking-wider2 text-ash">{eyebrow}</p>
@@ -76,7 +76,7 @@ export function BottomSheet({ eyebrow, title, onClose, children }: BottomSheetPr
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-mist/60 text-lg text-ash transition-colors hover:border-ink hover:text-ink active:bg-pearl"
           >
             ×
           </button>

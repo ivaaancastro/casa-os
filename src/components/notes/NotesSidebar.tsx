@@ -24,7 +24,7 @@ export function NotesSidebar({ activeFolder, onFolderChange, notes }: NotesSideb
               aria-current={isActive ? 'page' : undefined}
               className={`
                 flex w-full items-center justify-between px-2.5 py-1.5 text-sm transition-colors
-                ${isActive ? 'bg-ink font-medium text-canvas' : 'text-ink hover:bg-pearl'}
+                ${isActive ? 'bg-accent font-medium text-white' : 'text-ink hover:bg-canvas'}
               `}
             >
               <span>{folder.label}</span>

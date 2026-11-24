@@ -27,14 +27,14 @@ export function WeekViewMobile({
   onCreateAt,
 }: WeekViewMobileProps) {
   return (
-    <div className="border-t border-mist" data-testid="calendar-mobile-week">
+    <div className="border-t border-mist/60" data-testid="calendar-mobile-week">
       {days.map((day) => {
         const dayEvents = eventsForDay(events, day.date);
 
         return (
           <section
             key={day.key}
-            className={`border-b border-mist px-4 py-4 ${
+            className={`border-b border-mist/60 px-4 py-4 ${
               day.isToday ? 'bg-pearl/40' : ''
             }`}
           >
@@ -42,7 +42,7 @@ export function WeekViewMobile({
               <div className="flex items-baseline gap-3">
                 <span
                   className={`inline-flex h-11 min-h-11 w-11 min-w-11 items-center justify-center text-sm tabular-nums ${
-                    day.isToday ? 'bg-ink text-canvas' : 'text-ink'
+                    day.isToday ? 'bg-accent text-white' : 'text-ink'
                   }`}
                 >
                   {day.date.getDate()}
@@ -60,7 +60,7 @@ export function WeekViewMobile({
               <button
                 type="button"
                 onClick={() => onCreateAt(day)}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center border border-mist px-3 text-sm text-ink transition-colors active:bg-mist"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center border border-mist/60 px-3 text-sm text-ink transition-colors active:bg-mist"
                 aria-label={`Añadir evento el ${day.date.getDate()} de ${monthShort(day.date)}`}
               >
                 +

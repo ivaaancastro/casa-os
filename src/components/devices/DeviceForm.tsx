@@ -167,7 +167,7 @@ export function DeviceForm({
       <div
         className={
           mobile
-            ? 'panel-actions flex flex-wrap gap-3 border-t border-mist pt-4'
+            ? 'panel-actions flex flex-wrap gap-3 border-t border-mist/60 pt-4'
             : 'flex flex-wrap gap-3'
         }
       >

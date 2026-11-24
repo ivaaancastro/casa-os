@@ -11,7 +11,7 @@ export function Alert({
 }) {
   const styles = {
     error: 'border-alarm/40 bg-alarm/5 text-alarm',
-    info: 'border-mist bg-pearl text-ash',
+    info: 'border-mist/60 bg-pearl text-ash',
     success: 'border-brand-600/30 bg-brand-50 text-brand-800',
     warning: 'border-ink/20 bg-pearl text-ink',
   }[tone];
@@ -54,8 +54,8 @@ export function Button({
   variant?: 'primary' | 'ghost' | 'danger';
 }) {
   const styles = {
-    primary: 'bg-ink text-canvas hover:bg-ash',
-    ghost: 'border border-mist bg-canvas text-ink hover:border-ink',
+    primary: 'bg-accent text-white hover:bg-ash',
+    ghost: 'border border-mist/60 bg-canvas text-ink hover:border-ink',
     danger: 'border border-alarm bg-canvas text-alarm hover:bg-alarm hover:text-canvas',
   }[variant];
 
@@ -110,7 +110,7 @@ export function Modal({
           wide ? 'sm:max-w-3xl' : 'sm:max-w-xl'
         }`}
       >
-        <div className="mb-6 flex items-start justify-between gap-4 border-t border-mist pt-5">
+        <div className="mb-6 flex items-start justify-between gap-4 border-t border-mist/60 pt-5">
           <div>
             <p className="text-xs tracking-wider2 text-ash">Cuentas</p>
             <h2 className="mt-2 font-display text-2xl tracking-editorial">{title}</h2>
@@ -119,7 +119,7 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 shrink-0 items-center justify-center border border-mist text-ash transition-colors hover:border-ink hover:text-ink"
+            className="flex h-9 w-9 shrink-0 items-center justify-center border border-mist/60 text-ash transition-colors hover:border-ink hover:text-ink"
             aria-label="Cerrar"
           >
             ×

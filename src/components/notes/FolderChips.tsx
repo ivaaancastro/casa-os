@@ -29,8 +29,8 @@ export function FolderChips({ activeFolder, onFolderChange, notes }: FolderChips
               flex min-h-11 shrink-0 items-center gap-1.5 border px-3 text-sm transition-colors
               ${
                 isActive
-                  ? 'border-ink bg-ink text-canvas'
-                  : 'border-mist text-ink hover:bg-pearl'
+                  ? 'border-ink bg-accent text-white'
+                  : 'border-mist/60 text-ink hover:bg-pearl'
               }
             `}
           >

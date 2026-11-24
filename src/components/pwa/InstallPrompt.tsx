@@ -57,7 +57,7 @@ export function InstallPrompt() {
   return (
     <section
       aria-label="Instalar casa-os"
-      className="mx-5 mb-6 border-t border-mist pt-3 lg:hidden"
+      className="mx-5 mb-6 border-t border-mist/60 pt-3 lg:hidden"
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-[13px] leading-snug text-ink">

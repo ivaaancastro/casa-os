@@ -133,11 +133,11 @@ export function FamilyManager({
         </div>
       )}
 
-      <ul className="border-t border-mist">
+      <ul className="border-t border-mist/60">
         {members.map((member) => {
           const isEditing = editingId === member.id;
           return (
-            <li key={member.id} className="border-b border-mist">
+            <li key={member.id} className="border-b border-mist/60">
               <div className="flex flex-col gap-3 py-4 md:flex-row md:items-center md:justify-between">
                 <div className="min-w-0">
                   <div className="flex items-baseline gap-3">
