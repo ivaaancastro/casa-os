@@ -32,7 +32,7 @@ export function Sidebar() {
                   href={item.href}
                   aria-current={isActive ? 'page' : undefined}
                   className={`
-                    group flex items-center justify-between rounded-lg px-3 py-3 text-sm transition-colors duration-200
+                    group flex items-center justify-between rounded-xl px-3 py-3 text-sm transition-colors duration-200
                     ${isActive ? 'bg-accent text-white' : 'text-ink hover:bg-canvas'}
                   `}
                 >
