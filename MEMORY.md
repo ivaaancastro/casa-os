@@ -218,7 +218,8 @@ El merge del código **no** cierra una feature. La definición completa está en
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
 **En curso:** ninguna.
 **Siguiente:** ninguna fase del roadmap; queda el backlog y la verificación en
-móvil real del propietario (`docs/verificacion-movil-real.md`).
+móvil real del propietario (`docs/verificacion-movil-real.md`). Última entrega:
+Contraseñas + Face ID (PR #61, mergeado, CI verde).
 
 ## Registro de features
 
