@@ -22,6 +22,7 @@
   body {
     @apply bg-canvas text-ink antialiased font-ui;
     background: var(--color-canvas);
+    touch-action: manipulation;
   }
 
   h1, h2, h3, h4 {
