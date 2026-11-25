@@ -119,8 +119,8 @@ export function ShareDialog({
                   {value === 'PRIVATE'
                     ? 'Solo tú tienes la clave de esta cuenta.'
                     : value === 'FAMILY'
-                      ? 'Todos los miembros con bóveda en este momento.'
-                      : 'Elige miembros concretos con bóveda.'}
+                      ? 'Todos los miembros con contraseñas en este momento.'
+                      : 'Elige miembros concretos con contraseñas.'}
                 </span>
               </span>
             </label>
@@ -135,7 +135,7 @@ export function ShareDialog({
               {visibility === 'FAMILY' ? 'Miembros incluidos' : 'Elige personas'}
             </p>
             {available.length <= 1 ? (
-              <p className="text-sm text-ash">Todavía no hay otros miembros con bóveda.</p>
+              <p className="text-sm text-ash">Todavía no hay otros miembros con contraseñas.</p>
             ) : (
               <ul className="divide-y divide-mist border border-mist/60">
                 {available
@@ -216,15 +216,15 @@ function availabilityNotice(
     return (
       <Alert tone="warning">
         {missingFamily.length === 1
-          ? 'Hay 1 miembro con bóveda que aún no tiene esta cuenta.'
-          : `Hay ${missingFamily.length} miembros con bóveda que aún no tienen esta cuenta.`}
+          ? 'Hay 1 miembro con contraseñas que aún no tiene esta cuenta.'
+          : `Hay ${missingFamily.length} miembros con contraseñas que aún no tienen esta cuenta.`}
       </Alert>
     );
   }
   if (visibility !== 'PRIVATE' && memberCount <= 1) {
     return (
       <Alert tone="info">
-        Todavía no hay otros miembros con bóveda. La cuenta quedará solo para ti hasta que
+        Todavía no hay otros miembros con contraseñas. La cuenta quedará solo para ti hasta que
         alguien cree la suya y la vuelvas a compartir.
       </Alert>
     );

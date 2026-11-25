@@ -27,10 +27,10 @@ test('desbloqueo único por estancia, bloqueo al salir y búsqueda local', async
   await page.setViewportSize({ width: 390, height: 844 });
 
   // globalSetup ya dejó la BD limpia. Este test activa 2FA, lo que invalida
-  // la sesión: hay que volver a entrar con el código antes de crear la bóveda.
+  // la sesión: hay que volver a entrar con el código antes de crear la contraseñas.
   let totp!: () => Promise<string>;
 
-  await test.step('login, activar 2FA y preparar la bóveda', async () => {
+  await test.step('login, activar 2FA y preparar la contraseñas', async () => {
     await login(page);
     totp = await enableTwoFactor(page);
     await login(page, totp);
@@ -43,7 +43,7 @@ test('desbloqueo único por estancia, bloqueo al salir y búsqueda local', async
     await unlockWithPassword(page, totp);
   });
 
-  await test.step('cambiar de pestaña dentro de la app mantiene la bóveda abierta', async () => {
+  await test.step('cambiar de pestaña dentro de la app mantiene la contraseñas abierta', async () => {
     const nav = page.getByRole('navigation', { name: 'Navegación principal' });
     await nav.getByRole('link', { name: 'Notas' }).click();
     await expect(page).toHaveURL(/\/notas$/);

@@ -2,6 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
+import { verifyToken } from './vault/tokens';
 import { logAuthEvent } from './auth-events';
 import {
   emailRateLimitKey,
@@ -81,6 +82,36 @@ export const authOptions: NextAuthOptions = {
 
         await logAuthEvent({ userId: user.id, action: 'LOGIN_SUCCESS' });
 
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          sessionVersion: user.sessionVersion,
+        };
+      },
+    }),
+    CredentialsProvider({
+      id: 'webauthn',
+      name: 'WebAuthn',
+      credentials: {
+        token: { label: 'Token', type: 'text' },
+      },
+      async authorize(credentials) {
+        const token = credentials?.token;
+        if (!token) return null;
+        const payload = verifyToken<{ userId: string; exp: number }>(
+          token,
+          'casa-os:webauthn-login:v1',
+        );
+        if (!payload || typeof payload.exp !== 'number' || payload.exp <= Date.now()) {
+          return null;
+        }
+        const user = await prisma.user.findUnique({
+          where: { id: payload.userId },
+        });
+        if (!user || !user.active) return null;
+        await logAuthEvent({ userId: user.id, action: 'LOGIN_SUCCESS' });
         return {
           id: user.id,
           email: user.email,

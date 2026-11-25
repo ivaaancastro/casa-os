@@ -33,7 +33,7 @@ export function createSession(
   blob: VaultBlobPayload,
 ): VaultSession {
   if (keyring.pk !== blob.publicKey) {
-    throw new Error('El keyring no corresponde a esta bóveda');
+    throw new Error('El keyring no corresponde a esta contraseñas');
   }
   return {
     pk: keyring.pk,

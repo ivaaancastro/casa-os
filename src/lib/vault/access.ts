@@ -35,10 +35,10 @@ export async function requireVaultAccess(
 ): Promise<AccessResult> {
   const grant = readVaultGrant(request);
   if (!grant || grant.sub !== user.id) {
-    return { response: jsonNoStore({ error: 'Bóveda bloqueada' }, 401) };
+    return { response: jsonNoStore({ error: 'Contraseñas bloqueada' }, 401) };
   }
   if (grant.sv !== user.sessionVersion) {
-    return { response: jsonNoStore({ error: 'Bóveda bloqueada' }, 401) };
+    return { response: jsonNoStore({ error: 'Contraseñas bloqueada' }, 401) };
   }
 
   const vault = await prisma.vault.findUnique({
@@ -63,7 +63,7 @@ export async function requireVaultAccess(
     return { response: jsonNoStore({ error: '2FA requerido' }, 403) };
   }
   if (grant.kv !== vault.keyringVersion) {
-    return { response: jsonNoStore({ error: 'Bóveda bloqueada' }, 401) };
+    return { response: jsonNoStore({ error: 'Contraseñas bloqueada' }, 401) };
   }
 
   const { user: _user, ...rest } = vault;

@@ -1,5 +1,5 @@
 /**
- * Constantes compartidas de la bóveda zero-knowledge.
+ * Constantes compartidas de la contraseñas zero-knowledge.
  *
  * Nada de este archivo contiene secretos: son límites y etiquetas que también
  * puede ver el servidor.
@@ -10,7 +10,7 @@ export const VAULT_GRANT_TTL_SECONDS = 15 * 60;
 export const WEBAUTHN_COOKIE = 'casaos_webauthn';
 export const WEBAUTHN_CHALLENGE_TTL_SECONDS = 5 * 60;
 
-/** Argon2id: parámetros iniciales. Se guardan por bóveda para poder subirlos. */
+/** Argon2id: parámetros iniciales. Se guardan por contraseñas para poder subirlos. */
 export const KDF_OPS_LIMIT = 3;
 export const KDF_MEM_LIMIT = 64 * 1024 * 1024; // 64 MiB
 export const KDF_ALGORITHM = 'argon2id13';
@@ -24,7 +24,7 @@ export const MAX_CIPHERTEXT_BASE64 = 96 * 1024;
 export const MAX_WRAPPED_KEY_BASE64 = 1024;
 export const MAX_KEYS_PER_ACCOUNT = 50;
 
-/** Rate limits de la bóveda. */
+/** Rate limits de la contraseñas. */
 export const UNLOCK_MAX_FAILURES = 5;
 export const UNLOCK_WINDOW_MS = 15 * 60_000;
 export const RECOVERY_MAX_ATTEMPTS = 3;

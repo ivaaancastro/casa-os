@@ -2,7 +2,7 @@ import { DEFAULT_AUTO_LOCK_MINUTES } from '../../lib/vault/constants';
 
 export const AUTO_LOCK_STORAGE_KEY = 'casa-os:cuentas:auto-lock';
 
-/** Motivo por el que se ha bloqueado la bóveda (para el aviso al usuario). */
+/** Motivo por el que se ha bloqueado la contraseñas (para el aviso al usuario). */
 export type VaultLockReason =
   | 'manual'
   | 'background'
@@ -35,7 +35,7 @@ export type AutoLockDeps = {
 };
 
 /**
- * Temporizador de inactividad de la bóveda, sin dependencias de React ni del
+ * Temporizador de inactividad de la contraseñas, sin dependencias de React ni del
  * navegador: el provider solo conecta eventos y el `memzero`. Así se puede
  * probar con temporizadores falsos en los tests unitarios.
  */

@@ -176,7 +176,7 @@ export function VaultRecovery({
         </h1>
         <p className="mt-4 max-w-2xl text-sm text-ash">
           La master password se ha cambiado y las passkeys anteriores se han invalidado. El kit
-          anterior ya no abre la bóveda: descarga y guarda este.
+          anterior ya no abre la contraseñas: descarga y guarda este.
         </p>
 
         <div className="mt-6 border border-mist/60 bg-pearl p-5">
@@ -193,7 +193,7 @@ export function VaultRecovery({
 
         <div className="mt-6">
           <Button type="button" onClick={() => onRecovered(recovered.session, recovered.kit)}>
-            Entrar en la bóveda
+            Entrar en la contraseñas
           </Button>
         </div>
       </section>
@@ -202,7 +202,7 @@ export function VaultRecovery({
 
   return (
     <section className="mx-auto w-full max-w-2xl border-t border-mist/60 pt-8">
-      <p className="text-xs tracking-wider2 text-ash">Recuperación de la bóveda</p>
+      <p className="text-xs tracking-wider2 text-ash">Recuperación de la contraseñas</p>
       <h1 className="mt-3 font-display text-4xl leading-[0.95] tracking-editorial md:text-5xl">
         Recupera el acceso.
       </h1>
@@ -287,7 +287,7 @@ export function VaultRecovery({
 
         <div className="flex flex-wrap gap-3">
           <Button type="submit" disabled={pending}>
-            {pending ? 'Recuperando…' : 'Recuperar bóveda'}
+            {pending ? 'Recuperando…' : 'Recuperar contraseñas'}
           </Button>
           <Button type="button" variant="ghost" onClick={onCancel} disabled={pending}>
             Volver

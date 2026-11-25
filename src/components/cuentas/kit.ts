@@ -11,13 +11,13 @@ export function buildRecoveryKit(input: {
     createdAt: input.createdAt ?? new Date().toISOString(),
     recoveryKey: input.recoveryKey,
     instructions:
-      'Guarda este archivo en un lugar seguro y sin conexión. Casa-os no conserva una copia del código. Sin este kit ni un contacto de confianza, perder la master password hace la bóveda irrecuperable.',
+      'Guarda este archivo en un lugar seguro y sin conexión. Casa-os no conserva una copia del código. Sin este kit ni un contacto de confianza, perder la master password hace la contraseñas irrecuperable.',
   };
 }
 
 export function kitText(kit: RecoveryKit): string {
   return [
-    'casa-os — Kit de recuperación de la bóveda',
+    'casa-os — Kit de recuperación de la contraseñas',
     `Cuenta: ${kit.email}`,
     `Creado: ${kit.createdAt}`,
     `Versión: ${kit.version}`,

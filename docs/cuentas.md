@@ -1,4 +1,4 @@
-# Cuentas zero-knowledge
+# Contraseñas zero-knowledge
 
 > Estado: **disponible en producción** (mergeado en `main` vía PR #37).
 > La sección cifra las credenciales del hogar en el cliente; el servidor solo

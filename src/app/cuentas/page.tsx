@@ -7,8 +7,8 @@ import { VaultApp } from '@/components/cuentas/VaultApp';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Cuentas | casa-os',
-  description: 'Bóveda zero-knowledge para las cuentas del hogar',
+  title: 'Contraseñas | casa-os',
+  description: 'Contraseñas zero-knowledge del hogar',
 };
 
 export default async function CuentasPage() {

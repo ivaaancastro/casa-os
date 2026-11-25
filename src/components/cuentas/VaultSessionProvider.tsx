@@ -29,7 +29,7 @@ type VaultSessionContextValue = {
 const VaultSessionContext = createContext<VaultSessionContextValue | null>(null);
 
 /**
- * Mantiene la bóveda desbloqueada mientras la app sigue en primer plano.
+ * Mantiene la contraseñas desbloqueada mientras la app sigue en primer plano.
  *
  * Se monta en el layout raíz (AppShell), así que cambiar de pestaña no lo
  * desmonta: la clave descifrada sobrevive a la navegación. Se bloquea al salir

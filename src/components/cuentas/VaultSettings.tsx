@@ -44,12 +44,12 @@ const SECTION_LABEL: Record<Section, string> = {
   passkeys: 'Passkeys',
   contacts: 'Contactos de confianza',
   activity: 'Actividad',
-  danger: 'Borrar bóveda',
+  danger: 'Borrar contraseñas',
 };
 
 const ACTION_LABEL: Record<string, string> = {
-  VAULT_CREATED: 'Bóveda creada',
-  UNLOCK_OK: 'Bóveda desbloqueada',
+  VAULT_CREATED: 'Contraseñas creada',
+  UNLOCK_OK: 'Contraseñas desbloqueada',
   UNLOCK_FAILED: 'Intento de desbloqueo fallido',
   RATE_LIMITED: 'Límite de intentos alcanzado',
   ACCOUNT_CREATED: 'Cuenta creada',
@@ -61,7 +61,7 @@ const ACTION_LABEL: Record<string, string> = {
   MASTER_PASSWORD_CHANGED: 'Master password cambiada',
   RECOVERY_SET: 'Kit de recuperación creado',
   RECOVERY_ROTATED: 'Kit de recuperación rotado',
-  RECOVERY_USED: 'Bóveda recuperada',
+  RECOVERY_USED: 'Contraseñas recuperada',
   RECOVERY_FAILED: 'Recuperación fallida',
   PASSKEY_ADDED: 'Passkey añadida',
   PASSKEY_REMOVED: 'Passkey eliminada',
@@ -111,7 +111,7 @@ export function VaultSettings({
         <div className="flex items-start justify-between gap-4 border-t border-mist/60 pt-5">
           <div>
             <p className="text-xs tracking-wider2 text-ash">Cuentas</p>
-            <h2 className="mt-2 font-display text-3xl tracking-editorial">Ajustes de la bóveda</h2>
+            <h2 className="mt-2 font-display text-3xl tracking-editorial">Ajustes de la contraseñas</h2>
           </div>
           <button
             type="button"
@@ -349,7 +349,7 @@ function SecuritySection({
       setKitNotice(
         contactShares.length > 0
           ? 'Kit rotado. Las copias de tus contactos se han renovado y vuelven a estar pendientes de aceptación.'
-          : 'Kit rotado. El kit anterior ya no abre la bóveda.',
+          : 'Kit rotado. El kit anterior ya no abre la contraseñas.',
       );
       await onChanged();
     } catch (err) {
@@ -371,7 +371,7 @@ function SecuritySection({
       <section>
         <h3 className="font-display text-2xl tracking-editorial">Cambiar master password</h3>
         <p className="mt-2 text-sm text-ash">
-          No se vuelven a cifrar las cuentas: la clave privada de la bóveda no cambia. Se
+          No se vuelven a cifrar las cuentas: la clave privada de la contraseñas no cambia. Se
           invalidan los grants y las passkeys.
         </p>
         <form onSubmit={changePassword} className="mt-5 grid gap-4">
@@ -593,7 +593,7 @@ function ContactsSection({
     setMessage('');
     const member = eligible.find((item) => item.id === contactId);
     if (!member?.publicKey) {
-      setError('Elige un miembro con bóveda.');
+      setError('Elige un miembro con contraseñas.');
       return;
     }
     setPending(true);
@@ -723,7 +723,7 @@ function ContactsSection({
               onChange={(event) => setContactId(event.target.value)}
               className="w-full border border-mist/60 bg-canvas px-3 py-2.5 text-sm outline-none focus:border-ink"
             >
-              <option value="">Elige un miembro con bóveda</option>
+              <option value="">Elige un miembro con contraseñas</option>
               {eligible.map((member) => (
                 <option key={member.id} value={member.id}>
                   {member.name || member.email}
@@ -913,9 +913,9 @@ function DangerSection({
 
   return (
     <section className="max-w-xl border border-alarm/40 bg-alarm/5 p-5">
-      <h3 className="font-display text-2xl tracking-editorial text-alarm">Borrar la bóveda</h3>
+      <h3 className="font-display text-2xl tracking-editorial text-alarm">Borrar la contraseñas</h3>
       <p className="mt-2 text-sm text-ash">
-        Se borran la bóveda, el kit, las passkeys, los contactos y la actividad. Las cuentas que
+        Se borran la contraseñas, el kit, las passkeys, los contactos y la actividad. Las cuentas que
         compartiste no se pueden revocar: sus destinatarios conservan la copia que ya tienen. La
         operación es irreversible.
       </p>
@@ -960,7 +960,7 @@ function DangerSection({
             variant="danger"
             disabled={pending || confirm !== 'BORRAR'}
           >
-            {pending ? 'Borrando…' : 'Borrar bóveda definitivamente'}
+            {pending ? 'Borrando…' : 'Borrar contraseñas definitivamente'}
           </Button>
         </div>
       </form>

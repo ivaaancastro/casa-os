@@ -42,6 +42,7 @@ model User {
   updatedAt              DateTime                @updatedAt
   VaultRecovery          VaultRecovery?
   VaultPasskey           VaultPasskey[]
+  appPasskeys            AppPasskey[]
 }
 
 model Account {
@@ -266,6 +267,20 @@ model VaultPasskey {
   nonce          String
   createdAt      DateTime  @default(now())
   lastUsedAt     DateTime?
+
+  @@index([userId])
+}
+
+model AppPasskey {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialId String    @unique
+  publicKey    String
+  counter      Int       @default(0)
+  transports   String?
+  createdAt    DateTime  @default(now())
+  lastUsedAt   DateTime?
 
   @@index([userId])
 }

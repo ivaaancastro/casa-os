@@ -413,7 +413,7 @@ export function AccountDialog({
                 </div>
               ) : null}
               <p className="text-xs text-ash">
-                Toda la familia incluye a los miembros con bóveda de ahora. Si entra alguien
+                Toda la familia incluye a los miembros con contraseñas de ahora. Si entra alguien
                 nuevo, vuelve a compartir.
               </p>
             </div>

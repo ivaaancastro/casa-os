@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     where: { userId: user.id },
     select: { id: true, keyringVersion: true },
   });
-  if (!vault) return notFound('No hay bóveda');
+  if (!vault) return notFound('No hay contraseñas');
 
   if (await isRecoveryRateLimited(user.id)) {
     return tooManyRequests(Math.ceil(RECOVERY_WINDOW_MS / 1000));

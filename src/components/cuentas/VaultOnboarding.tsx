@@ -260,7 +260,7 @@ export function VaultOnboarding({
           Guarda el kit offline
         </h2>
         <p className="mt-3 max-w-2xl text-sm text-ash">
-          Es la única forma de recuperar la bóveda si olvidas la master password. Casa-os no
+          Es la única forma de recuperar la contraseñas si olvidas la master password. Casa-os no
           guarda este código y no puede recuperarlo por ti.
         </p>
 
@@ -307,7 +307,7 @@ export function VaultOnboarding({
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Button type="button" onClick={createVault} disabled={!acknowledged || pending !== null}>
-            {pending === 'create' ? 'Creando bóveda…' : 'Crear bóveda'}
+            {pending === 'create' ? 'Creando contraseñas…' : 'Crear contraseñas'}
           </Button>
           <Button
             type="button"
@@ -334,7 +334,7 @@ export function VaultOnboarding({
           Desbloqueo con passkey
         </h2>
         <p className="mt-3 max-w-2xl text-sm text-ash">
-          Si este dispositivo soporta PRF, podrás desbloquear la bóveda con Face ID o huella
+          Si este dispositivo soporta PRF, podrás desbloquear la contraseñas con Face ID o huella
           en un solo paso, sin escribir el código 2FA. La master password seguirá funcionando
           siempre y sí pedirá 2FA. Si el autenticador no soporta PRF, no se registra nada.
         </p>
@@ -361,7 +361,7 @@ export function VaultOnboarding({
     <section className="mx-auto w-full max-w-2xl border-t border-mist/60 pt-8">
       <p className="text-xs tracking-wider2 text-ash">Paso 1 de 3 · Master password</p>
       <h1 className="mt-3 font-display text-4xl leading-[0.95] tracking-editorial md:text-5xl">
-        Crea tu bóveda.
+        Crea tu contraseñas.
       </h1>
       <p className="mt-4 max-w-2xl text-sm text-ash">
         Casa-os no puede leer tus cuentas. La master password se queda en este navegador: el

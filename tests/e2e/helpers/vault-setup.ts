@@ -8,7 +8,7 @@ export const VAULT_PASSWORD = 'casa-os-e2e-boveda-2026-segura';
 
 /**
  * Deja la BD local en un estado determinista para el E2E de Cuentas:
- * sin bóveda, sin passkeys y con 2FA desactivado. Se ejecuta ANTES del login
+ * sin contraseñas, sin passkeys y con 2FA desactivado. Se ejecuta ANTES del login
  * porque incrementa `sessionVersion` e invalidaría la sesión.
  * Solo se usa contra la BD local sembrada; nunca en producción.
  */
@@ -61,7 +61,7 @@ export async function enableTwoFactor(page: Page): Promise<() => Promise<string>
   return code;
 }
 
-/** Crea la bóveda y dos cuentas desde la UI, sin passkey. */
+/** Crea la contraseñas y dos cuentas desde la UI, sin passkey. */
 export async function createVaultWithAccounts(page: Page): Promise<void> {
   await page.goto('/cuentas');
   await page.getByLabel('Master password', { exact: true }).fill(VAULT_PASSWORD);
@@ -69,7 +69,7 @@ export async function createVaultWithAccounts(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Continuar' }).click();
 
   await page.getByRole('checkbox').check();
-  await page.getByRole('button', { name: 'Crear bóveda' }).click();
+  await page.getByRole('button', { name: 'Crear contraseñas' }).click();
   await page.getByRole('button', { name: 'Ahora no' }).click();
   await expectWorkspace(page);
   // Espera a que la lista (y con ella los miembros) esté cargada antes de crear.

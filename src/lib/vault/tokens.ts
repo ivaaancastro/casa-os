@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 /**
- * Tokens firmados de corta duración para la bóveda.
+ * Tokens firmados de corta duración para la contraseñas.
  * No son JWT: solo payload + HMAC-SHA256 con `NEXTAUTH_SECRET`.
  */
 

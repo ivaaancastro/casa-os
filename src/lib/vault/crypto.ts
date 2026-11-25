@@ -1,5 +1,5 @@
 /**
- * Criptografía de la bóveda. Se ejecuta en el navegador (y en tests Node).
+ * Criptografía de la contraseñas. Se ejecuta en el navegador (y en tests Node).
  *
  * El servidor nunca importa este módulo para descifrar: solo recibe blobs.
  *

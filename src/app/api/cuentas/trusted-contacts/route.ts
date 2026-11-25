@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     select: { id: true, active: true, vault: { select: { publicKey: true } } },
   });
   if (!contact?.active || !contact.vault?.publicKey) {
-    return badRequest('El contacto debe estar activo y tener bóveda');
+    return badRequest('El contacto debe estar activo y tener contraseñas');
   }
 
   try {

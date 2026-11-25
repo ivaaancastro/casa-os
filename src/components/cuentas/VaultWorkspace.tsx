@@ -71,7 +71,7 @@ export function VaultWorkspace({
       setMembers(memberResult.members);
     } catch (err) {
       if (err instanceof VaultApiError && err.status === 401) {
-        onLocked('La bóveda se ha bloqueado. Vuelve a desbloquearla para continuar.');
+        onLocked('La contraseñas se ha bloqueado. Vuelve a desbloquearla para continuar.');
         return;
       }
       setError(errorMessage(err));
@@ -129,7 +129,7 @@ export function VaultWorkspace({
     <div className="mx-auto w-full max-w-7xl px-5 py-6 md:px-10 md:py-10 lg:px-16">
       <header className="flex flex-wrap items-end justify-between gap-4 border-t border-mist/60 pt-6">
         <div>
-          <p className="text-[13px] tracking-wider2 text-ash">Cuentas · bóveda zero-knowledge</p>
+          <p className="text-[13px] tracking-wider2 text-ash">Cuentas · contraseñas zero-knowledge</p>
           <h1 className="mt-2 font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-5xl md:leading-[0.95] md:tracking-editorial">
             Tus cuentas.
           </h1>
@@ -158,7 +158,7 @@ export function VaultWorkspace({
             type="button"
             variant="ghost"
             className="min-h-11"
-            onClick={() => onLocked('Bóveda bloqueada. Vuelve a desbloquearla para continuar.')}
+            onClick={() => onLocked('Contraseñas bloqueada. Vuelve a desbloquearla para continuar.')}
           >
             Bloquear
           </Button>
@@ -171,7 +171,7 @@ export function VaultWorkspace({
             {familyMissing === 1
               ? 'Hay 1 cuenta de familia con miembros nuevos sin acceso.'
               : `Hay ${familyMissing} cuentas de familia con miembros nuevos sin acceso.`}{' '}
-            Abre cada cuenta y pulsa «Volver a compartir» para incluir a los miembros con bóveda.
+            Abre cada cuenta y pulsa «Volver a compartir» para incluir a los miembros con contraseñas.
           </Alert>
         </div>
       ) : null}
@@ -240,7 +240,7 @@ export function VaultWorkspace({
       {accounts && filtered.length === 0 ? (
         <div className="py-16 text-center">
           <p className="font-ui text-lg font-medium text-ink md:font-display md:text-2xl md:tracking-editorial">
-            {accounts.length === 0 ? 'La bóveda está vacía.' : 'No hay cuentas que coincidan.'}
+            {accounts.length === 0 ? 'La contraseñas está vacía.' : 'No hay cuentas que coincidan.'}
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm text-ash">
             {accounts.length === 0

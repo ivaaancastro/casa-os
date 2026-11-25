@@ -61,6 +61,7 @@ export function VaultUnlock({
   const [showPassword, setShowPassword] = useState(vault.passkeys.length === 0);
   const [biometricLabel, setBiometricLabel] = useState('Desbloquear con biometría');
   const autoAttempted = useRef(false);
+  const PRF_UNSUPPORTED_KEY = 'casaos_vault_prf_unsupported';
 
   const hasPasskeys = vault.passkeys.length > 0;
 
@@ -98,7 +99,7 @@ export function VaultUnlock({
         body: { response: assertion.response },
       });
       const blob = result.vault.passkeyKeyring;
-      if (!blob) throw new Error('La passkey no tiene una copia válida de la bóveda');
+      if (!blob) throw new Error('La passkey no tiene una copia válida de la contraseñas');
       const keyring = await decryptPasskeyKeyring({
         wrappedKeyring: blob.wrappedKeyring,
         keyringNonce: blob.nonce,
@@ -106,11 +107,16 @@ export function VaultUnlock({
       });
       onUnlocked(createSession(keyring, result.vault));
     } catch (err) {
+      const message = errorMessage(err);
       if (isPasskeyCancellation(err)) {
         setSoftError('Desbloqueo biométrico cancelado.');
+      } else if (/PRF|passkey|Face ID|huella/i.test(message)) {
+        if (typeof window !== 'undefined') window.sessionStorage.setItem(PRF_UNSUPPORTED_KEY, '1');
+        setSoftError('Este dispositivo no permite desbloquear con Face ID/huella. Usa la master password.');
+        setShowPassword(true);
       } else {
         setSoftError('No se pudo desbloquear con biometría en este dispositivo.');
-        setError(errorMessage(err));
+        setError(message);
       }
     } finally {
       memzero(passkeyKey);
@@ -119,8 +125,13 @@ export function VaultUnlock({
   }, [passkeyId, onUnlocked]);
 
   // Decisión 3: se intenta la biometría al entrar, una sola vez por montaje.
+  // Si en esta estancia ya falló por falta de PRF, no repetimos el prompt.
   useEffect(() => {
     if (!hasPasskeys || autoAttempted.current || showPassword) return;
+    if (typeof window !== 'undefined' && window.sessionStorage.getItem(PRF_UNSUPPORTED_KEY) === '1') {
+      setShowPassword(true);
+      return;
+    }
     autoAttempted.current = true;
     void attemptPasskey();
   }, [hasPasskeys, showPassword, attemptPasskey]);
@@ -162,13 +173,13 @@ export function VaultUnlock({
   return (
     <section className="mx-auto w-full max-w-xl border-t border-mist/60 pt-6 md:pt-8">
       <p className="mb-3 text-[13px] tracking-wider2 text-ash">
-        Cuentas · bóveda bloqueada
+        Cuentas · contraseñas bloqueada
       </p>
       <h1 className="font-ui text-xl font-medium leading-tight text-ink md:font-display md:text-5xl md:leading-[0.95] md:tracking-editorial">
         Desbloquea tus cuentas.
       </h1>
       <p className="mt-3 max-w-prose text-sm text-ash">
-        {email} · La bóveda se bloquea al salir de la app o tras 15 minutos de
+        {email} · La contraseñas se bloquea al salir de la app o tras 15 minutos de
         inactividad.
       </p>
 
