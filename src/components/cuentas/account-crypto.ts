@@ -36,7 +36,7 @@ export function memberLabel(member: Pick<VaultMember, 'name' | 'email'>): string
   return member.name?.trim() || member.email || 'Miembro';
 }
 
-/** Miembros con bóveda, que son los únicos que pueden recibir una DEK. */
+/** Miembros con contraseñas, que son los únicos que pueden recibir una DEK. */
 export type VaultMemberWithKey = VaultMember & { publicKey: string };
 
 export function membersWithVault(members: VaultMember[]): VaultMemberWithKey[] {
@@ -49,7 +49,7 @@ export function membersWithVault(members: VaultMember[]): VaultMemberWithKey[] {
 /**
  * Destinatarios según la visibilidad elegida.
  *
- * `FAMILY` incluye a los miembros con bóveda **de ahora**; un miembro nuevo no
+ * `FAMILY` incluye a los miembros con contraseñas **de ahora**; un miembro nuevo no
  * recibe retroactivamente las cuentas antiguas.
  */
 export function recipientsForVisibility(input: {

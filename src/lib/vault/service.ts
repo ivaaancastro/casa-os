@@ -16,11 +16,11 @@ export type RecipientValidation =
  * Valida el conjunto de destinatarios de una cuenta.
  *
  * - El dueño siempre está incluido y siempre puede editar.
- * - Todo destinatario debe estar activo y tener bóveda (si no, no tiene `pk`).
+ * - Todo destinatario debe estar activo y tener contraseñas (si no, no tiene `pk`).
  * - `PRIVATE` solo admite al dueño.
- * - `FAMILY` exige exactamente los miembros activos con bóveda en este momento;
+ * - `FAMILY` exige exactamente los miembros activos con contraseñas en este momento;
  *   así «toda la familia» no se convierte en un subconjunto silencioso.
- * - `CUSTOM` admite al dueño y a los miembros con bóveda que se elijan.
+ * - `CUSTOM` admite al dueño y a los miembros con contraseñas que se elijan.
  *
  * El servidor no puede comprobar que la DEK esté bien envuelta: solo guarda el
  * blob. La validación protege la coherencia de metadatos, no el secreto.
@@ -58,7 +58,7 @@ export async function validateRecipients(input: {
     if (recipients.length !== userIds.length) {
       return {
         ok: false,
-        error: 'Algún destinatario no está activo o todavía no tiene bóveda',
+        error: 'Algún destinatario no está activo o todavía no tiene contraseñas',
       };
     }
   }
@@ -82,7 +82,7 @@ export async function validateRecipients(input: {
   return { ok: true, keys: normalized };
 }
 
-/** Miembros activos con bóveda, con la clave pública que necesitan los demás. */
+/** Miembros activos con contraseñas, con la clave pública que necesitan los demás. */
 export function listMembersWithVault() {
   return prisma.user.findMany({
     where: { active: true },

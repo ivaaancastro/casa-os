@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  if (!vault) return notFound('No hay bóveda');
+  if (!vault) return notFound('No hay contraseñas');
   if (!vault.user.twoFactorEnabled) return forbidden('2FA requerido');
 
   if (await isUnlockRateLimited(user.id)) {

@@ -11,6 +11,11 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
 
 ### Changed
 
+- **Contraseñas + Face ID**: renombrado visible de «Cuentas/bóveda» a
+  «Contraseñas»; arreglo del desbloqueo biométrico en iPhone (PRF sin
+  `enabled`); login a la app con Face ID/huella mediante passkeys
+  (`AppPasskey`), registro en Perfil y botón en el login.
+
 - **Rediseño visual Apple (rama `feat/rediseno-apple`)**: migración de la
   identidad editorial Inditex/Zara a un lenguaje Apple (HIG): tipografía del
   sistema (SF Pro), superficie agrupada `#F2F2F7`, radios 10–28 px, sombras

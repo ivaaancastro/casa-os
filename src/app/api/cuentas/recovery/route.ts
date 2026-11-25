@@ -101,7 +101,7 @@ export async function PUT(request: NextRequest) {
     });
 
     if (contacts.length !== contactIds.length) {
-      return badRequest('Algún contacto no está activo o no tiene bóveda');
+      return badRequest('Algún contacto no está activo o no tiene contraseñas');
     }
     if (contacts.some((contact) => !memberPublicKey(contact))) {
       return badRequest('Algún contacto no tiene clave pública');

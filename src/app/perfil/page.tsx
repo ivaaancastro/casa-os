@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { publicUserSelect } from '@/lib/users';
 import { ProfileForm } from '@/components/ProfileForm';
 import { SecuritySection } from '@/components/SecuritySection';
+import { AppPasskeySection } from '@/components/AppPasskeySection';
 import { PageHeader } from '@/components/PageHeader';
 import { MoreDrawer } from '@/components/mobile/MoreDrawer';
 
@@ -38,6 +39,10 @@ export default async function PerfilPage() {
 
         <section className="col-span-12 border-t border-mist/60 pt-8">
           <SecuritySection />
+        </section>
+
+        <section className="col-span-12 border-t border-mist/60 pt-8">
+          <AppPasskeySection />
         </section>
       </div>
     </div>

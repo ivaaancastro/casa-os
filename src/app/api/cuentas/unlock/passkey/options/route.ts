@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     where: { userId: user.id },
     select: { userId: true, user: { select: { twoFactorEnabled: true } } },
   });
-  if (!vault) return notFound('No hay bóveda');
+  if (!vault) return notFound('No hay contraseñas');
   if (!vault.user.twoFactorEnabled) return forbidden('2FA requerido');
 
   const passkeys = await prisma.vaultPasskey.findMany({

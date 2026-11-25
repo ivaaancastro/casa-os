@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     where: { userId: user.id },
     select: { id: true },
   });
-  if (existing) return conflict('La bóveda ya existe');
+  if (existing) return conflict('La contraseñas ya existe');
 
   try {
     const authHash = await hashAuthKey(data.authKey);
@@ -144,7 +144,7 @@ export async function DELETE(request: NextRequest) {
     where: { userId: user.id },
     select: { id: true, authHash: true, user: { select: { twoFactorEnabled: true } } },
   });
-  if (!vault) return notFound('No hay bóveda');
+  if (!vault) return notFound('No hay contraseñas');
   if (!vault.user.twoFactorEnabled) return forbidden('2FA requerido');
 
   if (await isUnlockRateLimited(user.id)) {

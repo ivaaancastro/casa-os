@@ -28,14 +28,14 @@ function prfOutput(extensions: unknown): Uint8Array {
   const prf = (extensions as {
     prf?: { enabled?: boolean; results?: { first?: unknown } };
   } | undefined)?.prf;
-  if (prf?.enabled !== true) {
-    throw new Error(
-      'Este dispositivo no permite desbloquear con passkey. Usa la master password',
-    );
-  }
-  const output = toBytes(prf.results?.first as BufferSource | undefined);
+  // Algunos autenticadores (p. ej. Face ID en Safari/iOS) devuelven la salida
+  // PRF sin marcar `enabled === true`. Aceptamos la salida si tiene tamaño
+  // suficiente; solo fallamos si no hay bytes utilizables.
+  const output = toBytes(prf?.results?.first as BufferSource | undefined);
   if (!output || output.length < 32) {
-    throw new Error('El autenticador no devolvió la clave PRF. Usa la master password');
+    throw new Error(
+      'Este dispositivo no permite desbloquear con Face ID/huella. Usa la master password',
+    );
   }
   return output;
 }

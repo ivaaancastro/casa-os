@@ -2,7 +2,8 @@
 
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { useEffect, useState } from 'react';
 
 export function LoginForm() {
   const searchParams = useSearchParams();
@@ -13,6 +14,55 @@ export function LoginForm() {
   const [totp, setTotp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricLoading, setBiometricLoading] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    if (typeof window === 'undefined' || !window.PublicKeyCredential) return;
+    void PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+      .then((available) => {
+        if (active) setBiometricAvailable(available);
+      })
+      .catch(() => {
+        if (active) setBiometricAvailable(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleBiometricLogin() {
+    setError('');
+    setBiometricLoading(true);
+    try {
+      const optionsRes = await fetch('/api/auth/login/passkey/options', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() || undefined }),
+      });
+      if (!optionsRes.ok) throw new Error('No se pudieron obtener opciones');
+      const { options } = await optionsRes.json();
+      const assertion = await startAuthentication({ optionsJSON: options });
+      const verifyRes = await fetch('/api/auth/login/passkey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response: assertion }),
+      });
+      if (!verifyRes.ok) throw new Error('No se pudo verificar');
+      const { token } = await verifyRes.json();
+      const result = await signIn('webauthn', { token, redirect: false });
+      if (result?.error) {
+        setError('No se pudo iniciar sesión con Face ID. Inténtalo de nuevo.');
+        setBiometricLoading(false);
+      } else {
+        window.location.assign(callbackUrl);
+      }
+    } catch {
+      setError('No se pudo iniciar sesión con Face ID. Inténtalo de nuevo.');
+      setBiometricLoading(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -103,6 +153,17 @@ export function LoginForm() {
           recuperación.
         </p>
       </div>
+
+      {biometricAvailable ? (
+        <button
+          type="button"
+          onClick={() => void handleBiometricLogin()}
+          disabled={biometricLoading || loading}
+          className="btn-primary w-full"
+        >
+          {biometricLoading ? 'Esperando a Face ID…' : 'Entrar con Face ID / huella'}
+        </button>
+      ) : null}
 
       <button
         type="submit"

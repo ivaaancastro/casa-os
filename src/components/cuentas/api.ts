@@ -13,7 +13,7 @@ interface RequestOptions {
   body?: unknown;
 }
 
-/** Fetch de la bóveda: JSON, cookies de sesión y sin caché. */
+/** Fetch de la contraseñas: JSON, cookies de sesión y sin caché. */
 export async function vaultFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const response = await fetch(path, {
     method: options.method ?? 'GET',
