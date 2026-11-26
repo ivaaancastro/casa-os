@@ -52,8 +52,14 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       sessionVersion?: { increment: number };
     } = {};
     if (data.name !== undefined) updateData.name = data.name;
-    if (data.role !== undefined) updateData.role = data.role;
-    if (data.active !== undefined) updateData.active = data.active;
+    if (data.role !== undefined) {
+      updateData.role = data.role;
+      updateData.sessionVersion = { increment: 1 };
+    }
+    if (data.active !== undefined) {
+      updateData.active = data.active;
+      updateData.sessionVersion = { increment: 1 };
+    }
     if (data.password !== undefined) {
       updateData.password = await bcrypt.hash(data.password, 12);
       updateData.sessionVersion = { increment: 1 };

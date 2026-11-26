@@ -189,6 +189,14 @@ model AuthEvent {
   @@index([action, createdAt])
 }
 
+model LoginAttempt {
+  id         String   @id @default(cuid())
+  emailHash  String   @db.VarChar(64)
+  createdAt  DateTime @default(now())
+
+  @@index([emailHash, createdAt])
+}
+
 // --- Cuentas zero-knowledge -------------------------------------------------
 // El servidor solo guarda blobs cifrados y metadatos mínimos. Ningún campo de
 // estos modelos contiene títulos, usuarios, contraseñas, URLs ni notas en claro.

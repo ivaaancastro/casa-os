@@ -16,6 +16,7 @@ import {
   generateRecoveryCodes,
   hashRecoveryCode,
   isRecoveryCodeFormat,
+  recoveryCodeHashesMatch,
 } from './two-factor-recovery';
 
 export type TwoFactorError =
@@ -103,20 +104,24 @@ export async function consumeRecoveryCode(
 ): Promise<boolean> {
   if (!isRecoveryCodeFormat(code)) return false;
 
-  const codeHash = hashRecoveryCode(code);
-  const record = await prisma.twoFactorRecoveryCode.findUnique({
-    where: { codeHash },
-    select: { id: true, userId: true, usedAt: true },
+  const candidates = await prisma.twoFactorRecoveryCode.findMany({
+    where: { userId, usedAt: null },
+    select: { id: true, codeHash: true },
   });
 
-  if (!record || record.userId !== userId || record.usedAt) return false;
+  for (const candidate of candidates) {
+    const matches = await recoveryCodeHashesMatch(code, candidate.codeHash);
+    if (!matches) continue;
 
-  const result = await prisma.twoFactorRecoveryCode.updateMany({
-    where: { id: record.id, usedAt: null },
-    data: { usedAt: new Date() },
-  });
+    const result = await prisma.twoFactorRecoveryCode.updateMany({
+      where: { id: candidate.id, usedAt: null },
+      data: { usedAt: new Date() },
+    });
 
-  return result.count === 1;
+    return result.count === 1;
+  }
+
+  return false;
 }
 
 export async function verifySecondFactor(
@@ -141,12 +146,13 @@ async function createRecoveryCodeRows(
   userId: string,
   codes: string[],
 ): Promise<void> {
-  await tx.twoFactorRecoveryCode.createMany({
-    data: codes.map((code) => ({
+  const rows = await Promise.all(
+    codes.map(async (code) => ({
       userId,
-      codeHash: hashRecoveryCode(code),
+      codeHash: await hashRecoveryCode(code),
     })),
-  });
+  );
+  await tx.twoFactorRecoveryCode.createMany({ data: rows });
 }
 
 export async function replaceRecoveryCodes(

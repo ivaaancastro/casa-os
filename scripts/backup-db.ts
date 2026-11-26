@@ -11,12 +11,13 @@
  * Crea una copia comprimida con timestamp en /backups (mantiene las ultimas 30).
  */
 
-import { exec } from 'child_process';
+import { exec, execFile } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
 
 const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 const DOCKER_CONTAINER = 'casa-os-db';
 
@@ -42,8 +43,21 @@ function loadEnvFile() {
 }
 
 async function dumpPostgres(url: string, outPath: string): Promise<void> {
+  // Validar que la URL sea una URL de Postgres bien formada para evitar
+  // inyeccion de comandos: nunca se interpola en un shell.
+  let parsed: URL;
   try {
-    await execAsync(`pg_dump "${url}" > "${outPath}"`);
+    parsed = new URL(url);
+  } catch {
+    throw new Error('DATABASE_URL/DIRECT_URL no es una URL válida');
+  }
+  if (!['postgres:', 'postgresql:'].includes(parsed.protocol)) {
+    throw new Error('La URL debe usar el protocolo postgres/postgresql');
+  }
+
+  try {
+    const { stdout } = await execFileAsync('pg_dump', [url]);
+    fs.writeFileSync(outPath, stdout);
     return;
   } catch (error) {
     const message = String(error instanceof Error ? error.message : error);
@@ -54,7 +68,15 @@ async function dumpPostgres(url: string, outPath: string): Promise<void> {
 
   // Fallback para desarrollo local con Docker Compose.
   console.log(`pg_dump no disponible; usando el contenedor "${DOCKER_CONTAINER}"...`);
-  await execAsync(`docker exec ${DOCKER_CONTAINER} pg_dump -U casa casa_os > "${outPath}"`);
+  const { stdout } = await execFileAsync('docker', [
+    'exec',
+    DOCKER_CONTAINER,
+    'pg_dump',
+    '-U',
+    'casa',
+    'casa_os',
+  ]);
+  fs.writeFileSync(outPath, stdout);
 }
 
 async function backup() {

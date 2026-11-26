@@ -9,6 +9,11 @@ const isProd = process.env.NODE_ENV === 'production';
  * - `'unsafe-inline'` en `script-src` es necesario porque Next.js inyecta scripts
  *   inline (bootstrap/`__NEXT_DATA__`) sin nonce. Restringimos el resto
  *   (`frame-ancestors`, `object-src`, `base-uri`, `form-action`, orígenes).
+ * - Plan futuro (no implementado): migrar a nonce por petición (Next.js
+ *   `headers()` con `crypto.randomUUID()` + `script-src 'nonce-...'`) para
+ *   eliminar `'unsafe-inline'`. Requiere middleware dinámico y cambios en
+ *   `_document`/layout; se valora cuando se añada autenticación por cookies
+ *   sensible.
  * - `'unsafe-eval'` solo en desarrollo (HMR de Next.js); no en producción.
  * - `'wasm-unsafe-eval'` es necesario para libsodium (bóveda de Cuentas). Solo
  *   permite compilar WebAssembly, no evalúa JavaScript arbitrario.
