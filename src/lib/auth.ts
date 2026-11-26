@@ -13,6 +13,10 @@ import { isLoginRateLimited, verifySecondFactor } from './two-factor';
 
 const INVALID_CREDENTIALS = null;
 
+// Hash bcrypt precomputado para igualar el tiempo de respuesta cuando el usuario
+// no existe (evita enumeración por timing).
+const DUMMY_PASSWORD_HASH = '$2b$12$xxElxJqhMX58XW8emu7n9ODyqEt6megoQnVLiPJKz/tLT3DZ6Ajxu';
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -36,18 +40,19 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user || !user.password || !user.active) {
-          if (isAuthRateLimited(emailLimitKey)) {
+          await bcrypt.compare(credentials.password, DUMMY_PASSWORD_HASH);
+          if (await isAuthRateLimited(emailLimitKey)) {
             await logAuthEvent({ action: 'RATE_LIMITED' });
             return INVALID_CREDENTIALS;
           }
-          recordAuthFailure(emailLimitKey);
+          await recordAuthFailure(emailLimitKey);
           await logAuthEvent({ action: 'LOGIN_FAILED' });
           return INVALID_CREDENTIALS;
         }
 
         if (
           (await isLoginRateLimited(user.id)) ||
-          isAuthRateLimited(emailLimitKey)
+          (await isAuthRateLimited(emailLimitKey))
         ) {
           await logAuthEvent({ userId: user.id, action: 'RATE_LIMITED' });
           return INVALID_CREDENTIALS;
@@ -56,21 +61,21 @@ export const authOptions: NextAuthOptions = {
         const isValid = await bcrypt.compare(credentials.password, user.password);
 
         if (!isValid) {
-          recordAuthFailure(emailLimitKey);
+          await recordAuthFailure(emailLimitKey);
           await logAuthEvent({ userId: user.id, action: 'LOGIN_FAILED' });
           return INVALID_CREDENTIALS;
         }
 
         if (user.twoFactorEnabled) {
           if (!totp) {
-            recordAuthFailure(emailLimitKey);
+            await recordAuthFailure(emailLimitKey);
             await logAuthEvent({ userId: user.id, action: 'TOTP_FAILED' });
             return INVALID_CREDENTIALS;
           }
 
           const secondFactor = await verifySecondFactor(user.id, totp);
           if (!secondFactor.valid) {
-            recordAuthFailure(emailLimitKey);
+            await recordAuthFailure(emailLimitKey);
             await logAuthEvent({ userId: user.id, action: 'TOTP_FAILED' });
             return INVALID_CREDENTIALS;
           }

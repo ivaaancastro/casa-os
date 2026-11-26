@@ -24,10 +24,11 @@ describe('Two Factor Recovery Codes', () => {
     expect(formatRecoveryCode('abcdefgh')).toBe('ABCD-EFGH');
   });
 
-  it('genera hashes SHA-256 correctos y permite la validación', () => {
+  it('genera hashes bcrypt y permite la validación', async () => {
     const code = 'ABCD-EFGH';
-    const hash = hashRecoveryCode(code);
-    expect(hash).toHaveLength(64);
-    expect(recoveryCodeHashesMatch(hash, hash)).toBe(true);
+    const hash = await hashRecoveryCode(code);
+    expect(hash).toMatch(/^\$2[aby]\$/);
+    expect(await recoveryCodeHashesMatch(code, hash)).toBe(true);
+    expect(await recoveryCodeHashesMatch('ZZZZ-ZZZZ', hash)).toBe(false);
   });
 });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { updateNoteSchema } from '@/lib/schemas/note';
 import { requireUser } from '@/lib/api-auth';
+import { sanitizeNoteContentServer } from '@/lib/utils/sanitize-server';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -29,9 +30,16 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const body = await request.json();
     const data = updateNoteSchema.parse(body);
 
+    const sanitized = {
+      ...data,
+      ...(data.content !== undefined
+        ? { content: sanitizeNoteContentServer(data.content) }
+        : {}),
+    };
+
     const note = await prisma.note.update({
       where: { id },
-      data,
+      data: sanitized,
       include: {
         author: {
           select: { id: true, name: true },

@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { jsonNoStore } from '@/lib/api-response';
 import { readJson } from '@/lib/vault/http';
+import { emailRateLimitKey, isAuthRateLimited, recordAuthFailure } from '@/lib/rate-limit';
 import {
   authenticationOptions,
   setChallengeCookie,
@@ -21,6 +22,10 @@ export async function POST(request: NextRequest) {
 
   let allowCredentials: Array<{ credentialId: string; transports: string[] }> = [];
   if (email) {
+    const key = emailRateLimitKey(email);
+    if (await isAuthRateLimited(key)) {
+      return jsonNoStore({ error: 'Demasiados intentos. Inténtalo más tarde' }, 429);
+    }
     const user = await prisma.user.findUnique({
       where: { email },
       select: { id: true, appPasskeys: { select: { credentialId: true, transports: true } } },

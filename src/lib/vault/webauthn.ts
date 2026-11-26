@@ -72,7 +72,7 @@ export function setChallengeCookie(
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    path: '/api/cuentas',
+    path: '/',
     maxAge: WEBAUTHN_CHALLENGE_TTL_SECONDS,
   });
 }
@@ -96,7 +96,7 @@ export function clearChallengeCookie(response: NextResponse): void {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    path: '/api/cuentas',
+    path: '/',
     maxAge: 0,
   });
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createNoteSchema, listNotesSchema } from '@/lib/schemas/note';
+import { sanitizeNoteContentServer } from '@/lib/utils/sanitize-server';
 import { requireUser } from '@/lib/api-auth';
 
 export async function GET(request: NextRequest) {
@@ -45,9 +46,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = createNoteSchema.parse(body);
 
+    const sanitized = {
+      ...data,
+      content: sanitizeNoteContentServer(data.content),
+    };
+
     const note = await prisma.note.create({
       data: {
-        ...data,
+        ...sanitized,
         authorId: auth.user.id,
       },
       include: {

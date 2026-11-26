@@ -9,6 +9,7 @@ import {
   verifyAuthentication,
 } from '@/lib/vault/webauthn';
 import { signToken } from '@/lib/vault/tokens';
+import { emailRateLimitKey, recordAuthFailure } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -49,9 +50,12 @@ export async function POST(request: NextRequest) {
 
   const user = await prisma.user.findUnique({
     where: { id: passkey.userId },
-    select: { id: true, active: true },
+    select: { id: true, active: true, email: true },
   });
   if (!user?.active) {
+    if (user?.email) {
+      await recordAuthFailure(emailRateLimitKey(user.email));
+    }
     return jsonNoStore({ error: 'No se pudo iniciar sesión' }, 401);
   }
 
@@ -76,6 +80,9 @@ export async function POST(request: NextRequest) {
     clearChallengeCookie(result);
     return result;
   } catch {
+    if (user?.email) {
+      await recordAuthFailure(emailRateLimitKey(user.email));
+    }
     return jsonNoStore({ error: 'No se pudo iniciar sesión' }, 401);
   }
 }
