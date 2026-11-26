@@ -44,9 +44,9 @@ export function VaultApp({
   // El provider bloquea por background/inactividad: el aviso se decide aquí.
   useEffect(() => {
     if (lockReason === 'inactivity') {
-      setNotice('La contraseñas se ha bloqueado por inactividad. Vuelve a desbloquearla.');
+      setNotice('Las contraseñas se han bloqueado por inactividad. Vuelve a desbloquearlas.');
     } else if (lockReason === 'background') {
-      setNotice('La contraseñas se ha bloqueado al salir de la app. Vuelve a desbloquearla.');
+      setNotice('Las contraseñas se han bloqueado al salir de la app. Vuelve a desbloquearlas.');
     }
   }, [lockReason]);
 
@@ -77,7 +77,7 @@ export function VaultApp({
   if (loading && !status) {
     return (
       <div className="mx-auto w-full max-w-7xl px-5 py-16 md:px-10 lg:px-16">
-        <Spinner label="Comprobando la contraseñas" />
+        <Spinner label="Comprobando las contraseñas" />
       </div>
     );
   }
@@ -112,9 +112,9 @@ export function VaultApp({
           Activa el 2FA primero.
         </h1>
         <p className="mt-4 text-sm text-ash">
-          La contraseñas exige un segundo factor en cada desbloqueo con contraseña.
+          Las contraseñas exigen un segundo factor en cada desbloqueo con contraseña.
           Actívalo en Perfil → Seguridad y vuelve aquí. Sin 2FA el servidor
-          rechaza crear o abrir la contraseñas.
+          rechaza crear o abrir las contraseñas.
         </p>
         <a
           href="/perfil"
@@ -177,7 +177,7 @@ export function VaultApp({
         <VaultUnlock
           email={email}
           vault={status.vault}
-          notice={notice || (status.grantActive ? 'La sesión de la contraseñas caducó. Vuelve a desbloquearla.' : undefined)}
+          notice={notice || (status.grantActive ? 'La sesión de las contraseñas caducó. Vuelve a desbloquearla.' : undefined)}
           onUnlocked={handleUnlocked}
           onRecovery={() => {
             setNotice('');
@@ -200,7 +200,7 @@ export function VaultApp({
       onVaultDeleted={async () => {
         lockWithNotice(
           'deleted',
-          'La contraseñas se ha borrado. Puedes crear una nueva cuando quieras.',
+          'Las contraseñas se han borrado. Puedes crear una nueva cuando quieras.',
         );
       }}
     />

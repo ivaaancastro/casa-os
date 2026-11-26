@@ -73,7 +73,7 @@ export function MonthViewMobile({
                         ? 'bg-accent text-white'
                         : day.inMonth
                           ? 'text-ink'
-                          : 'text-ash/70'
+                          : 'text-ash'
                     }`}
                   >
                     {day.date.getDate()}

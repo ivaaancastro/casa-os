@@ -18,7 +18,10 @@ export function DeviceMobileView({
   return (
     <div className="pb-28" data-testid="devices-mobile-list">
       {!isAdmin && (
-        <p className="mb-4 flex min-h-11 items-center text-xs text-ash">
+        <p
+          role="status"
+          className="mb-4 flex min-h-11 items-center text-xs text-ash"
+        >
           Solo los administradores pueden editar el inventario.
         </p>
       )}

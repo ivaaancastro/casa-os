@@ -92,7 +92,7 @@ export function AppPasskeySection() {
         Entrar con Face ID / huella
       </h2>
       <p className="mt-2 max-w-xl text-sm text-ash">
-        Registra este dispositivo para entrar a casa-os sin contraseña. La
+        Registra este dispositivo para entrar a casa·os sin contraseña. La
         verificación biométrica sustituye al 2FA.
       </p>
 

@@ -78,9 +78,9 @@ export default async function DevicesPage() {
           </p>
           <p className="mt-1 text-[10px] tracking-wider2 text-ash">
             {latestSeen
-              ? `Última actualización: ${formatRelativeTime(latestSeen)}`
-              : 'Sin escaneos aplicados'}
-            {isStale && ' · Estado desactualizado, sube un escaneo nuevo'}
+              ? `Última revisión: ${formatRelativeTime(latestSeen)}`
+              : 'Todavía no se ha revisado la red'}
+            {isStale && ' · Hace tiempo que no se revisa'}
           </p>
         </header>
 
