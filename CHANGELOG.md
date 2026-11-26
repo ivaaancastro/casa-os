@@ -16,6 +16,13 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   `enabled`); login a la app con Face ID/huella mediante passkeys
   (`AppPasskey`), registro en Perfil y botón en el login.
 
+- **Accesibilidad y copy (Fase 0)**: eliminado el bloqueo de zoom (WCAG 1.4.4);
+  corregida la gramática \"La contraseñas\" → \"Las contraseñas\"; unificado el
+  nombre del producto (\"Contraseñas\") y el wordmark (\"casa·os\"); copy de
+  dispositivos en lenguaje llano; metadata sin \"zero-knowledge\"; contraste del
+  contador de carpetas ≥ 4.5:1; `role=\"status\"` en DeviceMobileView; fechas
+  fuera de mes legibles. Spec: `specs/accesibilidad-quick-wins/`.
+
 - **Rediseño visual Apple (rama `feat/rediseno-apple`)**: migración de la
   identidad editorial Inditex/Zara a un lenguaje Apple (HIG): tipografía del
   sistema (SF Pro), superficie agrupada `#F2F2F7`, radios 10–28 px, sombras
