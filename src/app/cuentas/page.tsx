@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Contraseñas | casa-os',
-  description: 'Contraseñas zero-knowledge del hogar',
+  description: 'Tus contraseñas guardadas de forma segura',
 };
 
 export default async function CuentasPage() {

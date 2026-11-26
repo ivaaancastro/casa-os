@@ -17,7 +17,7 @@ export function buildRecoveryKit(input: {
 
 export function kitText(kit: RecoveryKit): string {
   return [
-    'casa-os — Kit de recuperación de la contraseñas',
+    'casa·os — Kit de recuperación de las contraseñas',
     `Cuenta: ${kit.email}`,
     `Creado: ${kit.createdAt}`,
     `Versión: ${kit.version}`,

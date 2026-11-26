@@ -61,7 +61,7 @@ export function InstallPrompt() {
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-[13px] leading-snug text-ink">
-          Instalar casa-os en la pantalla de inicio
+          Instalar casa·os en la pantalla de inicio
         </p>
         <button
           type="button"

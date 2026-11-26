@@ -71,7 +71,7 @@ export function VaultWorkspace({
       setMembers(memberResult.members);
     } catch (err) {
       if (err instanceof VaultApiError && err.status === 401) {
-        onLocked('La contraseñas se ha bloqueado. Vuelve a desbloquearla para continuar.');
+        onLocked('Las contraseñas se han bloqueado. Vuelve a desbloquearlas para continuar.');
         return;
       }
       setError(errorMessage(err));
@@ -240,7 +240,7 @@ export function VaultWorkspace({
       {accounts && filtered.length === 0 ? (
         <div className="py-16 text-center">
           <p className="font-ui text-lg font-medium text-ink md:font-display md:text-2xl md:tracking-editorial">
-            {accounts.length === 0 ? 'La contraseñas está vacía.' : 'No hay cuentas que coincidan.'}
+            {accounts.length === 0 ? 'Todavía no hay contraseñas guardadas.' : 'No hay cuentas que coincidan.'}
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm text-ash">
             {accounts.length === 0

@@ -35,7 +35,7 @@ export function FolderChips({ activeFolder, onFolderChange, notes }: FolderChips
             `}
           >
             <span>{folder.label}</span>
-            <span className={`text-xs ${isActive ? 'text-canvas/60' : 'text-ash'}`}>
+            <span className={`text-xs ${isActive ? 'text-white/90' : 'text-ash'}`}>
               {countByFolder(notes, folder.value)}
             </span>
           </button>

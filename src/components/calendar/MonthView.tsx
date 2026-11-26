@@ -73,7 +73,7 @@ export function MonthView({
                         ? 'bg-accent px-1 text-white'
                         : day.inMonth
                           ? 'text-ink'
-                          : 'text-ash/70'
+                          : 'text-ash'
                     }`}
                   >
                     {day.date.getDate()}
