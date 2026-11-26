@@ -216,10 +216,10 @@ El merge del código **no** cierra una feature. La definición completa está en
 ### 👉 Foco actual
 
 **En producción:** <https://casa-os-mauve.vercel.app> (Vercel + Neon). CI de `main` verde.
-**En curso:** ninguna.
-**Siguiente:** ninguna fase del roadmap; queda el backlog y la verificación en
-móvil real del propietario (`docs/verificacion-movil-real.md`). Última entrega:
-Contraseñas + Face ID (PR #61, mergeado, CI verde).
+**En curso:** cierre documental de `accesibilidad-quick-wins` (Fase 0 del
+roadmap de auditoría total, PR de cierre en curso).
+**Siguiente:** seguridad operativa (Fase 1) tras merge del cierre. Última entrega:
+Accesibilidad y copy quick wins (PR #63, mergeado, CI verde).
 
 ## Registro de features
 
@@ -256,6 +256,7 @@ Contraseñas + Face ID (PR #61, mergeado, CI verde).
 | docs | Cierre global del roadmap móvil (Fases 1-6) | #55 | `1c9fc7b` | <https://casa-os-mauve.vercel.app> (health 200) | [`cierre`](specs/cierre-global/cierre.md) |
 | feat | Rediseño visual Apple (Inditex→Apple) | — (rama `feat/rediseno-apple`) | — | En rama, pendiente de merge/deploy | [`cierre`](specs/rediseno-apple/cierre.md) |
 | feat | Contraseñas + Face ID (renombrado, arreglo iPhone, login biométrico) | — (rama `feat/contrasenas-y-faceid`) | — | En rama, pendiente de merge/deploy | [`cierre`](specs/contrasenas-y-faceid/cierre.md) |
+| fix | Accesibilidad y copy quick wins (zoom, gramática, naming, contraste, role=status) | #63 | `b8cabd7` | https://casa-os-mauve.vercel.app (deploy automático) | [`cierre`](specs/accesibilidad-quick-wins/cierre.md) |
 
 ## Notas técnicas
 
