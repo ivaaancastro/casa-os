@@ -16,6 +16,13 @@ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es
   `enabled`); login a la app con Face ID/huella mediante passkeys
   (`AppPasskey`), registro en Perfil y botón en el login.
 
+- **Seguridad operativa (Fase 1)**: rate limit de login persistente en BD
+  (`LoginAttempt`); sanitización server-side de notas (`sanitize-html`);
+  recovery codes con bcrypt; cookie de passkey con path `/`; timing seguro en
+  login; rate limit en endpoints de passkey; `sessionVersion` al cambiar
+  rol/activación; `backup-db.ts` con `execFile`; CSP documentada; `npm audit
+  fix` (19 → 13). Spec: `specs/seguridad-operativa/`.
+
 - **Accesibilidad y copy (Fase 0)**: eliminado el bloqueo de zoom (WCAG 1.4.4);
   corregida la gramática \"La contraseñas\" → \"Las contraseñas\"; unificado el
   nombre del producto (\"Contraseñas\") y el wordmark (\"casa·os\"); copy de
